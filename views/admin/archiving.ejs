@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARKIPAISI — Archiving</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/css/admin/archiving.css">
+</head>
+
+<body>
+    <%- include("../partials/sidebar.ejs") %>
+    <!-- ═══ MAIN ═══ -->
+    <div class="main" id="main">
+        
+        <%- include("../partials/header.ejs") %>
+
+        <div class="content">
+
+            <div class="pghdr">
+                <div>
+                    <h1>Record Archiving</h1>
+                    <p>Archived vendors, payments &amp; documents · Records older than 5 years are archived
+                        automatically</p>
+                </div>
+                <div class="pghdr-btns">
+                    <button class="btn gh sm" onclick="openM('settingsModal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+                        </svg>
+                        <span>Archive Settings</span>
+                    </button>
+                    <button class="btn ao sm" onclick="openM('manualArchiveModal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                            <polyline points="3.29 7 12 12 20.71 7" />
+                            <line x1="12" y1="22" x2="12" y2="12" />
+                        </svg>
+                        <span>Archive Records</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Banner -->
+            <div class="arch-banner">
+                <div class="arch-banner-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                        <polyline points="3.29 7 12 12 20.71 7" />
+                        <line x1="12" y1="22" x2="12" y2="12" />
+                    </svg></div>
+                <div class="arch-banner-body">
+                    <div class="arch-banner-title">Automatic Archiving is Active</div>
+                    <div class="arch-banner-sub">Records are automatically moved to the archive when they exceed the
+                        retention period. Archived records remain viewable and can be restored at any time by an
+                        administrator.</div>
+                    <div class="arch-pills">
+                        <div class="arch-pill"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                            </svg>Vendors: 5 yrs after contract end</div>
+                        <div class="arch-pill"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23" />
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>Payments: 5 yrs after transaction</div>
+                        <div class="arch-pill"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            </svg>Documents: 5 yrs after upload</div>
+                        <div class="arch-pill"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>Next run: Apr 1, 2026 · 12:00 AM</div>
+                    </div>
+                </div>
+                <div class="arch-banner-stat">
+                    <div class="lbl">Last archive run</div>
+                    <div class="val">Jan 1, 2026</div>
+                    <div class="sub">42 records moved</div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="sc cvi" style="animation-delay:.04s">
+                    <div class="si vi"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                        </svg></div>
+                    <div>
+                        <div class="sv" id="stat-total">247</div>
+                        <div class="sl">Total Archived</div>
+                    </div>
+                </div>
+                <div class="sc cb" style="animation-delay:.08s">
+                    <div class="si b"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                        </svg></div>
+                    <div>
+                        <div class="sv">38</div>
+                        <div class="sl">Vendors</div>
+                    </div>
+                </div>
+                <div class="sc cg" style="animation-delay:.12s">
+                    <div class="si g"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg></div>
+                    <div>
+                        <div class="sv">174</div>
+                        <div class="sl">Payments</div>
+                    </div>
+                </div>
+                <div class="sc ca" style="animation-delay:.16s">
+                    <div class="si a"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        </svg></div>
+                    <div>
+                        <div class="sv">35</div>
+                        <div class="sl">Documents</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Toggle (global) -->
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:10px">
+                <span style="font-size:11.5px;color:var(--t3);font-weight:600">View:</span>
+                <div class="view-toggle">
+                    <button class="vbtn on" id="vbtn-table" onclick="setView('table')" title="Table view">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="8" y1="6" x2="21" y2="6" />
+                            <line x1="8" y1="12" x2="21" y2="12" />
+                            <line x1="8" y1="18" x2="21" y2="18" />
+                            <line x1="3" y1="6" x2="3.01" y2="6" />
+                            <line x1="3" y1="12" x2="3.01" y2="12" />
+                            <line x1="3" y1="18" x2="3.01" y2="18" />
+                        </svg>
+                    </button>
+                    <button class="vbtn" id="vbtn-card" onclick="setView('card')" title="Card view">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7" />
+                            <rect x="14" y="3" width="7" height="7" />
+                            <rect x="3" y="14" width="7" height="7" />
+                            <rect x="14" y="14" width="7" height="7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab on" onclick="setTab('vendors',this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                    </svg>
+                    Archived Vendors<span class="tab-cnt">38</span>
+                </button>
+                <button class="tab" onclick="setTab('payments',this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                    Archived Payments<span class="tab-cnt">174</span>
+                </button>
+                <button class="tab" onclick="setTab('documents',this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    Archived Documents<span class="tab-cnt">35</span>
+                </button>
+                <button class="tab" onclick="setTab('log',this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    Archive Log
+                </button>
+            </div>
+
+            <!-- ══ VENDORS TAB ══ -->
+            <div id="tab-vendors">
+                <div class="panel">
+                    <div class="ph">
+                        <div class="ph-t"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                            </svg>Archived Vendors</div>
+                        <div style="font-size:11.5px;color:var(--t3)">Contracts ended 5+ years ago</div>
+                    </div>
+                    <div class="fbar">
+                        <div class="fsrch"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg><input id="vnd-srch" placeholder="Search name or ID…" oninput="renderVendors()" />
+                        </div>
+                        <select class="fsel" id="vnd-year" onchange="renderVendors()">
+                            <option value="">All Years</option>
+                            <option value="2021">Archived 2021</option>
+                            <option value="2020">Archived 2020</option>
+                            <option value="2019">Archived 2019</option>
+                            <option value="2018">Archived 2018</option>
+                        </select>
+                    </div>
+                    <!-- Desktop table -->
+                    <div class="tbl-wrap">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>Vendor ID</th>
+                                    <th>Name</th>
+                                    <th>Stall</th>
+                                    <th>Contract Period</th>
+                                    <th>Archived On</th>
+                                    <th>Reason</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vnd-tbody"></tbody>
+                        </table>
+                    </div>
+                    <!-- Mobile cards -->
+                    <div class="card-list" id="vnd-cards"></div>
+                    <div class="tbl-foot" id="vnd-foot"></div>
+                </div>
+            </div>
+
+            <!-- ══ PAYMENTS TAB ══ -->
+            <div id="tab-payments" style="display:none">
+                <div class="panel">
+                    <div class="ph">
+                        <div class="ph-t"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23" />
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>Archived Payments</div>
+                        <div style="font-size:11.5px;color:var(--t3)">Payment records older than 5 years</div>
+                    </div>
+                    <div class="fbar">
+                        <div class="fsrch"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg><input id="pay-srch" placeholder="Search vendor or OR number…"
+                                oninput="renderPayments()" /></div>
+                        <select class="fsel" id="pay-year" onchange="renderPayments()">
+                            <option value="">All Years</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                        </select>
+                    </div>
+                    <div class="tbl-wrap">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>OR No.</th>
+                                    <th>Vendor</th>
+                                    <th>Stall</th>
+                                    <th>Period</th>
+                                    <th style="text-align:right">Amount</th>
+                                    <th>Archived On</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pay-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="card-list" id="pay-cards"></div>
+                    <div class="tbl-foot" id="pay-foot"></div>
+                </div>
+            </div>
+
+            <!-- ══ DOCUMENTS TAB ══ -->
+            <div id="tab-documents" style="display:none">
+                <div class="panel">
+                    <div class="ph">
+                        <div class="ph-t"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            </svg>Archived Documents</div>
+                        <div style="font-size:11.5px;color:var(--t3)">Documents uploaded 5+ years ago</div>
+                    </div>
+                    <div class="fbar">
+                        <div class="fsrch"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg><input id="doc-srch" placeholder="Search document or vendor…"
+                                oninput="renderDocs()" /></div>
+                        <select class="fsel" id="doc-type" onchange="renderDocs()">
+                            <option value="">All Types</option>
+                            <option value="Contract">Contract</option>
+                            <option value="OR">OR Document</option>
+                            <option value="Application">Application</option>
+                            <option value="ID">Valid ID</option>
+                            <option value="Misc">Misc</option>
+                        </select>
+                    </div>
+                    <div class="tbl-wrap">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>Filename</th>
+                                    <th>Type</th>
+                                    <th>Vendor</th>
+                                    <th>Uploaded</th>
+                                    <th>Archived On</th>
+                                    <th>Size</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="doc-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="card-list" id="doc-cards"></div>
+                    <div class="tbl-foot" id="doc-foot"></div>
+                </div>
+            </div>
+
+            <!-- ══ LOG TAB ══ -->
+            <div id="tab-log" style="display:none">
+                <div class="log-grid">
+                    <div class="panel">
+                        <div class="ph">
+                            <div class="ph-t"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>Archive Activity Log</div>
+                            <button class="btn gh sm" onclick="showToast('Log exported','g')"><svg
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>Export</button>
+                        </div>
+                        <div class="timeline" id="arch-timeline"></div>
+                    </div>
+                    <div class="panel" style="animation-delay:.1s">
+                        <div class="ph">
+                            <div class="ph-t"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="20" x2="18" y2="10" />
+                                    <line x1="12" y1="20" x2="12" y2="4" />
+                                    <line x1="6" y1="20" x2="6" y2="14" />
+                                </svg>Archive Breakdown</div>
+                        </div>
+                        <div style="padding:14px 16px">
+                            <div
+                                style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">
+                                By Record Type</div>
+                            <div class="prog-wrap" style="margin-bottom:16px">
+                                <div class="prog-row">
+                                    <div class="prog-lbl">Vendors</div>
+                                    <div class="prog-bar">
+                                        <div class="prog-fill" style="width:15%;background:var(--ac)"></div>
+                                    </div>
+                                    <div class="prog-val" style="color:var(--ac)">38</div>
+                                </div>
+                                <div class="prog-row">
+                                    <div class="prog-lbl">Payments</div>
+                                    <div class="prog-bar">
+                                        <div class="prog-fill" style="width:70%;background:var(--gr)"></div>
+                                    </div>
+                                    <div class="prog-val" style="color:var(--gr)">174</div>
+                                </div>
+                                <div class="prog-row">
+                                    <div class="prog-lbl">Documents</div>
+                                    <div class="prog-bar">
+                                        <div class="prog-fill" style="width:14%;background:var(--am)"></div>
+                                    </div>
+                                    <div class="prog-val" style="color:var(--am)">35</div>
+                                </div>
+                            </div>
+                            <div
+                                style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">
+                                By Year</div>
+                            <div class="prog-wrap">
+                                <div class="prog-row">
+                                    <div class="prog-lbl">2021</div>
+                                    <div class="prog-bar">
+                                        <div class="prog-fill" style="width:55%;background:var(--vi)"></div>
+                                    </div>
+                                    <div class="prog-val" style="color:var(--vi)">136</div>
+                                </div>
+                                <div class="prog-row">
+                                    <div class="prog-lbl">2020</div>
+                                    <div class="prog-bar">
+                                        <div class="prog-fill" style="width:32%;background:var(--vi)"></div>
+                                    </div>
+                                    <div class="prog-val" style="color:var(--vi)">78</div>
+                                </div>
+                                <div class="prog-row">
+                                    <div class="prog-lbl">2019</div>
+                                    <div class="prog-bar">
+                                        <div class="prog-fill" style="width:13%;background:var(--vi)"></div>
+                                    </div>
+                                    <div class="prog-val" style="color:var(--vi)">33</div>
+                                </div>
+                            </div>
+                            <div
+                                style="margin-top:16px;padding:13px;background:var(--vil);border:1px solid var(--vis);border-radius:8px;text-align:center">
+                                <div style="font-size:11px;color:var(--vi);font-weight:700;margin-bottom:4px">Total
+                                    Storage</div>
+                                <div style="font-size:24px;font-weight:800;font-family:'DM Mono',monospace;color:var(--vi)"
+                                    id="stat-total-b">247</div>
+                                <div style="font-size:11px;color:var(--t3)">records · ~4.2 MB</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ═══ MODALS ═══ -->
+
+    <!-- VIEW VENDOR -->
+    <div class="mbg" id="viewVendorModal">
+        <div class="modal">
+            <div class="mhd">
+                <div class="mtit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="var(--vi)" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                    </svg>Archived Vendor</div>
+                <div class="mx" onclick="closeM('viewVendorModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="mbdy" id="view-vendor-body"></div>
+            <div class="mft">
+                <button class="btn gh sm" onclick="closeM('viewVendorModal')">Close</button>
+                <button class="btn su sm" id="restore-vendor-btn"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 .49-3.5" />
+                    </svg>Restore Record</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW PAYMENT -->
+    <div class="mbg" id="viewPaymentModal">
+        <div class="modal sm">
+            <div class="mhd">
+                <div class="mtit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="var(--gr)" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>Archived Payment</div>
+                <div class="mx" onclick="closeM('viewPaymentModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="mbdy" id="view-pay-body"></div>
+            <div class="mft">
+                <button class="btn gh sm" onclick="closeM('viewPaymentModal')">Close</button>
+                <button class="btn su sm" id="restore-pay-btn"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 .49-3.5" />
+                    </svg>Restore Record</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW DOCUMENT -->
+    <div class="mbg" id="viewDocModal">
+        <div class="modal sm">
+            <div class="mhd">
+                <div class="mtit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="var(--am)" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>Archived Document</div>
+                <div class="mx" onclick="closeM('viewDocModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="mbdy" id="view-doc-body"></div>
+            <div class="mft">
+                <button class="btn gh sm" onclick="closeM('viewDocModal')">Close</button>
+                <button class="btn gh sm" onclick="showToast('Document downloaded','g')"><svg
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>Download</button>
+                <button class="btn su sm" id="restore-doc-btn"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 .49-3.5" />
+                    </svg>Restore</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MANUAL ARCHIVE -->
+    <div class="mbg" id="manualArchiveModal">
+        <div class="modal">
+            <div class="mhd">
+                <div class="mtit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="var(--am)" stroke-width="2">
+                        <path
+                            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                        <polyline points="3.29 7 12 12 20.71 7" />
+                        <line x1="12" y1="22" x2="12" y2="12" />
+                    </svg>Archive Records</div>
+                <div class="mx" onclick="closeM('manualArchiveModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="mbdy">
+                <div class="chip a"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <div>Archived records are removed from active views but can be restored at any time.</div>
+                </div>
+                <div class="fg"><label class="fl">Record Type</label>
+                    <select class="fc" id="man-type" onchange="loadManualItems()">
+                        <option value="">— Select type —</option>
+                        <option value="vendor">Vendor Record</option>
+                        <option value="payment">Payment Record</option>
+                        <option value="document">Document</option>
+                    </select>
+                </div>
+                <div id="man-items-wrap" style="display:none">
+                    <div class="sec-lbl">Select Records</div>
+                    <div id="man-items"
+                        style="max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;margin-bottom:13px">
+                    </div>
+                </div>
+                <div class="fg"><label class="fl">Reason</label>
+                    <select class="fc" id="man-reason">
+                        <option>Contract Ended</option>
+                        <option>Vendor Resigned</option>
+                        <option>Record No Longer Active</option>
+                        <option>Administrative Decision</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="fg"><label class="fl">Notes (optional)</label>
+                    <textarea class="fc" style="min-height:56px" placeholder="Additional notes…"></textarea>
+                </div>
+            </div>
+            <div class="mft">
+                <button class="btn gh sm" onclick="closeM('manualArchiveModal')">Cancel</button>
+                <button class="btn ao sm" onclick="doArchive()"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                    </svg>Archive Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="mbg" id="settingsModal">
+        <div class="modal sm">
+            <div class="mhd">
+                <div class="mtit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="var(--ac)" stroke-width="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+                    </svg>Archive Settings</div>
+                <div class="mx" onclick="closeM('settingsModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="mbdy" style="padding:0">
+                <div style="padding:14px 18px;border-bottom:1px solid var(--brd)">
+                    <div
+                        style="font-size:11px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px">
+                        Retention Periods</div>
+                    <div class="fg"><label class="fl">Vendor Records</label><select class="fc">
+                            <option>5 years after contract end</option>
+                            <option>7 years</option>
+                            <option>10 years</option>
+                        </select></div>
+                    <div class="fg"><label class="fl">Payment Records</label><select class="fc">
+                            <option>5 years after transaction</option>
+                            <option>7 years</option>
+                            <option>10 years</option>
+                        </select></div>
+                    <div class="fg" style="margin-bottom:0"><label class="fl">Document Files</label><select class="fc">
+                            <option>5 years after upload</option>
+                            <option>7 years</option>
+                            <option>10 years</option>
+                        </select></div>
+                </div>
+                <div style="padding:14px 18px;border-bottom:1px solid var(--brd)">
+                    <div
+                        style="font-size:11px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px">
+                        Schedule</div>
+                    <div class="fg"><label class="fl">Run Frequency</label><select class="fc">
+                            <option>Monthly (1st of month)</option>
+                            <option>Quarterly</option>
+                            <option>Annually</option>
+                        </select></div>
+                    <div class="fg" style="margin-bottom:0"><label class="fl">Run Time</label><input class="fc"
+                            type="time" value="00:00" /></div>
+                </div>
+                <div style="padding:14px 18px">
+                    <div
+                        style="font-size:11px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px">
+                        Notifications</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                        <div>
+                            <div style="font-size:13px;font-weight:600">Notify admin after auto-archive</div>
+                            <div style="font-size:11px;color:var(--t3);margin-top:1px">Email summary of archived records
+                            </div>
+                        </div>
+                        <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <div>
+                            <div style="font-size:13px;font-weight:600">7-day advance warning</div>
+                            <div style="font-size:11px;color:var(--t3);margin-top:1px">Notify before records are
+                                archived</div>
+                        </div>
+                        <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="mft">
+                <button class="btn gh sm" onclick="closeM('settingsModal')">Cancel</button>
+                <button class="btn pr sm" onclick="closeM('settingsModal');showToast('Settings saved','g')"><svg
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <polyline points="9 11 12 14 22 4" />
+                    </svg>Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin/archiving.js"></script>
+</body>
+
+</html>

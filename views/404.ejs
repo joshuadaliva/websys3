@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Page Not Found · ARKIPAISI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --navy: #0d1824;
+      --navy2: #111f2e;
+      --navy3: #162438;
+      --or: #c45c0a;
+      --or2: #e06c10;
+      --or3: #f5821e;
+      --amber: #f59332;
+      --cream: #f8f0e6;
+      --t1: #fff;
+      --t2: rgba(255, 255, 255, .65);
+      --t3: rgba(255, 255, 255, .35);
+      --brd: rgba(255, 255, 255, .1);
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--t1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* ── BACKGROUND GRID ── */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    /* ── RADIAL GLOW ── */
+    .bg-glow {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(196, 92, 10, .12) 0%, transparent 65%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* ── DUST PARTICLES ── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(245, 130, 30, .25);
+      animation: drift linear infinite;
+    }
+
+    @keyframes drift {
+      0% {
+        transform: translateY(100vh) translateX(0) scale(0);
+        opacity: 0
+      }
+
+      10% {
+        opacity: 1
+      }
+
+      90% {
+        opacity: .4
+      }
+
+      100% {
+        transform: translateY(-80px) translateX(var(--dx)) scale(1);
+        opacity: 0
+      }
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .scene {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 24px;
+      animation: fadeUp .8s ease both;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* ── STALL ILLUSTRATION ── */
+    .stall-wrap {
+      position: relative;
+      margin-bottom: 40px;
+      animation: fadeUp .7s .1s ease both;
+    }
+
+    /* Awning */
+    .awning {
+      width: 320px;
+      height: 44px;
+      background: linear-gradient(180deg, var(--or) 0%, var(--or2) 100%);
+      border-radius: 6px 6px 0 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 -4px 20px rgba(196, 92, 10, .4);
+    }
+
+    /* Awning stripes */
+    .awning::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(90deg,
+          transparent 0px,
+          transparent 28px,
+          rgba(0, 0, 0, .18) 28px,
+          rgba(0, 0, 0, .18) 40px);
+    }
+
+    /* Awning scallop edge */
+    .awning-scallop {
+      width: 320px;
+      height: 18px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .awning-scallop::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -8px;
+      right: -8px;
+      height: 28px;
+      background: radial-gradient(circle at 50% 0%, transparent 10px, var(--or2) 10px);
+      background-size: 24px 28px;
+      background-repeat: repeat-x;
+    }
+
+    /* Stall body */
+    .stall-body {
+      width: 320px;
+      height: 180px;
+      background: var(--navy3);
+      border: 1.5px solid rgba(255, 255, 255, .08);
+      border-top: none;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Shutter */
+    .shutter {
+      position: absolute;
+      inset: 0;
+      background: var(--navy2);
+      border: 1px solid rgba(255, 255, 255, .06);
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+      overflow: hidden;
+    }
+
+    .shutter-slat {
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .03) 0%, transparent 100%);
+    }
+
+    /* Stall number plate */
+    .stall-num-plate {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(13, 24, 36, .9);
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 6px;
+      padding: 5px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .5);
+      letter-spacing: 1px;
+      z-index: 3;
+      white-space: nowrap;
+    }
+
+    /* CLOSED sign — swinging */
+    .sign-wrap {
+      position: absolute;
+      top: -10px;
+      right: 30px;
+      transform-origin: top center;
+      animation: swing 4s ease-in-out infinite;
+      z-index: 5;
+    }
+
+    @keyframes swing {
+
+      0%,
+      100% {
+        transform: rotate(-6deg)
+      }
+
+      50% {
+        transform: rotate(6deg)
+      }
+    }
+
+    .closed-sign {
+      background: var(--cream);
+      border: 2.5px solid rgba(0, 0, 0, .12);
+      border-radius: 8px;
+      padding: 8px 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .8);
+      position: relative;
+    }
+
+    .closed-sign::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 12px;
+      background: rgba(0, 0, 0, .25);
+    }
+
+    .closed-sign-top {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: #991b1b;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .closed-sign-bottom {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      color: #5c3d1e;
+      letter-spacing: .5px;
+      text-align: center;
+      opacity: .7;
+    }
+
+    /* Stall floor */
+    .stall-floor {
+      width: 340px;
+      height: 10px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, .0), rgba(255, 255, 255, .06), rgba(255, 255, 255, .0));
+      border-radius: 0 0 4px 4px;
+    }
+
+    /* ── STALL LEGS ── */
+    .stall-legs {
+      width: 300px;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .stall-leg {
+      width: 8px;
+      height: 24px;
+      background: rgba(255, 255, 255, .1);
+      border-radius: 0 0 3px 3px;
+    }
+
+    /* ── 404 TEXT ── */
+    .error-code {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(72px, 12vw, 120px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -4px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 30%, rgba(255, 255, 255, .4));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeUp .7s .25s ease both;
+      opacity: 0;
+      animation-fill-mode: both;
+    }
+
+    .error-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 800;
+      color: var(--or3);
+      letter-spacing: -.3px;
+      margin-bottom: 10px;
+      animation: fadeUp .7s .35s ease both;
+      opacity: 0;
+      animation-fill-mode: both;
+    }
+
+    .error-sub {
+      font-size: clamp(13px, 2vw, 15px);
+      color: var(--t2);
+      line-height: 1.65;
+      max-width: 400px;
+      margin: 0 auto 32px;
+      animation: fadeUp .7s .45s ease both;
+      opacity: 0;
+      animation-fill-mode: both;
+    }
+
+    .error-sub strong {
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    /* ── ACTIONS ── */
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp .7s .55s ease both;
+      opacity: 0;
+      animation-fill-mode: both;
+    }
+
+    .btn {
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .18s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--or), var(--or2));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(196, 92, 10, .4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(196, 92, 10, .5);
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, .08);
+      color: rgba(255, 255, 255, .8);
+      border: 1.5px solid rgba(255, 255, 255, .15);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, .14);
+      border-color: rgba(255, 255, 255, .28);
+      color: #fff;
+    }
+
+    /* ── BREADCRUMB ── */
+    .meta {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--t3);
+      animation: fadeUp .7s .7s ease both;
+      opacity: 0;
+      animation-fill-mode: both;
+      white-space: nowrap;
+    }
+
+    .meta-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .2);
+    }
+
+    .meta-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .45);
+      letter-spacing: .3px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:480px) {
+      .stall-wrap {
+        transform: scale(.85);
+        transform-origin: center top;
+        margin-bottom: 24px
+      }
+
+      .error-code {
+        letter-spacing: -2px
+      }
+
+      .actions {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 280px
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center
+      }
+
+      .meta {
+        font-size: 11px
+      }
+    }
+
+    @media(max-width:360px) {
+      .stall-wrap {
+        transform: scale(.75)
+      }
+    }
+
+    @media(max-height:700px) {
+      .stall-wrap {
+        display: none
+      }
+
+      .scene {
+        padding: 16px
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Scene -->
+  <div class="scene">
+
+    <!-- Stall illustration -->
+    <div class="stall-wrap">
+      <!-- Awning -->
+      <div class="awning"></div>
+      <div class="awning-scallop"></div>
+
+      <!-- Stall body with shutter -->
+      <div class="stall-body">
+        <!-- Stall number -->
+        <div class="stall-num-plate">STALL #404</div>
+
+        <!-- Shutter slats -->
+        <div class="shutter">
+          <div class="shutter-slat"></div>
+          <div class="shutter-slat"></div>
+          <div class="shutter-slat"></div>
+          <div class="shutter-slat"></div>
+          <div class="shutter-slat"></div>
+          <div class="shutter-slat"></div>
+          <div class="shutter-slat"></div>
+          <div class="shutter-slat"></div>
+        </div>
+
+        <!-- Swinging CLOSED sign -->
+        <div class="sign-wrap">
+          <div class="closed-sign">
+            <div class="closed-sign-top">Closed</div>
+            <div class="closed-sign-bottom">NOT FOUND</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floor & legs -->
+      <div class="stall-floor"></div>
+      <div class="stall-legs">
+        <div class="stall-leg"></div>
+        <div class="stall-leg"></div>
+      </div>
+    </div>
+
+    <!-- Error text -->
+    <div class="error-code">404</div>
+    <div class="error-title">This Stall Is Empty</div>
+    <p class="error-sub">
+      The page you're looking for has moved, been removed,<br />
+      or never existed in the <strong>ARKIPAISI Market</strong>.<br />
+      The shutter is down on this one.
+    </p>
+
+    <!-- Actions -->
+    <div class="actions">
+      <a href="arkipaisi-landing.html" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        Back to Market
+      </a>
+      <a href="javascript:history.back()" class="btn btn-ghost">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        Go Back
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Footer meta -->
+  <div class="meta">
+    <span class="meta-brand">ARKIPAISI</span>
+    <div class="meta-dot"></div>
+    <span>Public Market Management System</span>
+    <div class="meta-dot"></div>
+    <span>Error 404</span>
+  </div>
+
+  <script>
+    /* ── PARTICLES ── */
+    (function () {
+      const container = document.getElementById('particles');
+      const count = 18;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 5 + 2;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 12 + 8;
+        const delay = Math.random() * 10;
+        const dx = (Math.random() - 0.5) * 120;
+        p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${left}%;bottom:-20px;
+      --dx:${dx}px;
+      animation-duration:${duration}s;
+      animation-delay:${delay}s;
+      opacity:0;
+    `;
+        container.appendChild(p);
+      }
+    })();
+  </script>
+</body>
+
+</html>

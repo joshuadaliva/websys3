@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARKIPAISI — Notifications & Inquiries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/css/admin/notification-management.css">
+</head>
+
+<body>
+
+    <!-- ═══ SIDEBAR ═══ -->
+    <%- include("../partials/sidebar.ejs") %>
+    
+    <!-- ═══ MAIN ═══ -->
+    <div class="main" id="main">
+        <%- include("../partials/header.ejs") %>
+
+        <div class="content">
+
+            <!-- Page Header -->
+            <div class="pghdr">
+                <div>
+                    <h1>Notifications & Inquiries</h1>
+                    <p>Manage system alerts, SMS/email notifications, payment reminders, and vendor inquiry tickets</p>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button class="btn gh sm" onclick="openM('scheduleModal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+                        </svg>
+                        Reminder Settings
+                    </button>
+                    <button class="btn pr sm" onclick="openM('sendModal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13" />
+                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                        Send Notification
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="sc cb" style="animation-delay:.04s">
+                    <div class="si b"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg></div>
+                    <div>
+                        <div class="sv">148</div>
+                        <div class="sl">Total Sent Today</div>
+                    </div>
+                </div>
+                <div class="sc cg" style="animation-delay:.08s">
+                    <div class="si g"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polyline points="9 11 12 14 22 4" />
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        </svg></div>
+                    <div>
+                        <div class="sv" style="color:var(--gr)">141</div>
+                        <div class="sl">Delivered</div>
+                    </div>
+                </div>
+                <div class="sc cr" style="animation-delay:.12s">
+                    <div class="si r"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg></div>
+                    <div>
+                        <div class="sv" style="color:var(--rd)">7</div>
+                        <div class="sl">Failed</div>
+                    </div>
+                </div>
+                <div class="sc cvi" style="animation-delay:.16s">
+                    <div class="si vi"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg></div>
+                    <div>
+                        <div class="sv" style="color:var(--vi)">5</div>
+                        <div class="sl">Open Tickets</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab on" onclick="setTab('feed',this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+                    <span>Notification Feed</span>
+                    <span class="tab-cnt r">5</span>
+                </button>
+                <button class="tab" onclick="setTab('sms',this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path
+                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.4 19.79 19.79 0 0 1 1.62 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10a16 16 0 0 0 6 6l.94-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.64 17z" />
+                    </svg>
+                    <span>SMS Log</span>
+                    <span class="tab-cnt">148</span>
+                </button>
+                <button class="tab" onclick="setTab('reminders',this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    <span>Payment Reminders</span>
+                </button>
+                <button class="tab" onclick="setTab('inquiries',this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <span>Inquiry Tickets</span>
+                    <span class="tab-cnt r">5</span>
+                </button>
+                <button class="tab" onclick="setTab('commands',this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <polyline points="4 17 10 11 4 5" />
+                        <line x1="12" y1="19" x2="20" y2="19" />
+                    </svg>
+                    <span>SMS Commands</span>
+                </button>
+            </div>
+
+            <!-- ══ TAB: NOTIFICATION FEED ══ -->
+            <div id="tab-feed">
+                <div class="panel">
+                    <div class="ph">
+                        <div class="ph-t">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                            </svg>
+                            Notification Feed
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                            <button class="btn gh sm" id="markAllBtn" onclick="markAllRead()">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 11 12 14 22 4" />
+                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                </svg>
+                                Mark All Read
+                            </button>
+                            <button class="btn pr sm" onclick="openM('sendModal')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13" />
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                                </svg>
+                                Send New
+                            </button>
+                        </div>
+                    </div>
+                    <div class="fbar">
+                        <div class="fsrch">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                            <input id="feed-srch" placeholder="Search notifications…" oninput="renderFeed()" />
+                        </div>
+                        <select class="fsel" id="feed-type" onchange="renderFeed()">
+                            <option value="">All Types</option>
+                            <option value="pay">Payment</option>
+                            <option value="app">Application</option>
+                            <option value="rem">Reminder</option>
+                            <option value="doc">Document</option>
+                            <option value="awd">Award</option>
+                            <option value="sys">System</option>
+                            <option value="warn">Alert</option>
+                        </select>
+                        <select class="fsel" id="feed-read" onchange="renderFeed()">
+                            <option value="">All</option>
+                            <option value="unread">Unread Only</option>
+                            <option value="read">Read</option>
+                        </select>
+                    </div>
+                    <div class="notif-feed" id="notif-feed"></div>
+                    <div style="padding:10px 16px;background:var(--s2);border-top:1px solid var(--brd);font-size:11.5px;color:var(--t3)"
+                        id="feed-info"></div>
+                </div>
+            </div>
+
+            <!-- ══ TAB: SMS LOG ══ -->
+            <div id="tab-sms" style="display:none">
+                <div class="panel">
+                    <div class="ph">
+                        <div class="ph-t">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.4 19.79 19.79 0 0 1 1.62 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10a16 16 0 0 0 6 6l.94-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.64 17z" />
+                            </svg>
+                            SMS / Email Log
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                            <select class="fsel">
+                                <option>All Channels</option>
+                                <option>SMS</option>
+                                <option>Email</option>
+                            </select>
+                            <button class="btn ro sm" id="resend-all-btn"
+                                onclick="openM('resendAllModal');openResendAllModal()">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <polyline points="1 4 1 10 7 10" />
+                                    <path d="M3.51 15a9 9 0 1 0 .49-3.5" />
+                                </svg>
+                                Resend Failed
+                            </button>
+                            <button class="btn gh sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                Export Log
+                            </button>
+                        </div>
+                    </div>
+                    <div class="fbar">
+                        <div class="fsrch">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                            <input placeholder="Search by vendor, message, number…" />
+                        </div>
+                        <select class="fsel">
+                            <option>All Status</option>
+                            <option>Sent</option>
+                            <option>Failed</option>
+                            <option>Pending</option>
+                        </select>
+                        <select class="fsel">
+                            <option>Today</option>
+                            <option>This Week</option>
+                            <option>This Month</option>
+                        </select>
+                    </div>
+                    <div id="sms-tbl-wrap"></div>
+                    <div id="sms-foot"
+                        style="padding:10px 14px;background:var(--s2);border-top:1px solid var(--brd);font-size:11.5px;color:var(--t3)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ TAB: PAYMENT REMINDERS ══ -->
+            <div id="tab-reminders" style="display:none">
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="ph">
+                        <div class="ph-t">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            Automatic Reminder Schedule
+                        </div>
+                        <button class="btn pr sm" onclick="openM('scheduleModal')">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            Edit Schedule
+                        </button>
+                    </div>
+                    <div class="rsched">
+                        <div class="rs-card">
+                            <div class="rs-ico">📅</div>
+                            <div class="rs-lbl">3 Days Before</div>
+                            <div class="rs-sub">Early reminder sent to vendor</div>
+                            <div class="rs-sw">
+                                <div class="sw on" onclick="this.classList.toggle('on')"></div><span
+                                    style="font-size:11px;color:var(--t3)">Active</span>
+                            </div>
+                        </div>
+                        <div class="rs-card active">
+                            <div class="rs-ico">⏰</div>
+                            <div class="rs-lbl">1 Day Before</div>
+                            <div class="rs-sub">Urgent reminder with balance</div>
+                            <div class="rs-sw">
+                                <div class="sw on" onclick="this.classList.toggle('on')"></div><span
+                                    style="font-size:11px;color:var(--t3)">Active</span>
+                            </div>
+                        </div>
+                        <div class="rs-card active">
+                            <div class="rs-ico">📆</div>
+                            <div class="rs-lbl">Due Date</div>
+                            <div class="rs-sub">Last-day payment reminder</div>
+                            <div class="rs-sw">
+                                <div class="sw on" onclick="this.classList.toggle('on')"></div><span
+                                    style="font-size:11px;color:var(--t3)">Active</span>
+                            </div>
+                        </div>
+                        <div class="rs-card">
+                            <div class="rs-ico">🚨</div>
+                            <div class="rs-lbl">Overdue</div>
+                            <div class="rs-sub">Overdue notice sent daily</div>
+                            <div class="rs-sw">
+                                <div class="sw on" onclick="this.classList.toggle('on')"></div><span
+                                    style="font-size:11px;color:var(--t3)">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="ph">
+                        <div class="ph-t">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                            </svg>
+                            Upcoming Reminders — Queue
+                        </div>
+                        <span style="font-size:11.5px;color:var(--t3)">Next batch: <strong style="color:var(--t1)">Today
+                                8:00 AM</strong></span>
+                    </div>
+                    <div id="rem-tbl-wrap"></div>
+                </div>
+            </div>
+
+            <!-- ══ TAB: INQUIRY TICKETS ══ -->
+            <div id="tab-inquiries" style="display:none">
+                <div class="panel">
+                    <div class="ph">
+                        <div class="ph-t">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                            Vendor Inquiry Tickets
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                            <select class="fsel" id="tkt-filter" onchange="renderTickets()">
+                                <option value="">All Status</option>
+                                <option value="open">Open</option>
+                                <option value="prog">In Progress</option>
+                                <option value="done">Resolved</option>
+                            </select>
+                            <select class="fsel" id="tkt-sev" onchange="renderTickets()">
+                                <option value="">All Severity</option>
+                                <option value="low">Low</option>
+                                <option value="med">Medium</option>
+                                <option value="high">High</option>
+                                <option value="urg">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="fbar" style="border-bottom:none">
+                        <div class="fsrch">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                            <input id="tkt-srch" placeholder="Search tickets…" oninput="renderTickets()" />
+                        </div>
+                    </div>
+                    <div class="tkt-list" id="tkt-list"></div>
+                </div>
+            </div>
+
+            <!-- ══ TAB: SMS COMMANDS ══ -->
+            <div id="tab-commands" style="display:none">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                    <div class="panel">
+                        <div class="ph">
+                            <div class="ph-t">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <polyline points="4 17 10 11 4 5" />
+                                    <line x1="12" y1="19" x2="20" y2="19" />
+                                </svg>
+                                Vendor SMS Keywords
+                            </div>
+                        </div>
+                        <div class="cmd-grid" id="cmd-grid"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="ph">
+                            <div class="ph-t">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                </svg>
+                                Freestyle SMS Simulation
+                            </div>
+                        </div>
+                        <div style="padding:14px">
+                            <div class="chip b">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="8" x2="12" y2="12" />
+                                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                                </svg>
+                                <div>Vendors can send custom SMS messages. The system auto-converts them into inquiry
+                                    tickets for admin handling.</div>
+                            </div>
+                            <div id="sms-sim-msgs"
+                                style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;min-height:160px;max-height:220px;overflow-y:auto;padding:2px 0">
+                            </div>
+                            <div style="display:flex;gap:8px">
+                                <input class="fc" id="sms-sim-input" placeholder="Simulate vendor SMS message…"
+                                    onkeydown="if(event.key==='Enter')sendSimSMS()" style="flex:1" />
+                                <button class="btn pr sm" onclick="sendSimSMS()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13" />
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                                    </svg>
+                                    Send
+                                </button>
+                            </div>
+                            <div style="font-size:11px;color:var(--t3);margin-top:6px">Simulating as: <strong
+                                    style="color:var(--t1)">VND-004 · Ana Lim (+63 918 555 6666)</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /content -->
+    </div><!-- /main -->
+
+    <!-- ═══ MODALS ═══ -->
+
+    <!-- SEND NOTIFICATION MODAL -->
+    <div class="mbg" id="sendModal">
+        <div class="modal">
+            <div class="mhd">
+                <div class="mtit">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--ac)"
+                        stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                    Send Notification
+                </div>
+                <div class="mx" onclick="closeM('sendModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="mbdy">
+                <div class="sec-lbl">Notification Type</div>
+                <div class="notif-type-grid">
+                    <div class="nt-opt sel" onclick="pickNT(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                        <div class="nt-lbl">Payment Reminder</div>
+                    </div>
+                    <div class="nt-opt" onclick="pickNT(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        <div class="nt-lbl">Document Request</div>
+                    </div>
+                    <div class="nt-opt" onclick="pickNT(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                        </svg>
+                        <div class="nt-lbl">Account Creation</div>
+                    </div>
+                    <div class="nt-opt" onclick="pickNT(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        </svg>
+                        <div class="nt-lbl">Stall Award</div>
+                    </div>
+                    <div class="nt-opt" onclick="pickNT(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="9 11 12 14 22 4" />
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        </svg>
+                        <div class="nt-lbl">Application Status</div>
+                    </div>
+                    <div class="nt-opt" onclick="pickNT(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                        <div class="nt-lbl">General Announcement</div>
+                    </div>
+                </div>
+
+                <div class="sec-lbl">Recipients</div>
+                <div class="fg">
+                    <label class="fl">Send To</label>
+                    <select class="fc" id="send-rcpt" onchange="updateRecipientChips()">
+                        <option value="all">All Vendors (9)</option>
+                        <option value="overdue">Overdue Vendors Only</option>
+                        <option value="pending">Pending Payment Vendors</option>
+                        <option value="single">Specific Vendor…</option>
+                    </select>
+                </div>
+                <div id="rcpt-preview" class="rcpt-chips"></div>
+
+                <div class="sec-lbl">Channels</div>
+                <div class="trow">
+                    <div>
+                        <div style="font-size:12.5px;font-weight:700">SMS</div>
+                        <div style="font-size:11px;color:var(--t3);margin-top:1px">Text message to registered number
+                        </div>
+                    </div>
+                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="trow">
+                    <div>
+                        <div style="font-size:12.5px;font-weight:700">Email</div>
+                        <div style="font-size:11px;color:var(--t3);margin-top:1px">Email to registered address</div>
+                    </div>
+                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                </div>
+
+                <div class="sec-lbl" style="margin-top:14px">Message</div>
+                <div class="fg">
+                    <label class="fl">Subject (Email only)</label>
+                    <input class="fc" id="send-subject" placeholder="e.g. Payment Reminder — March 2026" />
+                </div>
+                <div class="fg">
+                    <label class="fl">Message Body *</label>
+                    <textarea class="fc" id="send-msg" style="min-height:100px"
+                        placeholder="Type your message here…"></textarea>
+                </div>
+                <div style="font-size:11px;color:var(--t3)">Use <strong>[Vendor Name]</strong>, <strong>[Stall
+                        No.]</strong>, <strong>[Amount]</strong>, <strong>[Due Date]</strong> as dynamic placeholders
+                </div>
+            </div>
+            <div class="mft">
+                <button class="btn gh sm" onclick="closeM('sendModal')">Cancel</button>
+                <button class="btn pr sm" onclick="sendNotification()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                    Send Notification
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TICKET DETAIL MODAL -->
+    <div class="mbg" id="ticketModal">
+        <div class="modal lg">
+            <div class="mhd">
+                <div class="mtit">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--vi)"
+                        stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <span id="tkt-modal-ttl">Ticket Detail</span>
+                </div>
+                <div class="mx" onclick="closeM('ticketModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="tkt-detail-wrap">
+                <!-- Chat pane -->
+                <div style="display:flex;flex-direction:column;border-right:1px solid var(--brd)">
+                    <div id="tkt-modal-hdr"
+                        style="padding:12px 16px;border-bottom:1px solid var(--brd);background:var(--s2)"></div>
+                    <div class="tkt-msgs" id="tkt-msgs"></div>
+                    <div class="tkt-reply">
+                        <textarea id="tkt-reply-txt" placeholder="Type your reply…"></textarea>
+                        <button class="btn pr sm" onclick="sendTicketReply()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                            Reply
+                        </button>
+                    </div>
+                </div>
+                <!-- Sidebar -->
+                <div class="tkt-sidebar">
+                    <div
+                        style="font-size:10.5px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">
+                        Ticket Info</div>
+                    <div
+                        style="background:var(--surf);border:1px solid var(--brd);border-radius:8px;overflow:hidden;margin-bottom:14px">
+                        <div
+                            style="padding:9px 12px;border-bottom:1px solid var(--brd2);font-size:12px;display:flex;justify-content:space-between">
+                            <span
+                                style="color:var(--t3);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.3px">Ticket
+                                ID</span><span id="ti-id" class="mono" style="font-weight:700"></span></div>
+                        <div
+                            style="padding:9px 12px;border-bottom:1px solid var(--brd2);font-size:12px;display:flex;justify-content:space-between">
+                            <span
+                                style="color:var(--t3);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.3px">Vendor</span><span
+                                id="ti-vendor" style="font-weight:600"></span></div>
+                        <div
+                            style="padding:9px 12px;border-bottom:1px solid var(--brd2);font-size:12px;display:flex;justify-content:space-between">
+                            <span
+                                style="color:var(--t3);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.3px">Stall</span><span
+                                id="ti-stall" class="mono" style="font-weight:700"></span></div>
+                        <div style="padding:9px 12px;font-size:12px;display:flex;justify-content:space-between"><span
+                                style="color:var(--t3);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.3px">Date</span><span
+                                id="ti-date" style="font-weight:600"></span></div>
+                    </div>
+
+                    <div
+                        style="font-size:10.5px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">
+                        Severity</div>
+                    <div class="sev-select" id="sev-select" style="margin-bottom:14px">
+                        <div class="sev-opt" onclick="setSev(this,'low')">Low</div>
+                        <div class="sev-opt" onclick="setSev(this,'med')">Medium</div>
+                        <div class="sev-opt" onclick="setSev(this,'high')">High</div>
+                        <div class="sev-opt" onclick="setSev(this,'urg')">Urgent</div>
+                    </div>
+
+                    <div
+                        style="font-size:10.5px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">
+                        Status</div>
+                    <div class="st-select">
+                        <div class="st-opt sel" id="st-open" onclick="setTktSt('open')">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" width="13" height="13">
+                                <circle cx="12" cy="12" r="10" />
+                            </svg>
+                            Open
+                        </div>
+                        <div class="st-opt" id="st-prog" onclick="setTktSt('prog')">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" width="13" height="13">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            In Progress
+                        </div>
+                        <div class="st-opt" id="st-done" onclick="setTktSt('done')">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" width="13" height="13">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Resolved
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCHEDULE MODAL -->
+    <div class="mbg" id="scheduleModal">
+        <div class="modal sm">
+            <div class="mhd">
+                <div class="mtit">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--ac)"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+                    </svg>
+                    Reminder Schedule Settings
+                </div>
+                <div class="mx" onclick="closeM('scheduleModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="mbdy" style="padding:0">
+                <div class="auto-row">
+                    <div>
+                        <div class="auto-lbl">3 Days Before Due</div>
+                        <div class="auto-sub">Early reminder — gentle nudge</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px"><span class="auto-tag">SMS + Email</span>
+                        <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                    </div>
+                </div>
+                <div class="auto-row">
+                    <div>
+                        <div class="auto-lbl">1 Day Before Due</div>
+                        <div class="auto-sub">Urgent reminder with balance</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px"><span class="auto-tag">SMS + Email</span>
+                        <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                    </div>
+                </div>
+                <div class="auto-row">
+                    <div>
+                        <div class="auto-lbl">On Due Date</div>
+                        <div class="auto-sub">Last-day payment notice</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px"><span class="auto-tag">SMS + Email</span>
+                        <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                    </div>
+                </div>
+                <div class="auto-row">
+                    <div>
+                        <div class="auto-lbl">When Overdue</div>
+                        <div class="auto-sub">Repeat daily until payment</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px"><span class="auto-tag">SMS</span>
+                        <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                    </div>
+                </div>
+                <div style="padding:14px 20px;border-top:1px solid var(--brd)">
+                    <div class="fg"><label class="fl">Send Time</label><input class="fc" type="time" value="08:00" />
+                    </div>
+                    <div class="fg" style="margin-bottom:0"><label class="fl">Default Reminder Message</label><textarea
+                            class="fc"
+                            style="min-height:70px">Dear [Vendor Name], your rental fee of ₱[Amount] for Stall [Stall No.] is due on [Due Date]. Please settle at the market office. — ARKIPAISI</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="mft">
+                <button class="btn gh sm" onclick="closeM('scheduleModal')">Cancel</button>
+                <button class="btn pr sm" onclick="closeM('scheduleModal');showToast('Reminder settings saved','g')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <polyline points="9 11 12 14 22 4" />
+                    </svg>
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESEND ALL FAILED MODAL -->
+    <div class="mbg" id="resendAllModal">
+        <div class="modal sm">
+            <div class="mhd">
+                <div class="mtit">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--rd)"
+                        stroke-width="2">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 .49-3.5" />
+                    </svg>
+                    Resend Failed Messages
+                </div>
+                <div class="mx" onclick="closeM('resendAllModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="mbdy">
+                <div class="chip r" style="margin-bottom:14px">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <div>Select a date group below to resend all failed messages from that day, or resend everything at
+                        once.</div>
+                </div>
+
+                <div class="sec-lbl">Failed by Date</div>
+                <div id="resend-date-groups" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+                </div>
+
+                <div class="sec-lbl">Or Resend All</div>
+                <div
+                    style="background:var(--rdl);border:1.5px solid var(--rds);border-radius:9px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:var(--rd)" id="resend-all-label">— failed
+                            messages</div>
+                        <div style="font-size:11.5px;color:var(--t3);margin-top:2px">All dates combined</div>
+                    </div>
+                    <button class="btn ro sm" id="resend-all-confirm-btn" onclick="resendAllFailed()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" width="12" height="12">
+                            <polyline points="1 4 1 10 7 10" />
+                            <path d="M3.51 15a9 9 0 1 0 .49-3.5" />
+                        </svg>
+                        Resend All
+                    </button>
+                </div>
+            </div>
+            <div class="mft">
+                <button class="btn gh sm" onclick="closeM('resendAllModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin/notification-management.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARKIPAISI — Reports</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/css/admin/reports.css">
+</head>
+
+<body>
+
+
+    <!-- ═══ SIDEBAR ═══ -->
+    <%- include("../partials/sidebar.ejs") %>
+
+
+        <!-- ═══ MAIN ═══ -->
+        <div class="main" id="main">
+            <%- include("../partials/header.ejs") %>
+
+
+
+                <div class="content">
+
+                    <!-- Page header -->
+                    <div class="pghdr">
+                        <div>
+                            <h1>Reports</h1>
+                            <p>Analytical reports for payments, vendors, stall occupancy &amp; collections</p>
+                        </div>
+                        <div class="pghdr-btns">
+                            <button class="btn gh sm" onclick="openM('periodModal')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                <span class="btn-label">Select Period</span>
+                            </button>
+                            <button class="btn gh sm" onclick="doExport('excel')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                </svg>
+                                <span class="btn-label">Export Excel</span>
+                            </button>
+                            <button class="btn pr sm" onclick="doPrint()">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 6 2 18 2 18 9" />
+                                    <path
+                                        d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                                    <rect x="6" y="14" width="12" height="8" />
+                                </svg>
+                                <span class="btn-label">Print / PDF</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Period indicator -->
+                    <div class="period-bar"
+                        style="display:flex;align-items:center;gap:8px;margin-bottom:18px;padding:9px 14px;background:var(--surf);border:1px solid var(--brd);border-radius:var(--rs);box-shadow:var(--sh);flex-wrap:wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--ac)"
+                            stroke-width="2" width="14" height="14">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        <span style="font-size:12.5px;font-weight:700;color:var(--t1)" id="period-label">March
+                            2026</span>
+                        <span style="font-size:11.5px;color:var(--t3)">·</span>
+                        <span style="font-size:12px;color:var(--t2)">Mar 1 – Mar 10, 2026</span>
+                        <span class="period-updated" style="margin-left:auto;font-size:11px;color:var(--t3)">Last
+                            updated: Mar
+                            10, 2026 · 3:45 PM</span>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="stats">
+                        <div class="sc cg" style="animation-delay:.04s">
+                            <div class="si g"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23" />
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                </svg></div>
+                            <div>
+                                <div class="sv" style="color:var(--gr)">₱14,700</div>
+                                <div class="sl">Total Collected</div>
+                                <div class="sd up">↑ 8.9% vs Feb</div>
+                            </div>
+                        </div>
+                        <div class="sc cb" style="animation-delay:.08s">
+                            <div class="si b"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                </svg></div>
+                            <div>
+                                <div class="sv">9</div>
+                                <div class="sl">Active Vendors</div>
+                                <div class="sd up">↑ 1 new this month</div>
+                            </div>
+                        </div>
+                        <div class="sc cvi" style="animation-delay:.12s">
+                            <div class="si vi"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                </svg></div>
+                            <div>
+                                <div class="sv">78%</div>
+                                <div class="sl">Stall Occupancy</div>
+                                <div class="sd up">↑ 5% vs Feb</div>
+                            </div>
+                        </div>
+                        <div class="sc cr" style="animation-delay:.16s">
+                            <div class="si r"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg></div>
+                            <div>
+                                <div class="sv" style="color:var(--rd)">3</div>
+                                <div class="sl">Overdue Accounts</div>
+                                <div class="sd dn">↑ 1 from last month</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="tabs">
+                        <button class="tab on" onclick="setTab('payment',this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23" />
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>
+                            Payment Reports
+                        </button>
+                        <button class="tab" onclick="setTab('vendor',this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                            </svg>
+                            Vendor Reports
+                        </button>
+                        <button class="tab" onclick="setTab('stall',this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            </svg>
+                            Stall Occupancy
+                        </button>
+                        <button class="tab" onclick="setTab('collection',this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                            </svg>
+                            Collection Reports
+                        </button>
+                    </div>
+
+                    <!-- ══ PAYMENT TAB ══ -->
+                    <div id="tab-payment">
+                        <!-- Summary row -->
+                        <div class="grid3" style="margin-bottom:14px">
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Total Payments</div>
+                                <div class="sum-card-val" style="color:var(--gr)">₱14,700</div>
+                                <div class="sum-card-sub">10 transactions · March 2026</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Collection Rate</div>
+                                <div class="sum-card-val" style="color:var(--ac)">72%</div>
+                                <div class="sum-card-sub">7 of 9 vendors paid</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Outstanding Balance</div>
+                                <div class="sum-card-val" style="color:var(--rd)">₱5,600</div>
+                                <div class="sum-card-sub">2 vendors overdue</div>
+                            </div>
+                        </div>
+
+                        <!-- Chart + payment status donut -->
+                        <div class="grid2" style="margin-bottom:14px">
+                            <div class="panel" style="animation-delay:.05s">
+                                <div class="ph">
+                                    <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="20" x2="18" y2="10" />
+                                            <line x1="12" y1="20" x2="12" y2="4" />
+                                            <line x1="6" y1="20" x2="6" y2="14" />
+                                        </svg>Monthly Collections</div>
+                                </div>
+                                <div class="chart-section">
+                                    <div class="bar-wrap" id="pay-bar"></div>
+                                </div>
+                            </div>
+                            <div class="panel" style="animation-delay:.1s">
+                                <div class="ph">
+                                    <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10" />
+                                        </svg>Payment Status — March</div>
+                                </div>
+                                <div class="chart-section">
+                                    <div class="donut-wrap">
+                                        <div class="donut" id="pay-donut">
+                                            <div class="donut-center">
+                                                <div class="donut-center-val">9</div>
+                                                <div class="donut-center-lbl">Vendors</div>
+                                            </div>
+                                        </div>
+                                        <div class="donut-legend" id="pay-donut-legend"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment table -->
+                        <div class="panel">
+                            <div class="ph">
+                                <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="8" y1="6" x2="21" y2="6" />
+                                        <line x1="8" y1="12" x2="21" y2="12" />
+                                        <line x1="8" y1="18" x2="21" y2="18" />
+                                    </svg>Vendor Payment Details</div>
+                                <div class="ph-r">
+                                    <select class="fsel" id="pay-status-f" onchange="renderPayTable()"
+                                        style="font-size:12px;padding:5px 8px">
+                                        <option value="">All Status</option>
+                                        <option value="paid">Paid</option>
+                                        <option value="partial">Partial</option>
+                                        <option value="unpaid">Unpaid</option>
+                                    </select>
+                                    <button class="btn gh sm" onclick="doExport('excel')"><svg
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <polyline points="7 10 12 15 17 10" />
+                                            <line x1="12" y1="15" x2="12" y2="3" />
+                                        </svg><span class="btn-label">Export</span></button>
+                                </div>
+                            </div>
+                            <div class="tbl-wrap">
+                                <table class="tbl">
+                                    <thead>
+                                        <tr>
+                                            <th>Vendor</th>
+                                            <th>Stall</th>
+                                            <th>Due Date</th>
+                                            <th style="text-align:right">Monthly Rent</th>
+                                            <th style="text-align:right">Paid</th>
+                                            <th style="text-align:right">Balance</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pay-tbody"></tbody>
+                                    <tfoot id="pay-tfoot"></tfoot>
+                                </table>
+                            </div>
+                            <div class="tbl-foot" id="pay-foot"></div>
+                        </div>
+                    </div>
+
+                    <!-- ══ VENDOR TAB ══ -->
+                    <div id="tab-vendor" style="display:none">
+                        <div class="grid3" style="margin-bottom:14px">
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Total Vendors</div>
+                                <div class="sum-card-val">9</div>
+                                <div class="sum-card-sub">8 active · 1 new</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Avg. Monthly Rent</div>
+                                <div class="sum-card-val" style="color:var(--ac)">₱1,633</div>
+                                <div class="sum-card-sub">Per active vendor</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Compliance Rate</div>
+                                <div class="sum-card-val" style="color:var(--gr)">89%</div>
+                                <div class="sum-card-sub">8 of 9 fully compliant</div>
+                            </div>
+                        </div>
+                        <div class="grid2" style="margin-bottom:14px">
+                            <div class="panel" style="animation-delay:.05s">
+                                <div class="ph">
+                                    <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="20" x2="18" y2="10" />
+                                            <line x1="12" y1="20" x2="12" y2="4" />
+                                            <line x1="6" y1="20" x2="6" y2="14" />
+                                        </svg>Revenue by Vendor</div>
+                                </div>
+                                <div class="chart-section" id="vnd-bars"></div>
+                            </div>
+                            <div class="panel" style="animation-delay:.1s">
+                                <div class="ph">
+                                    <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10" />
+                                        </svg>Vendor Status</div>
+                                </div>
+                                <div class="chart-section">
+                                    <div class="donut-wrap">
+                                        <div class="donut" id="vnd-donut">
+                                            <div class="donut-center">
+                                                <div class="donut-center-val">9</div>
+                                                <div class="donut-center-lbl">Total</div>
+                                            </div>
+                                        </div>
+                                        <div class="donut-legend" id="vnd-donut-legend"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="ph">
+                                <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                    </svg>Vendor Summary</div>
+                                <div class="ph-r"><button class="btn gh sm" onclick="doExport('excel')"><svg
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <polyline points="7 10 12 15 17 10" />
+                                            <line x1="12" y1="15" x2="12" y2="3" />
+                                        </svg><span class="btn-label">Export</span></button></div>
+                            </div>
+                            <div class="tbl-wrap">
+                                <table class="tbl">
+                                    <thead>
+                                        <tr>
+                                            <th>Vendor</th>
+                                            <th>Stall</th>
+                                            <th>Contract Start</th>
+                                            <th>Contract End</th>
+                                            <th style="text-align:right">Monthly Rent</th>
+                                            <th style="text-align:right">YTD Paid</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="vnd-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ STALL TAB ══ -->
+                    <div id="tab-stall" style="display:none">
+                        <div class="grid3" style="margin-bottom:14px">
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Total Stalls</div>
+                                <div class="sum-card-val">32</div>
+                                <div class="sum-card-sub">In the market</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Occupied</div>
+                                <div class="sum-card-val" style="color:var(--ac)">25</div>
+                                <div class="sum-card-sub">78.1% occupancy rate</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Vacant</div>
+                                <div class="sum-card-val" style="color:var(--am)">7</div>
+                                <div class="sum-card-sub">Available for rental</div>
+                            </div>
+                        </div>
+                        <div class="grid2" style="margin-bottom:14px">
+                            <div class="panel" style="animation-delay:.05s">
+                                <div class="ph">
+                                    <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10" />
+                                        </svg>Occupancy by Section</div>
+                                </div>
+                                <div class="chart-section">
+                                    <div id="stall-bars"></div>
+                                </div>
+                            </div>
+                            <div class="panel" style="animation-delay:.1s">
+                                <div class="ph">
+                                    <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="20" x2="18" y2="10" />
+                                            <line x1="12" y1="20" x2="12" y2="4" />
+                                            <line x1="6" y1="20" x2="6" y2="14" />
+                                        </svg>Occupancy Trend</div>
+                                </div>
+                                <div class="chart-section">
+                                    <div class="bar-wrap" id="stall-trend-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="ph">
+                                <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                    </svg>Stall Directory</div>
+                                <div class="ph-r">
+                                    <select class="fsel" id="stall-status-f" onchange="renderStallTable()"
+                                        style="font-size:12px;padding:5px 8px">
+                                        <option value="">All</option>
+                                        <option value="occupied">Occupied</option>
+                                        <option value="vacant">Vacant</option>
+                                    </select>
+                                    <button class="btn gh sm" onclick="doExport('excel')"><svg
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <polyline points="7 10 12 15 17 10" />
+                                            <line x1="12" y1="15" x2="12" y2="3" />
+                                        </svg><span class="btn-label">Export</span></button>
+                                </div>
+                            </div>
+                            <div class="tbl-wrap">
+                                <table class="tbl">
+                                    <thead>
+                                        <tr>
+                                            <th>Stall No.</th>
+                                            <th>Section</th>
+                                            <th>Size</th>
+                                            <th>Monthly Rate</th>
+                                            <th>Vendor</th>
+                                            <th>Since</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="stall-tbody"></tbody>
+                                </table>
+                            </div>
+                            <div class="tbl-foot" id="stall-foot"></div>
+                        </div>
+                    </div>
+
+                    <!-- ══ COLLECTION TAB ══ -->
+                    <div id="tab-collection" style="display:none">
+                        <div class="grid3" style="margin-bottom:14px">
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Gross Collection</div>
+                                <div class="sum-card-val" style="color:var(--gr)">₱14,700</div>
+                                <div class="sum-card-sub">March 1–10, 2026</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Collection Efficiency</div>
+                                <div class="sum-card-val" style="color:var(--ac)">91.2%</div>
+                                <div class="sum-card-sub">vs ₱16,130 target</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-lbl">Penalties Collected</div>
+                                <div class="sum-card-val" style="color:var(--am)">₱700</div>
+                                <div class="sum-card-sub">Late payment fees</div>
+                            </div>
+                        </div>
+                        <div class="grid2" style="margin-bottom:14px">
+                            <div class="panel" style="animation-delay:.05s">
+                                <div class="ph">
+                                    <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="20" x2="18" y2="10" />
+                                            <line x1="12" y1="20" x2="12" y2="4" />
+                                            <line x1="6" y1="20" x2="6" y2="14" />
+                                        </svg>Collection by Method</div>
+                                </div>
+                                <div class="chart-section">
+                                    <div class="donut-wrap">
+                                        <div class="donut" id="col-donut">
+                                            <div class="donut-center">
+                                                <div class="donut-center-val">₱14.7K</div>
+                                                <div class="donut-center-lbl">Total</div>
+                                            </div>
+                                        </div>
+                                        <div class="donut-legend" id="col-donut-legend"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel" style="animation-delay:.1s">
+                                <div class="ph">
+                                    <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                                        </svg>6-Month Collection Trend</div>
+                                </div>
+                                <div class="chart-section">
+                                    <div class="bar-wrap" id="col-trend-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="ph">
+                                <div class="ph-l"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="8" y1="6" x2="21" y2="6" />
+                                        <line x1="8" y1="12" x2="21" y2="12" />
+                                        <line x1="8" y1="18" x2="21" y2="18" />
+                                    </svg>Daily Collection Breakdown</div>
+                                <div class="ph-r"><button class="btn gh sm" onclick="doExport('excel')"><svg
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <polyline points="7 10 12 15 17 10" />
+                                            <line x1="12" y1="15" x2="12" y2="3" />
+                                        </svg><span class="btn-label">Export</span></button></div>
+                            </div>
+                            <div class="tbl-wrap">
+                                <table class="tbl">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Transactions</th>
+                                            <th style="text-align:right">Office</th>
+                                            <th style="text-align:right">Collector</th>
+                                            <th style="text-align:right">Portal</th>
+                                            <th style="text-align:right">Daily Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="col-tbody"></tbody>
+                                    <tfoot id="col-tfoot"></tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+        </div>
+
+        <!-- ═══ PERIOD MODAL ═══ -->
+        <div class="mbg" id="periodModal">
+            <div class="modal sm">
+                <div class="mhd">
+                    <div class="mtit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="var(--ac)" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>Select Reporting Period</div>
+                    <div class="mx" onclick="closeM('periodModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg></div>
+                </div>
+                <div class="mbdy">
+                    <div class="fg">
+                        <label class="fl">Report Month</label>
+                        <select class="fc" id="period-month">
+                            <option value="March 2026">March 2026</option>
+                            <option value="February 2026">February 2026</option>
+                            <option value="January 2026">January 2026</option>
+                            <option value="December 2025">December 2025</option>
+                        </select>
+                    </div>
+                    <div class="frow">
+                        <div class="fg"><label class="fl">From</label><input class="fc" type="date" value="2026-03-01"
+                                id="period-from" /></div>
+                        <div class="fg"><label class="fl">To</label><input class="fc" type="date" value="2026-03-10"
+                                id="period-to" /></div>
+                    </div>
+                </div>
+                <div class="mft">
+                    <button class="btn gh sm" onclick="closeM('periodModal')">Cancel</button>
+                    <button class="btn pr sm" onclick="applyPeriod()"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 11 12 14 22 4" />
+                        </svg>Apply</button>
+                </div>
+            </div>
+        </div>
+        <script src="/js/admin/reports.js"></script>
+</body>
+
+</html>

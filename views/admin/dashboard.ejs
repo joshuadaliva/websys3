@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARKIPAISI — Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="/css/admin/dashboard.css">
+</head>
+
+<body>
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <%- include("../partials/sidebar.ejs") %>
+  
+  <!-- ── MAIN ── -->
+  <div class="main" id="main">
+      <%- include("../partials/header.ejs") %>
+
+    <!-- Navbar -->
+
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Page Header -->
+      <div class="section-header">
+        <div>
+          <div class="section-title">Market Overview</div>
+          <div class="section-subtitle">Real-time status of Arkipaisi Public Market</div>
+        </div>
+        <div class="date-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          March 8, 2026 · Sunday
+        </div>
+      </div>
+
+      <!-- Overdue Alert -->
+      <div class="alert-bar">
+        <div class="alert-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </div>
+        <div class="alert-text">
+          <div class="alert-title">⚠ Overdue Rental Payments Detected</div>
+          <div class="alert-desc">8 vendors have unpaid rental fees — totaling ₱24,500. Immediate follow-up recommended.
+          </div>
+        </div>
+        <div class="alert-actions">
+          <button class="btn ghost-red">View Overdue</button>
+          <button class="btn danger">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 1.93 3.27 2 2 0 0 1 3.9 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            Send Reminders
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-top">
+            <span class="stat-label">Total Vendors</span>
+            <div class="stat-icon blue">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value" id="val-vendors">42</div>
+          <div class="stat-change up">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <line x1="12" y1="19" x2="12" y2="5" />
+              <polyline points="5 12 12 5 19 12" />
+            </svg>
+            3 new
+            <span class="note">this month</span>
+          </div>
+        </div>
+
+        <div class="stat-card green">
+          <div class="stat-top">
+            <span class="stat-label">Total Stalls</span>
+            <div class="stat-icon green">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value">58</div>
+          <div class="stat-change up">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <line x1="12" y1="19" x2="12" y2="5" />
+              <polyline points="5 12 12 5 19 12" />
+            </svg>
+            42 occupied
+            <span class="note">· 72.4%</span>
+          </div>
+        </div>
+
+        <div class="stat-card amber">
+          <div class="stat-top">
+            <span class="stat-label">Vacant Stalls</span>
+            <div class="stat-icon amber">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z" />
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value">11</div>
+          <div class="stat-change down">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <polyline points="19 12 12 19 5 12" />
+            </svg>
+            2 newly posted
+            <span class="note">for application</span>
+          </div>
+        </div>
+
+        <div class="stat-card purple">
+          <div class="stat-top">
+            <span class="stat-label">Monthly Collection</span>
+            <div class="stat-icon purple">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value" style="font-size:22px">₱87.4K</div>
+          <div class="stat-change up">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <line x1="12" y1="19" x2="12" y2="5" />
+              <polyline points="5 12 12 5 19 12" />
+            </svg>
+            +12.3%
+            <span class="note">vs last month</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stall Status Bar -->
+      <div class="stall-status-bar">
+        <div class="stall-bar-header">
+          <div class="stall-bar-title">Stall Occupancy Overview</div>
+          <div class="stall-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--accent)"></div>Occupied
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--amber)"></div>Vacant
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--text-muted)"></div>Maintenance
+            </div>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-seg" style="width:72%;background:var(--accent);border-radius:20px 0 0 20px"></div>
+          <div class="progress-seg" style="width:20%;background:var(--amber)"></div>
+          <div class="progress-seg" style="flex:1;background:var(--text-muted);border-radius:0 20px 20px 0"></div>
+        </div>
+        <div class="stall-stats-row">
+          <div class="stall-stat">
+            <div class="stall-stat-val blue">42</div>
+            <div class="stall-stat-lbl">Occupied</div>
+          </div>
+          <div class="stall-stat">
+            <div class="stall-stat-val amber">11</div>
+            <div class="stall-stat-lbl">Vacant</div>
+          </div>
+          <div class="stall-stat">
+            <div class="stall-stat-val red">5</div>
+            <div class="stall-stat-lbl">Maintenance</div>
+          </div>
+          <div class="stall-stat">
+            <div class="stall-stat-val" style="color:var(--text-primary)">58</div>
+            <div class="stall-stat-lbl">Total Stalls</div>
+          </div>
+          <div class="stall-stat">
+            <div class="stall-stat-val" style="color:var(--purple)">72.4%</div>
+            <div class="stall-stat-lbl">Occupancy Rate</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Payments + Notifications -->
+      <div class="two-col">
+
+        <!-- Recent Payments -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Recent Payments</div>
+            <div class="panel-action">
+              View all
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+          </div>
+          <table class="payments-table">
+            <thead>
+              <tr>
+                <th>Vendor</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Method</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="vendor-cell">
+                    <div class="vendor-av" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">JD</div>
+                    <div>
+                      <div class="vendor-name">Juan Dela Cruz</div>
+                      <div class="vendor-stall">Stall #12 · Wet Market</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="amount">₱1,500</span></td>
+                <td style="font-size:12px;color:var(--text-muted)">Mar 8, 2026</td>
+                <td><span class="badge review dot">Online</span></td>
+                <td><span class="badge paid dot">Paid</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="vendor-cell">
+                    <div class="vendor-av" style="background:linear-gradient(135deg,#16a34a,#0891b2)">MS</div>
+                    <div>
+                      <div class="vendor-name">Maria Santos</div>
+                      <div class="vendor-stall">Stall #07 · Dry Goods</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="amount">₱2,200</span></td>
+                <td style="font-size:12px;color:var(--text-muted)">Mar 7, 2026</td>
+                <td><span class="badge" style="background:var(--green-soft);color:var(--green)">Office</span></td>
+                <td><span class="badge paid dot">Paid</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="vendor-cell">
+                    <div class="vendor-av" style="background:linear-gradient(135deg,#d97706,#dc2626)">PR</div>
+                    <div>
+                      <div class="vendor-name">Pedro Reyes</div>
+                      <div class="vendor-stall">Stall #03 · Poultry</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="amount">₱1,800</span></td>
+                <td style="font-size:12px;color:var(--text-muted)">Mar 5, 2026</td>
+                <td><span class="badge" style="background:var(--purple-soft);color:var(--purple)">Collector</span></td>
+                <td><span class="badge pending dot">Pending</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="vendor-cell">
+                    <div class="vendor-av" style="background:linear-gradient(135deg,#7c3aed,#db2777)">AL</div>
+                    <div>
+                      <div class="vendor-name">Ana Lim</div>
+                      <div class="vendor-stall">Stall #19 · Vegetables</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="amount">₱900</span></td>
+                <td style="font-size:12px;color:var(--text-muted)">Mar 1, 2026</td>
+                <td><span class="badge review dot">Online</span></td>
+                <td><span class="badge overdue dot">Overdue</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="vendor-cell">
+                    <div class="vendor-av" style="background:linear-gradient(135deg,#0891b2,#16a34a)">RG</div>
+                    <div>
+                      <div class="vendor-name">Roberto Go</div>
+                      <div class="vendor-stall">Stall #24 · Fish</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="amount">₱1,650</span></td>
+                <td style="font-size:12px;color:var(--text-muted)">Feb 28, 2026</td>
+                <td><span class="badge" style="background:var(--green-soft);color:var(--green)">Office</span></td>
+                <td><span class="badge paid dot">Paid</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Notifications -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Notifications & Alerts</div>
+            <div class="panel-action">Mark all read</div>
+          </div>
+          <div class="notif-list">
+            <div class="notif-item unread">
+              <div class="notif-icon-wrap red">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <div class="notif-body">
+                <div class="notif-title">8 Overdue Payments</div>
+                <div class="notif-desc">Stalls #03, #09, #14, #19, #22, #27, #31, #44 have unpaid dues.</div>
+                <div class="notif-time">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  Today, 8:00 AM
+                </div>
+              </div>
+            </div>
+            <div class="notif-item unread">
+              <div class="notif-icon-wrap amber">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+              </div>
+              <div class="notif-body">
+                <div class="notif-title">New Application: Stall #06</div>
+                <div class="notif-desc">Carla M. Bautista submitted a pre-screening application.</div>
+                <div class="notif-time">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  Today, 9:45 AM
+                </div>
+              </div>
+            </div>
+            <div class="notif-item unread">
+              <div class="notif-icon-wrap blue">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <polyline points="9 11 12 14 22 4" />
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+              </div>
+              <div class="notif-body">
+                <div class="notif-title">Documents Submitted</div>
+                <div class="notif-desc">Luis T. Villanueva uploaded complete requirements for Stall #11.</div>
+                <div class="notif-time">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  Yesterday, 3:20 PM
+                </div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon-wrap green">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </div>
+              <div class="notif-body">
+                <div class="notif-title">Vendor Account Created</div>
+                <div class="notif-desc">Stall #18 awardee Rosa P. Magno — credentials sent via SMS.</div>
+                <div class="notif-time">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  Mar 6, 2026
+                </div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon-wrap purple">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <div class="notif-body">
+                <div class="notif-title">Raffle Scheduled</div>
+                <div class="notif-desc">Stall #06 has 3 qualified applicants. AMRC raffle set for Mar 12.</div>
+                <div class="notif-time">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  Mar 5, 2026
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Three Col -->
+      <div class="three-col">
+
+        <!-- Pending Applications -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Pending Applications</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="badge overdue">7 pending</span>
+              <div class="panel-action">
+                View all
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="app-item">
+              <div class="app-av" style="background:linear-gradient(135deg,#3b82f6,#6366f1)">CB</div>
+              <div class="app-info">
+                <div class="app-name">Carla M. Bautista</div>
+                <div class="app-stall">Stall #06 · Doc Pending</div>
+              </div>
+              <div class="app-actions">
+                <button class="btn-sm approve">Review</button>
+              </div>
+            </div>
+            <div class="app-item">
+              <div class="app-av" style="background:linear-gradient(135deg,#d97706,#f59e0b)">LV</div>
+              <div class="app-info">
+                <div class="app-name">Luis T. Villanueva</div>
+                <div class="app-stall">Stall #11 · Docs Submitted</div>
+              </div>
+              <div class="app-actions">
+                <button class="btn-sm approve">Qualify</button>
+                <button class="btn-sm reject">Reject</button>
+              </div>
+            </div>
+            <div class="app-item">
+              <div class="app-av" style="background:linear-gradient(135deg,#7c3aed,#db2777)">NE</div>
+              <div class="app-info">
+                <div class="app-name">Nena E. Estrada</div>
+                <div class="app-stall">Stall #22 · Validated</div>
+              </div>
+              <div class="app-actions">
+                <button class="btn-sm approve">Send Link</button>
+              </div>
+            </div>
+            <div class="app-item">
+              <div class="app-av" style="background:linear-gradient(135deg,#0891b2,#0284c7)">RF</div>
+              <div class="app-info">
+                <div class="app-name">Ramon A. Flores</div>
+                <div class="app-stall">Stall #06 · Submitted</div>
+              </div>
+              <div class="app-actions">
+                <button class="btn-sm approve">Review</button>
+                <button class="btn-sm reject">Reject</button>
+              </div>
+            </div>
+            <div class="app-item">
+              <div class="app-av" style="background:linear-gradient(135deg,#16a34a,#15803d)">GC</div>
+              <div class="app-info">
+                <div class="app-name">Grace P. Cruz</div>
+                <div class="app-stall">Stall #35 · Submitted</div>
+              </div>
+              <div class="app-actions">
+                <button class="btn-sm approve">Review</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Collection Summary -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Monthly Collection Summary</div>
+            <div class="panel-action">March 2026</div>
+          </div>
+          <div class="collection-chart">
+            <div class="collection-total">
+              <div class="collection-label">Total Collected — March</div>
+              <div class="collection-amount">₱87,450</div>
+              <div class="collection-note">Target: ₱95,000 · <span style="color:var(--accent)">92% achieved</span></div>
+            </div>
+
+            <div class="mini-bars">
+              <div class="mini-bar-wrap">
+                <div class="mini-bar" style="height:42px" title="₱72K"></div>
+                <div class="mini-bar-lbl">Oct</div>
+              </div>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar" style="height:38px" title="₱68K"></div>
+                <div class="mini-bar-lbl">Nov</div>
+              </div>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar" style="height:55px" title="₱84K"></div>
+                <div class="mini-bar-lbl">Dec</div>
+              </div>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar" style="height:48px" title="₱78K"></div>
+                <div class="mini-bar-lbl">Jan</div>
+              </div>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar" style="height:51px" title="₱80K"></div>
+                <div class="mini-bar-lbl">Feb</div>
+              </div>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar current" style="height:56px" title="₱87.4K"></div>
+                <div class="mini-bar-lbl" style="color:var(--accent);font-weight:700">Mar</div>
+              </div>
+            </div>
+
+            <div class="collection-breakdown">
+              <div class="breakdown-row">
+                <div class="breakdown-label">Online (Portal)</div>
+                <div class="breakdown-bar-track">
+                  <div class="breakdown-bar" style="width:48%;background:var(--accent)"></div>
+                </div>
+                <div class="breakdown-val">₱42,000</div>
+              </div>
+              <div class="breakdown-row">
+                <div class="breakdown-label">Staff Collector</div>
+                <div class="breakdown-bar-track">
+                  <div class="breakdown-bar" style="width:32%;background:var(--purple)"></div>
+                </div>
+                <div class="breakdown-val">₱27,950</div>
+              </div>
+              <div class="breakdown-row">
+                <div class="breakdown-label">Office Payment</div>
+                <div class="breakdown-bar-track">
+                  <div class="breakdown-bar" style="width:20%;background:var(--green)"></div>
+                </div>
+                <div class="breakdown-val">₱17,500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Access + Activity -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- Quick Access -->
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Quick Access</div>
+            </div>
+            <div class="quick-grid">
+              <div class="quick-item">
+                <div class="quick-icon blue">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+                <div class="quick-label">Post Stall</div>
+              </div>
+              <div class="quick-item">
+                <div class="quick-icon amber">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <line x1="19" y1="8" x2="19" y2="14" />
+                    <line x1="22" y1="11" x2="16" y2="11" />
+                  </svg>
+                </div>
+                <div class="quick-label">Add Vendor</div>
+              </div>
+              <div class="quick-item">
+                <div class="quick-icon green">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                </div>
+                <div class="quick-label">Record Payment</div>
+              </div>
+              <div class="quick-item">
+                <div class="quick-icon purple">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                </div>
+                <div class="quick-label">Generate RCD</div>
+              </div>
+              <div class="quick-item">
+                <div class="quick-icon red">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 1.93 3.27 2 2 0 0 1 3.9 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9" />
+                  </svg>
+                </div>
+                <div class="quick-label">Send SMS</div>
+              </div>
+              <div class="quick-item">
+                <div class="quick-icon teal">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                </div>
+                <div class="quick-label">Export Report</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="panel" style="flex:1">
+            <div class="panel-head">
+              <div class="panel-title">Recent Activity</div>
+              <div class="panel-action">View log</div>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-dot green">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <polyline points="9 11 12 14 22 4" />
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                  </svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-text"><strong>Payment recorded</strong> — Juan Dela Cruz, Stall #12</div>
+                  <div class="activity-time">Today · 10:22 AM by Maria Torres</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot blue">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-text"><strong>Application validated</strong> — Nena Estrada for Stall #22</div>
+                  <div class="activity-time">Today · 9:15 AM by Maria Torres</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot amber">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-text"><strong>SMS reminders sent</strong> — 8 overdue vendors notified</div>
+                  <div class="activity-time">Today · 8:00 AM · System auto</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot purple">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <line x1="19" y1="8" x2="19" y2="14" />
+                    <line x1="22" y1="11" x2="16" y2="11" />
+                  </svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-text"><strong>Vendor account created</strong> — Rosa P. Magno, Stall #18</div>
+                  <div class="activity-time">Yesterday · 2:30 PM by Maria Torres</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+<script src="/js/admin/dashboard.js"></script>
+</body>
+
+</html>
