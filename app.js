@@ -4,6 +4,9 @@ const express = require("express");
 const app = express();
 const notFound = require("./middlewares/notFound")
 const adminRoutes = require("./routes/adminRoutes")
+const collectorRoutes = require("./routes/collectorRoutes")
+
+
 // config
 app.set("view engine", "ejs")
 app.use(express.static("public"))
@@ -12,6 +15,7 @@ app.use(express.static("public"))
 // routes
 app.get("/", (req, res) => res.render("index"))
 app.use("/admin", adminRoutes)
+app.use("/collector", collectorRoutes)
 
 
 // 404 not found

@@ -1,1014 +1,165 @@
 <!DOCTYPE html>
 <html lang="en" class="light">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ARKIPAISI — Stall Management</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root{
-  --bg:#f0f2f8;--surf:#fff;--s2:#f6f7fb;--s3:#eef0f7;
-  --brd:#e2e6f0;--brd2:#eaecf5;
-  --t1:#0c0f1e;--t2:#566080;--t3:#9099b8;
-  --ac:#1d4ed8;--acl:#eff3ff;--acs:#c7d7fd;
-  --gr:#15803d;--grl:#f0fdf4;--grs:#bbf7d0;
-  --am:#b45309;--aml:#fffbeb;--ams:#fde68a;
-  --rd:#b91c1c;--rdl:#fff1f2;--rds:#fecdd3;
-  --vi:#6d28d9;--vil:#f5f3ff;--vis:#ddd6fe;
-  --cy:#0e7490;--cyl:#ecfeff;--cys:#a5f3fc;
-  --or:#c2410c;--orl:#fff7ed;--ors:#fed7aa;
-  --sidebar-w:240px;--r:10px;--rs:6px;
-  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
-  --shm:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
-  --shl:0 10px 30px rgba(0,0,0,.1),0 4px 8px rgba(0,0,0,.06);
-}
-html.dark{
-  --bg:#0d0f14;--surf:#161b27;--s2:#1e2535;--s3:#222840;
-  --brd:#2a3245;--brd2:#222840;
-  --t1:#f1f5f9;--t2:#94a3b8;--t3:#64748b;
-  --ac:#3b82f6;--acl:#1e2d4a;--acs:#1e3a5f;
-  --grl:#0d2318;--grs:#15382a;
-  --aml:#221a07;--ams:#3d2e0d;
-  --rdl:#1f0c0c;--rds:#3b1111;
-  --vil:#1a1234;--vis:#2d1f5e;
-  --cyl:#0a1f1d;--cys:#0d2e2a;
-  --sh:0 1px 3px rgba(0,0,0,.3);--shm:0 4px 12px rgba(0,0,0,.4);--shl:0 10px 30px rgba(0,0,0,.5);
-}
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--t1);
-  min-height: 100vh;
-  display: flex;
-  overflow-x: hidden;
-  transition: background .3s, color .3s;
-}
-
-/* ── SIDEBAR ── */
-/* ══ SIDEBAR (archiving pattern) ══ */
-.sb{width:var(--sidebar-w);min-height:100vh;background:var(--surf);border-right:1px solid var(--brd);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:60;transition:transform .28s cubic-bezier(.4,0,.2,1)}
-.sb-logo{height:56px;padding:0 16px 0 20px;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:10px;flex-shrink:0}
-.logo-m{width:32px;height:32px;background:var(--ac);border-radius:8px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;flex-shrink:0}
-.logo-n{font-size:14px;font-weight:800;letter-spacing:-.3px}
-.logo-sub{font-size:9.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
-.sb-x{width:26px;height:26px;border-radius:6px;border:1px solid var(--brd);background:var(--s2);display:grid;place-items:center;cursor:pointer;color:var(--t2);flex-shrink:0;transition:all .14s}
-.sb-x:hover{background:var(--rdl);color:var(--rd);border-color:var(--rds)}
-.sb-x svg{width:13px;height:13px}
-.sb-nav{flex:1;padding:10px 8px;overflow-y:auto}
-.nsec{font-size:9.5px;font-weight:700;color:var(--t3);letter-spacing:.9px;text-transform:uppercase;padding:10px 10px 4px;margin-top:4px}
-.ni{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:var(--rs);color:var(--t2);cursor:pointer;font-size:13px;font-weight:500;transition:all .14s;margin-bottom:1px;text-decoration:none}
-.ni:hover{background:var(--s2);color:var(--t1)}
-.ni.on{background:var(--acl);color:var(--ac)}
-.ni svg{width:15px;height:15px;flex-shrink:0}
-.nbdg{margin-left:auto;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;font-family:'DM Mono',monospace;background:var(--rds);color:var(--rd)}
-.nbdg.am{background:var(--ams);color:var(--am)}
-.nbdg.gr{background:var(--grs);color:var(--gr)}
-.sb-foot{padding:12px 8px;border-top:1px solid var(--brd);flex-shrink:0}
-.urow{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--rs);cursor:pointer;transition:background .14s}
-.urow:hover{background:var(--s2)}
-.uav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--ac),#7c3aed);display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
-.veil{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55;cursor:pointer}
-
-/* ── MAIN ── */
-.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;transition:margin-left .28s cubic-bezier(.4,0,.2,1);min-width:0}
-
-/* ── NAVBAR ── */
-.navbar { height: var(--navbar-h); background: var(--surf); border-bottom: 1px solid var(--brd); display: flex; align-items: center; padding: 0 24px; gap: 12px; position: sticky; top: 0; z-index: 40; transition: background .3s; }
-.togbtn{width:32px;height:32px;border-radius:var(--rs);border:1px solid var(--brd);background:var(--surf);display:grid;place-items:center;cursor:pointer;color:var(--t2);transition:all .14s;flex-shrink:0}
-.togbtn:hover{border-color:var(--ac);color:var(--ac);background:var(--acl)}
-.togbtn svg{width:15px;height:15px}
-.menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 6px; border-radius: var(--rs); color: var(--t2); align-items: center; transition: background .15s; }
-.menu-btn:hover { background: var(--s2); }
-.page-title { font-size: 15px; font-weight: 600; letter-spacing: -.2px; }
-.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--t3); margin-left: 4px; }
-.breadcrumb .sep { color: var(--brd); }
-.breadcrumb .current { color: var(--t2); font-weight: 500; }
-.navbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-.search-bar { display: flex; align-items: center; gap: 8px; background: var(--s2); border: 1px solid var(--brd); border-radius: var(--rs); padding: 6px 12px; font-size: 13px; color: var(--t3); cursor: pointer; transition: all .15s; min-width: 220px; }
-.search-bar:hover { border-color: var(--ac); }
-.search-bar svg { width: 14px; height: 14px; }
-.search-bar kbd { margin-left: auto; background: var(--surf); border: 1px solid var(--brd); border-radius: 4px; font-size: 10px; padding: 1px 5px; font-family: 'DM Mono', monospace; color: var(--t3); }
-.icon-btn { width: 34px; height: 34px; border-radius: var(--rs); border: 1px solid var(--brd); background: var(--surf); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--t2); position: relative; transition: all .15s; }
-.icon-btn:hover { border-color: var(--ac); color: var(--ac); background: var(--acl); }
-.icon-btn svg { width: 15px; height: 15px; }
-.notif-dot { position: absolute; top: 6px; right: 7px; width: 7px; height: 7px; background: var(--rd); border-radius: 50%; border: 1.5px solid var(--surf); }
-.theme-toggle { width: 34px; height: 34px; border-radius: var(--rs); border: 1px solid var(--brd); background: var(--surf); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--t2); transition: all .15s; }
-.theme-toggle:hover { background: var(--aml); border-color: var(--am); color: var(--am); }
-.theme-toggle svg { width: 15px; height: 15px; }
-.avatar-btn { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; border-radius: var(--rs); border: 1px solid var(--brd); background: var(--surf); cursor: pointer; transition: all .15s; }
-.avatar-btn:hover { border-color: var(--ac); }
-.avatar-sm { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--ac), #7c3aed); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 700; }
-.avatar-btn-name { font-size: 12.5px; font-weight: 600; }
-.avatar-btn svg { width: 12px; height: 12px; color: var(--t3); }
-
-/* ── CONTENT ── */
-.content { padding: 24px; flex: 1; }
-
-/* ── PAGE HEADER ── */
-.page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-.page-header-left .ph-title { font-size: 20px; font-weight: 700; letter-spacing: -.5px; }
-.page-header-left .ph-sub { font-size: 13px; color: var(--t3); margin-top: 3px; }
-.page-header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-/* ── BUTTONS ── */
-.btn { padding: 8px 16px; border-radius: var(--rs); font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; font-family: 'DM Sans', sans-serif; display: inline-flex; align-items: center; gap: 6px; }
-.btn svg { width: 14px; height: 14px; }
-.btn.primary { background: var(--ac); color: white; }
-.btn.primary:hover { background: #1e40af; }
-.btn.success { background: var(--gr); color: white; }
-.btn.success:hover { background: #15803d; }
-.btn.ghost { background: var(--surf); border: 1px solid var(--brd); color: var(--t2); }
-.btn.ghost:hover { border-color: var(--ac); color: var(--ac); background: var(--acl); }
-.btn.danger-ghost { background: transparent; border: 1px solid var(--rds); color: var(--rd); }
-.btn.danger-ghost:hover { background: var(--rds); }
-.btn.sm { padding: 6px 12px; font-size: 12px; }
-.btn.xs { padding: 4px 9px; font-size: 11.5px; }
-
-/* ── STATS ── */
-.stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
-.mini-stat { background: var(--surf); border: 1px solid var(--brd); border-radius: var(--r); padding: 14px 16px; display: flex; align-items: center; gap: 12px; box-shadow: var(--sh); transition: all .2s; cursor: default; }
-.mini-stat:hover { box-shadow: var(--shm); transform: translateY(-1px); }
-.ms-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.ms-icon svg { width: 16px; height: 16px; }
-.ms-icon.blue { background: var(--acl); color: var(--ac); }
-.ms-icon.green { background: var(--grl); color: var(--gr); }
-.ms-icon.amber { background: var(--aml); color: var(--am); }
-.ms-icon.red { background: var(--rdl); color: var(--rd); }
-.ms-icon.teal { background: var(--cyl); color: var(--cy); }
-.ms-val { font-size: 22px; font-weight: 700; font-family: 'DM Mono', monospace; letter-spacing: -.5px; line-height: 1; }
-.ms-lbl { font-size: 11px; color: var(--t3); font-weight: 500; margin-top: 2px; }
-
-/* ── TABS ── */
-.tabs-bar { display: flex; gap: 2px; background: var(--s2); border: 1px solid var(--brd); border-radius: var(--rs); padding: 3px; margin-bottom: 18px; width: fit-content; }
-.tab-btn { padding: 7px 16px; border-radius: 5px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: var(--t2); transition: all .15s; display: flex; align-items: center; gap: 6px; font-family: 'DM Sans', sans-serif; }
-.tab-btn svg { width: 14px; height: 14px; }
-.tab-btn.active { background: var(--surf); color: var(--t1); box-shadow: var(--sh); font-weight: 600; }
-.tab-btn:hover:not(.active) { color: var(--t1); }
-
-/* ── FILTERS ── */
-.filters-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-.filter-input { display: flex; align-items: center; gap: 8px; background: var(--surf); border: 1px solid var(--brd); border-radius: var(--rs); padding: 7px 12px; font-size: 13px; color: var(--t1); min-width: 260px; transition: border .15s; }
-.filter-input:focus-within { border-color: var(--ac); }
-.filter-input input { border: none; background: transparent; outline: none; color: var(--t1); font-family: 'DM Sans', sans-serif; font-size: 13px; flex: 1; }
-.filter-input input::placeholder { color: var(--t3); }
-.filter-input svg { width: 14px; height: 14px; color: var(--t3); flex-shrink: 0; }
-.filter-select { background: var(--surf); border: 1px solid var(--brd); border-radius: var(--rs); padding: 7px 10px; font-size: 13px; color: var(--t2); cursor: pointer; font-family: 'DM Sans', sans-serif; outline: none; transition: border .15s; }
-.filter-select:focus { border-color: var(--ac); }
-.filter-badge { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--rs); font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px solid transparent; transition: all .15s; }
-.filter-badge.all { background: var(--s2); color: var(--t2); border-color: var(--brd); }
-.filter-badge.all.active, .filter-badge.all:hover { background: var(--surf); border-color: var(--t1); color: var(--t1); }
-.filter-badge.occupied { background: var(--acl); color: var(--ac); border-color: var(--acs); }
-.filter-badge.occupied.active, .filter-badge.occupied:hover { border-color: var(--ac); }
-.filter-badge.vacant { background: var(--aml); color: var(--am); border-color: var(--ams); }
-.filter-badge.vacant.active, .filter-badge.vacant:hover { border-color: var(--am); }
-.filter-badge.maintenance { background: var(--rdl); color: var(--rd); border-color: var(--rds); }
-.filter-badge.maintenance.active, .filter-badge.maintenance:hover { border-color: var(--rd); }
-.filter-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-.view-toggle { display: flex; background: var(--s2); border: 1px solid var(--brd); border-radius: var(--rs); overflow: hidden; margin-left: auto; }
-.view-btn { padding: 7px 10px; background: transparent; border: none; cursor: pointer; color: var(--t3); transition: all .15s; display: flex; align-items: center; }
-.view-btn svg { width: 15px; height: 15px; }
-.view-btn.active { background: var(--surf); color: var(--t1); box-shadow: var(--sh); }
-
-/* ── TABLE VIEW ── */
-.table-panel { background: var(--surf); border: 1px solid var(--brd); border-radius: var(--r); box-shadow: var(--sh); overflow: hidden; }
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%}
-.tbl-wrap .stall-table{min-width:680px}
-.stall-table { width: 100%; border-collapse: collapse; }
-.stall-table th { font-size: 11px; font-weight: 600; color: var(--t3); text-transform: uppercase; letter-spacing: .5px; padding: 11px 16px; text-align: left; background: var(--s2); border-bottom: 1px solid var(--brd); white-space: nowrap; }
-.stall-table th.sortable { cursor: pointer; user-select: none; }
-.stall-table th.sortable:hover { color: var(--t1); }
-.stall-table th .sort-icon { display: inline-flex; flex-direction: column; gap: 1px; margin-left: 4px; vertical-align: middle; opacity: .5; }
-.stall-table th .sort-icon svg { width: 8px; height: 8px; }
-.stall-table td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid var(--brd2); vertical-align: middle; }
-.stall-table tr:last-child td { border-bottom: none; }
-.stall-table tr:hover td { background: var(--s2); }
-.stall-table tr.selected td { background: var(--acl); }
-.stall-num { font-family: 'DM Mono', monospace; font-weight: 700; font-size: 13px; background: var(--s2); border: 1px solid var(--brd); padding: 3px 8px; border-radius: 5px; display: inline-block; }
-.stall-type-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
-.stall-type-pill.wet { background: var(--cys); color: var(--cy); }
-.stall-type-pill.dry { background: var(--ams); color: var(--am); }
-.stall-type-pill.meat { background: var(--rds); color: var(--rd); }
-.stall-type-pill.veggie { background: var(--grs); color: var(--gr); }
-.stall-type-pill.fish { background: var(--acs); color: var(--ac); }
-.stall-type-pill.general { background: var(--vis); color: var(--vi); }
-.status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
-.status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.status-badge.occupied { background: var(--acl); color: var(--ac); }
-.status-badge.vacant { background: var(--aml); color: var(--am); }
-.status-badge.maintenance { background: var(--rdl); color: var(--rd); }
-.posted-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: 600; }
-.posted-badge.posted { background: var(--grs); color: var(--gr); }
-.posted-badge.not-posted { background: var(--s2); color: var(--t3); border: 1px solid var(--brd); }
-.row-actions { display: flex; gap: 6px; align-items: center; }
-.action-icon { width: 28px; height: 28px; border-radius: var(--rs); border: 1px solid var(--brd); background: var(--surf); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--t3); transition: all .15s; }
-.action-icon:hover { border-color: var(--ac); color: var(--ac); background: var(--acl); }
-.action-icon.danger:hover { border-color: var(--rd); color: var(--rd); background: var(--rdl); }
-.action-icon.success:hover { border-color: var(--gr); color: var(--gr); background: var(--grl); }
-.action-icon svg { width: 13px; height: 13px; }
-.vendor-link { font-size: 12.5px; color: var(--ac); font-weight: 500; cursor: pointer; }
-.vendor-link:hover { text-decoration: underline; }
-.table-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--brd); background: var(--s2); }
-.table-info { font-size: 12.5px; color: var(--t3); }
-.pagination { display: flex; gap: 4px; align-items: center; }
-.pg-btn { width: 30px; height: 30px; border-radius: var(--rs); border: 1px solid var(--brd); background: var(--surf); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--t2); transition: all .15s; }
-.pg-btn:hover { border-color: var(--ac); color: var(--ac); }
-.pg-btn.active { background: var(--ac); border-color: var(--ac); color: white; }
-.pg-btn svg { width: 12px; height: 12px; }
-.checkbox { width: 15px; height: 15px; border-radius: 3px; border: 1.5px solid var(--brd); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; background: var(--surf); }
-.checkbox.checked { background: var(--ac); border-color: var(--ac); }
-.checkbox.checked::after { content: '✓'; color: white; font-size: 10px; font-weight: 700; }
-
-/* ── GRID VIEW ── */
-.stall-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-.stall-card { background: var(--surf); border: 1px solid var(--brd); border-radius: var(--r); padding: 16px; box-shadow: var(--sh); transition: all .2s; cursor: default; position: relative; overflow: hidden; }
-.stall-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-.stall-card.occupied::before { background: var(--ac); }
-.stall-card.vacant::before { background: var(--am); }
-.stall-card.maintenance::before { background: var(--rd); }
-.stall-card:hover { box-shadow: var(--shm); transform: translateY(-2px); }
-.sc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-.sc-num { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 700; letter-spacing: -.5px; }
-.sc-status { }
-.sc-body { margin-bottom: 14px; }
-.sc-type { font-size: 12.5px; font-weight: 600; margin-bottom: 4px; }
-.sc-loc { font-size: 12px; color: var(--t3); display: flex; align-items: center; gap: 4px; }
-.sc-loc svg { width: 11px; height: 11px; }
-.sc-vendor { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--brd); font-size: 12px; }
-.sc-vendor-label { color: var(--t3); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
-.sc-vendor-name { font-weight: 600; font-size: 12.5px; }
-.sc-size { font-size: 11px; color: var(--t3); font-family: 'DM Mono', monospace; }
-.sc-footer { display: flex; gap: 6px; }
-.sc-btn { flex: 1; padding: 6px 0; border-radius: var(--rs); border: 1px solid var(--brd); background: var(--s2); font-size: 11.5px; font-weight: 600; cursor: pointer; color: var(--t2); transition: all .15s; font-family: 'DM Sans', sans-serif; text-align: center; }
-.sc-btn:hover { border-color: var(--ac); color: var(--ac); background: var(--acl); }
-.sc-btn.post { border-color: var(--grs); background: var(--grl); color: var(--gr); }
-.sc-btn.post:hover { background: var(--gr); color: white; border-color: var(--gr); }
-.posted-ribbon { position: absolute; top: 10px; right: -22px; background: var(--gr); color: white; font-size: 9px; font-weight: 700; padding: 3px 28px; transform: rotate(35deg); letter-spacing: .5px; }
-
-/* ── MAP VIEW ── */
-.map-container { background: var(--surf); border: 1px solid var(--brd); border-radius: var(--r); box-shadow: var(--sh); overflow: hidden; }
-.map-header { padding: 14px 20px; border-bottom: 1px solid var(--brd); display: flex; align-items: center; justify-content: space-between; }
-.map-title { font-size: 13.5px; font-weight: 600; }
-.map-legend { display: flex; gap: 14px; }
-.map-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--t2); }
-.map-legend-swatch { width: 12px; height: 12px; border-radius: 3px; }
-.map-body { padding: 20px; overflow-x: auto; }
-.market-map { display: flex; flex-direction: column; gap: 16px; min-width: 600px; }
-.map-section-label { font-size: 11px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: .8px; display: flex; align-items: center; gap: 8px; }
-.map-section-label::after { content: ''; flex: 1; height: 1px; background: var(--brd); }
-.map-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.map-stall { width: 72px; height: 72px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all .15s; position: relative; border: 2px solid transparent; }
-.map-stall:hover { transform: scale(1.08); z-index: 2; }
-.map-stall.occupied { background: var(--acl); border-color: var(--acs); }
-.map-stall.occupied:hover { border-color: var(--ac); }
-.map-stall.vacant { background: var(--aml); border-color: var(--ams); }
-.map-stall.vacant:hover { border-color: var(--am); }
-.map-stall.maintenance { background: var(--rdl); border-color: var(--rds); }
-.map-stall.maintenance:hover { border-color: var(--rd); }
-.map-stall.posted { background: var(--grl); border-color: var(--grs); }
-.map-stall.posted:hover { border-color: var(--gr); }
-.map-stall-num { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700; }
-.map-stall.occupied .map-stall-num { color: var(--ac); }
-.map-stall.vacant .map-stall-num { color: var(--am); }
-.map-stall.maintenance .map-stall-num { color: var(--rd); }
-.map-stall.posted .map-stall-num { color: var(--gr); }
-.map-stall-type { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .3px; margin-top: 2px; }
-.map-stall.occupied .map-stall-type { color: var(--ac); opacity: .7; }
-.map-stall.vacant .map-stall-type { color: var(--am); opacity: .7; }
-.map-stall.maintenance .map-stall-type { color: var(--rd); opacity: .7; }
-.map-stall.posted .map-stall-type { color: var(--gr); opacity: .7; }
-.map-stall-posted-dot { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; background: var(--gr); border-radius: 50%; border: 1.5px solid var(--surf); }
-.map-aisle { display: flex; align-items: center; justify-content: center; height: 20px; font-size: 10px; font-weight: 600; color: var(--t3); letter-spacing: .5px; text-transform: uppercase; }
-.map-entrance { background: var(--s2); border: 2px dashed var(--brd); border-radius: 8px; padding: 10px 24px; font-size: 11px; font-weight: 700; color: var(--t3); text-align: center; letter-spacing: 1px; text-transform: uppercase; }
-
-/* ── MODAL BACKDROP ── */
-.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); backdrop-filter: blur(2px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
-.modal-backdrop.open { opacity: 1; pointer-events: all; }
-
-/* ── ADD/EDIT STALL MODAL ── */
-.modal { background: var(--surf); border-radius: 14px; box-shadow: var(--shl); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; transform: translateY(10px); transition: transform .2s; }
-.modal-backdrop.open .modal { transform: translateY(0); }
-.modal-head { padding: 20px 24px; border-bottom: 1px solid var(--brd); display: flex; align-items: center; justify-content: space-between; }
-.modal-title { font-size: 16px; font-weight: 700; letter-spacing: -.3px; }
-.modal-close { width: 30px; height: 30px; border-radius: var(--rs); border: 1px solid var(--brd); background: var(--s2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--t2); transition: all .15s; }
-.modal-close:hover { background: var(--rdl); border-color: var(--rds); color: var(--rd); }
-.modal-close svg { width: 14px; height: 14px; }
-.modal-body { padding: 24px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.form-row.single { grid-template-columns: 1fr; }
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-label { font-size: 12px; font-weight: 600; color: var(--t2); }
-.form-control { background: var(--s2); border: 1px solid var(--brd); border-radius: var(--rs); padding: 9px 12px; font-size: 13px; color: var(--t1); font-family: 'DM Sans', sans-serif; outline: none; transition: border .15s; }
-.form-control:focus { border-color: var(--ac); background: var(--surf); }
-.form-control::placeholder { color: var(--t3); }
-select.form-control { cursor: pointer; }
-textarea.form-control { resize: vertical; min-height: 80px; }
-.status-selector { display: flex; gap: 8px; }
-.status-opt { flex: 1; padding: 8px 10px; border-radius: var(--rs); border: 1.5px solid var(--brd); cursor: pointer; text-align: center; font-size: 12px; font-weight: 600; transition: all .15s; background: var(--s2); color: var(--t2); }
-.status-opt.occupied.active { background: var(--acl); border-color: var(--ac); color: var(--ac); }
-.status-opt.vacant.active { background: var(--aml); border-color: var(--am); color: var(--am); }
-.status-opt.maintenance.active { background: var(--rdl); border-color: var(--rds); color: var(--rd); }
-.upload-zone { border: 2px dashed var(--brd); border-radius: var(--r); padding: 20px; text-align: center; cursor: pointer; transition: all .15s; background: var(--s2); }
-.upload-zone:hover { border-color: var(--ac); background: var(--acl); }
-.upload-zone svg { width: 28px; height: 28px; color: var(--t3); margin: 0 auto 8px; display: block; }
-.upload-zone-text { font-size: 13px; font-weight: 500; color: var(--t2); }
-.upload-zone-sub { font-size: 11px; color: var(--t3); margin-top: 3px; }
-.section-divider { font-size: 11px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: .8px; display: flex; align-items: center; gap: 10px; margin: 20px 0 16px; }
-.section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--brd); }
-.post-toggle { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--grl); border: 1px solid var(--grs); border-radius: var(--rs); }
-.post-toggle-info { }
-.post-toggle-label { font-size: 13px; font-weight: 600; color: var(--gr); }
-.post-toggle-desc { font-size: 11.5px; color: var(--t3); margin-top: 2px; }
-.toggle-switch { width: 42px; height: 24px; background: var(--brd); border-radius: 12px; cursor: pointer; position: relative; transition: background .2s; flex-shrink: 0; }
-.toggle-switch.on { background: var(--gr); }
-.toggle-switch::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
-.toggle-switch.on::after { transform: translateX(18px); }
-.modal-footer { padding: 16px 24px; border-top: 1px solid var(--brd); display: flex; justify-content: flex-end; gap: 8px; background: var(--s2); border-radius: 0 0 14px 14px; }
-
-/* ── POST MODAL ── */
-.post-modal { max-width: 480px; }
-.post-preview { background: var(--s2); border: 1px solid var(--brd); border-radius: var(--r); overflow: hidden; margin-bottom: 16px; }
-.post-preview-img { height: 120px; background: linear-gradient(135deg, var(--acs), var(--acl)); display: flex; align-items: center; justify-content: center; }
-.post-preview-img svg { width: 40px; height: 40px; color: var(--ac); opacity: .5; }
-.post-preview-body { padding: 14px 16px; }
-.post-preview-stall { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
-.post-preview-meta { display: flex; gap: 12px; margin-top: 6px; flex-wrap: wrap; }
-.post-meta-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--t2); }
-.post-meta-item svg { width: 12px; height: 12px; }
-.post-preview-desc { font-size: 12.5px; color: var(--t2); margin-top: 8px; line-height: 1.5; }
-.post-preview-deadline { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 8px 10px; background: var(--aml); border-radius: var(--rs); }
-.post-preview-deadline svg { width: 13px; height: 13px; color: var(--am); }
-.post-preview-deadline-text { font-size: 12px; font-weight: 600; color: var(--am); }
-.post-preview-apply { margin-top: 10px; width: 100%; padding: 9px; background: var(--ac); color: white; border: none; border-radius: var(--rs); font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .15s; }
-.post-preview-apply:hover { background: #1e40af; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 1200px) {
-  .stats-row { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 900px) {
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .stall-table th:nth-child(5), .stall-table td:nth-child(5) { display: none; }
-}
-@media (max-width: 768px) {
-  .main { margin-left: 0 !important; min-width: 0; }
-  .sb { transform: translateX(calc(-1 * var(--sidebar-w))); }
-  .search-bar { display: none; }
-  .navbar-actions .avatar-btn-name, .navbar-actions .avatar-btn svg:last-child { display: none; }
-  .content { padding: 16px; min-width: 0; overflow-x: hidden; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .filters-bar { flex-wrap: wrap; gap: 8px; }
-  .filter-input { min-width: unset; flex: 1; }
-  .view-toggle { margin-left: 0; }
-  .tabs-bar { width: 100%; overflow-x: auto; scrollbar-width: none; }
-  .tabs-bar::-webkit-scrollbar { display: none; }
-  .stall-table th:nth-child(6), .stall-table td:nth-child(6) { display: none; }
-  .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .page-header-actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
-  .navbar { padding: 0 14px; }
-}
-@media (max-width: 540px) {
-  .content { padding: 10px; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .filters-bar { flex-direction: column; align-items: stretch; }
-  .view-toggle { margin-left: 0; align-self: flex-start; }
-  .navbar { padding: 0 10px; gap: 8px; }
-  .stall-grid { grid-template-columns: 1fr 1fr; }
-  .form-row { grid-template-columns: 1fr; }
-  .modal-backdrop { padding: 0; align-items: flex-end; }
-  .modal { max-width: 100%; border-radius: 14px 14px 0 0; max-height: 96vh; }
-  .stall-table th:nth-child(4), .stall-table td:nth-child(4) { display: none; }
-  .table-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .map-body { padding: 12px; }
-}
-@media (max-width: 380px) {
-  .stats-row { grid-template-columns: 1fr 1fr; }
-  .stall-grid { grid-template-columns: 1fr; }
-  .mini-stat { padding: 10px 12px; }
-}
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--brd); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--t3); }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARKIPAISI — Stall Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/css/admin/stall-management.css">
 </head>
+
 <body>
 
-<div class="veil" id="veil" onclick="closeSB()"></div>
+  <%- include("../partials/sidebar.ejs") %>
+  
+  <!-- ── MAIN ── -->
+  <div class="main" id="main">
+    <%- include("../partials/header.ejs") %>
 
-<!-- ── SIDEBAR ── -->
-<!-- ═══ SIDEBAR ═══ -->
-<aside class="sb" id="sb">
-  <div class="sb-logo">
-    <div class="logo-m">AP</div>
-    <div style="flex:1;min-width:0"><div class="logo-n">ARKIPAISI</div><div class="logo-sub">Market Office</div></div>
-    <div class="sb-x" onclick="closeSB()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
-  </div>
-  <nav class="sb-nav">
-    <div class="nsec">Main</div>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
-    <a class="ni on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Stall Management</a>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Vendor Management<span class="nbdg gr">42</span></a>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Applications<span class="nbdg">7</span></a>
-    <div class="nsec">Finance</div>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Payment Management<span class="nbdg am">3</span></a>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>RCD Reports</a>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Reports</a>
-    <div class="nsec">System</div>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications<span class="nbdg">5</span></a>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Document Management</a>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>Archiving</a>
-    <a class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>Settings</a>
-  </nav>
-  <div class="sb-foot">
-    <div class="urow"><div class="uav">MA</div><div><div style="font-size:13px;font-weight:600">Maria A. Torres</div><div style="font-size:10.5px;color:var(--t3)">Administrator</div></div></div>
-  </div>
-</aside>
 
-<!-- ── MAIN ── -->
-<div class="main" id="main">
+    <!-- Content -->
+    <div class="content">
 
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="togbtn" onclick="toggleSB()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
-    <div>
-      <div class="page-title">Stall Management</div>
-      <div class="breadcrumb">
-        <span>ARKIPAISI</span>
-        <span class="sep">›</span>
-        <span class="current">Stall Management</span>
-      </div>
-    </div>
-    <div class="navbar-actions">
-      <div class="search-bar">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Search stalls, vendors...
-        <kbd>⌘K</kbd>
-      </div>
-      <div class="theme-toggle" onclick="toggleTheme()">
-        <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      </div>
-      <div class="icon-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <span class="notif-dot"></span>
-      </div>
-      <div class="avatar-btn">
-        <div class="avatar-sm">MA</div>
-        <span class="avatar-btn-name">Torres</span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      </div>
-    </div>
-  </header>
-
-  <!-- Content -->
-  <div class="content">
-
-    <!-- Page Header -->
-    <div class="page-header">
-      <div class="page-header-left">
-        <div class="ph-title">Stall Management</div>
-        <div class="ph-sub">Manage all public market stalls, monitor status, and post for vendor applications</div>
-      </div>
-      <div class="page-header-actions">
-        <button class="btn ghost" onclick="openUploadModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Upload Map
-        </button>
-        <button class="btn primary" onclick="openAddModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Add New Stall
-        </button>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="mini-stat">
-        <div class="ms-icon blue"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
-        <div><div class="ms-val">58</div><div class="ms-lbl">Total Stalls</div></div>
-      </div>
-      <div class="mini-stat">
-        <div class="ms-icon green"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-        <div><div class="ms-val" style="color:var(--ac)">42</div><div class="ms-lbl">Occupied</div></div>
-      </div>
-      <div class="mini-stat">
-        <div class="ms-icon amber"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/></svg></div>
-        <div><div class="ms-val" style="color:var(--am)">11</div><div class="ms-lbl">Vacant</div></div>
-      </div>
-      <div class="mini-stat">
-        <div class="ms-icon red"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-        <div><div class="ms-val" style="color:var(--rd)">5</div><div class="ms-lbl">Under Maintenance</div></div>
-      </div>
-      <div class="mini-stat">
-        <div class="ms-icon teal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-        <div><div class="ms-val" style="color:var(--cy)">4</div><div class="ms-lbl">Publicly Posted</div></div>
-      </div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="tabs-bar">
-      <button class="tab-btn active" onclick="switchTab('list', this)">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        Stall List
-      </button>
-      <button class="tab-btn" onclick="switchTab('map', this)">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-        Map View
-      </button>
-      <button class="tab-btn" onclick="switchTab('posted', this)">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        Publicly Posted
-        <span style="background:var(--cy);color:white;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:700">4</span>
-      </button>
-    </div>
-
-    <!-- ── LIST TAB ── -->
-    <div id="tab-list">
-      <div class="filters-bar">
-        <div class="filter-input">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" placeholder="Search stall number, vendor, location..." />
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="ph-title">Stall Management</div>
+          <div class="ph-sub">Manage all public market stalls, monitor status, and post for vendor applications</div>
         </div>
-        <select class="filter-select">
-          <option>All Types</option>
-          <option>Wet Market</option>
-          <option>Dry Goods</option>
-          <option>Meat Section</option>
-          <option>Vegetables</option>
-          <option>Fish Section</option>
-          <option>General</option>
-        </select>
-        <div class="filter-badge all active" onclick="filterStatus('all', this)"><span class="dot"></span>All (58)</div>
-        <div class="filter-badge occupied" onclick="filterStatus('occupied', this)"><span class="dot"></span>Occupied (42)</div>
-        <div class="filter-badge vacant" onclick="filterStatus('vacant', this)"><span class="dot"></span>Vacant (11)</div>
-        <div class="filter-badge maintenance" onclick="filterStatus('maintenance', this)"><span class="dot"></span>Maintenance (5)</div>
-        <div class="view-toggle">
-          <button class="view-btn active tooltip" data-tip="Table View" onclick="switchView('table', this)">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        <div class="page-header-actions">
+          <button class="btn ghost" onclick="openUploadModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Upload Map
           </button>
-          <button class="view-btn tooltip" data-tip="Card View" onclick="switchView('grid', this)">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <button class="btn primary" onclick="openAddModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add New Stall
           </button>
         </div>
       </div>
 
-      <!-- Table View -->
-      <div id="view-table" class="table-panel">
-        <div class="tbl-wrap"><table class="stall-table">
-          <thead>
-            <tr>
-              <th style="width:40px"><div class="checkbox" onclick="toggleAll(this)"></div></th>
-              <th class="sortable">Stall # <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></span></th>
-              <th class="sortable">Type</th>
-              <th>Location</th>
-              <th>Size</th>
-              <th>Vendor / Occupant</th>
-              <th>Status</th>
-              <th>Posted</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><div class="checkbox"></div></td>
-              <td><span class="stall-num">#01</span></td>
-              <td><span class="stall-type-pill wet">Wet Market</span></td>
-              <td style="font-size:12.5px;color:var(--t2)">Section A · Row 1</td>
-              <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">4×4 m²</td>
-              <td><span class="vendor-link">Juan Dela Cruz</span></td>
-              <td><span class="status-badge occupied">Occupied</span></td>
-              <td><span class="posted-badge not-posted">Not Posted</span></td>
-              <td>
-                <div class="row-actions">
-                  <div class="action-icon tooltip" data-tip="View Details" onclick="openViewModal('#01','Wet Market','Section A · Row 1','Juan Dela Cruz','occupied')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Post Stall" onclick="openPostModal('#01','Wet Market','Section A · Row 1')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><div class="checkbox"></div></td>
-              <td><span class="stall-num">#03</span></td>
-              <td><span class="stall-type-pill meat">Meat Section</span></td>
-              <td style="font-size:12.5px;color:var(--t2)">Section A · Row 2</td>
-              <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">5×4 m²</td>
-              <td><span class="vendor-link">Pedro Reyes</span></td>
-              <td><span class="status-badge occupied">Occupied</span></td>
-              <td><span class="posted-badge not-posted">Not Posted</span></td>
-              <td>
-                <div class="row-actions">
-                  <div class="action-icon tooltip" data-tip="View Details" onclick="openViewModal('#03','Meat Section','Section A · Row 2','Pedro Reyes','occupied')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Post Stall" onclick="openPostModal('#03','Meat Section','Section A · Row 2')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><div class="checkbox"></div></td>
-              <td><span class="stall-num">#06</span></td>
-              <td><span class="stall-type-pill dry">Dry Goods</span></td>
-              <td style="font-size:12.5px;color:var(--t2)">Section B · Row 1</td>
-              <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">3×3 m²</td>
-              <td style="font-size:12.5px;color:var(--t3);font-style:italic">— Vacant —</td>
-              <td><span class="status-badge vacant">Vacant</span></td>
-              <td><span class="posted-badge posted">
-                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                Posted
-              </span></td>
-              <td>
-                <div class="row-actions">
-                  <div class="action-icon tooltip" data-tip="View Details" onclick="openViewModal('#06','Dry Goods','Section B · Row 1','','vacant')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-                  <div class="action-icon success tooltip" data-tip="Manage Posting" onclick="openPostModal('#06','Dry Goods','Section B · Row 1')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><div class="checkbox"></div></td>
-              <td><span class="stall-num">#07</span></td>
-              <td><span class="stall-type-pill dry">Dry Goods</span></td>
-              <td style="font-size:12.5px;color:var(--t2)">Section B · Row 1</td>
-              <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">3×3 m²</td>
-              <td><span class="vendor-link">Maria Santos</span></td>
-              <td><span class="status-badge occupied">Occupied</span></td>
-              <td><span class="posted-badge not-posted">Not Posted</span></td>
-              <td>
-                <div class="row-actions">
-                  <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Post Stall"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><div class="checkbox"></div></td>
-              <td><span class="stall-num">#11</span></td>
-              <td><span class="stall-type-pill veggie">Vegetables</span></td>
-              <td style="font-size:12.5px;color:var(--t2)">Section C · Row 2</td>
-              <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">4×3 m²</td>
-              <td style="font-size:12.5px;color:var(--t3);font-style:italic">— Vacant —</td>
-              <td><span class="status-badge vacant">Vacant</span></td>
-              <td><span class="posted-badge posted">
-                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                Posted
-              </span></td>
-              <td>
-                <div class="row-actions">
-                  <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-                  <div class="action-icon success tooltip" data-tip="Manage Posting"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><div class="checkbox"></div></td>
-              <td><span class="stall-num">#14</span></td>
-              <td><span class="stall-type-pill fish">Fish Section</span></td>
-              <td style="font-size:12.5px;color:var(--t2)">Section D · Row 1</td>
-              <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">6×4 m²</td>
-              <td style="font-size:12px;color:var(--t3);font-style:italic">— Under Maintenance —</td>
-              <td><span class="status-badge maintenance">Maintenance</span></td>
-              <td><span class="posted-badge not-posted">Not Posted</span></td>
-              <td>
-                <div class="row-actions">
-                  <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-                  <div class="action-icon danger tooltip" data-tip="Cannot Post — Maintenance"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><div class="checkbox"></div></td>
-              <td><span class="stall-num">#19</span></td>
-              <td><span class="stall-type-pill veggie">Vegetables</span></td>
-              <td style="font-size:12.5px;color:var(--t2)">Section C · Row 4</td>
-              <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">3×3 m²</td>
-              <td><span class="vendor-link">Ana Lim</span></td>
-              <td><span class="status-badge occupied">Occupied</span></td>
-              <td><span class="posted-badge not-posted">Not Posted</span></td>
-              <td>
-                <div class="row-actions">
-                  <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Post Stall"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><div class="checkbox"></div></td>
-              <td><span class="stall-num">#22</span></td>
-              <td><span class="stall-type-pill general">General</span></td>
-              <td style="font-size:12.5px;color:var(--t2)">Section E · Row 1</td>
-              <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">4×4 m²</td>
-              <td style="font-size:12.5px;color:var(--t3);font-style:italic">— Vacant —</td>
-              <td><span class="status-badge vacant">Vacant</span></td>
-              <td><span class="posted-badge posted">
-                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                Posted
-              </span></td>
-              <td>
-                <div class="row-actions">
-                  <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                  <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-                  <div class="action-icon success tooltip" data-tip="Manage Posting"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table></div>
-        <div class="table-footer">
-          <div class="table-info">Showing 8 of 58 stalls</div>
-          <div class="pagination">
-            <div class="pg-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
-            <div class="pg-btn active">1</div>
-            <div class="pg-btn">2</div>
-            <div class="pg-btn">3</div>
-            <div class="pg-btn">…</div>
-            <div class="pg-btn">8</div>
-            <div class="pg-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="mini-stat">
+          <div class="ms-icon blue"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            </svg></div>
+          <div>
+            <div class="ms-val">58</div>
+            <div class="ms-lbl">Total Stalls</div>
+          </div>
+        </div>
+        <div class="mini-stat">
+          <div class="ms-icon green"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+            </svg></div>
+          <div>
+            <div class="ms-val" style="color:var(--ac)">42</div>
+            <div class="ms-lbl">Occupied</div>
+          </div>
+        </div>
+        <div class="mini-stat">
+          <div class="ms-icon amber"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z" />
+            </svg></div>
+          <div>
+            <div class="ms-val" style="color:var(--am)">11</div>
+            <div class="ms-lbl">Vacant</div>
+          </div>
+        </div>
+        <div class="mini-stat">
+          <div class="ms-icon red"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg></div>
+          <div>
+            <div class="ms-val" style="color:var(--rd)">5</div>
+            <div class="ms-lbl">Under Maintenance</div>
+          </div>
+        </div>
+        <div class="mini-stat">
+          <div class="ms-icon teal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </svg></div>
+          <div>
+            <div class="ms-val" style="color:var(--cy)">4</div>
+            <div class="ms-lbl">Publicly Posted</div>
           </div>
         </div>
       </div>
 
-      <!-- Grid View (hidden by default) -->
-      <div id="view-grid" style="display:none">
-        <div class="stall-grid">
-          <div class="stall-card occupied">
-            <div class="sc-header"><div class="sc-num">#01</div><span class="status-badge occupied">Occupied</span></div>
-            <div class="sc-body">
-              <div class="sc-type">🐟 Wet Market</div>
-              <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Section A · Row 1 &nbsp;·&nbsp; <span class="sc-size">4×4 m²</span></div>
-              <div class="sc-vendor"><div class="sc-vendor-label">Vendor</div><div class="sc-vendor-name">Juan Dela Cruz</div></div>
-            </div>
-            <div class="sc-footer">
-              <button class="sc-btn" onclick="openViewModal('#01','Wet Market','Section A · Row 1','Juan Dela Cruz','occupied')">View</button>
-              <button class="sc-btn" onclick="openEditModal()">Edit</button>
-              <button class="sc-btn post" onclick="openPostModal('#01','Wet Market','Section A · Row 1')">Post</button>
-            </div>
-          </div>
-          <div class="stall-card vacant">
-            <div class="sc-header"><div class="sc-num">#06</div><span class="status-badge vacant">Vacant</span></div>
-            <div class="sc-body">
-              <div class="sc-type">🛒 Dry Goods</div>
-              <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Section B · Row 1 &nbsp;·&nbsp; <span class="sc-size">3×3 m²</span></div>
-              <div class="sc-vendor"><div class="sc-vendor-label">Status</div><div class="sc-vendor-name" style="color:var(--am)">Available for Application</div></div>
-            </div>
-            <div class="sc-footer">
-              <button class="sc-btn" onclick="openViewModal('#06','Dry Goods','Section B · Row 1','','vacant')">View</button>
-              <button class="sc-btn" onclick="openEditModal()">Edit</button>
-              <button class="sc-btn post" onclick="openPostModal('#06','Dry Goods','Section B · Row 1')">Posted ✓</button>
-            </div>
-            <div class="posted-ribbon">POSTED</div>
-          </div>
-          <div class="stall-card maintenance">
-            <div class="sc-header"><div class="sc-num">#14</div><span class="status-badge maintenance">Maintenance</span></div>
-            <div class="sc-body">
-              <div class="sc-type">🐠 Fish Section</div>
-              <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Section D · Row 1 &nbsp;·&nbsp; <span class="sc-size">6×4 m²</span></div>
-              <div class="sc-vendor"><div class="sc-vendor-label">Note</div><div class="sc-vendor-name" style="color:var(--rd)">Under Repair — Est. Mar 15</div></div>
-            </div>
-            <div class="sc-footer">
-              <button class="sc-btn">View</button>
-              <button class="sc-btn" onclick="openEditModal()">Edit</button>
-              <button class="sc-btn" style="opacity:.4;cursor:not-allowed">Cannot Post</button>
-            </div>
-          </div>
-          <div class="stall-card occupied">
-            <div class="sc-header"><div class="sc-num">#19</div><span class="status-badge occupied">Occupied</span></div>
-            <div class="sc-body">
-              <div class="sc-type">🥦 Vegetables</div>
-              <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Section C · Row 4 &nbsp;·&nbsp; <span class="sc-size">3×3 m²</span></div>
-              <div class="sc-vendor"><div class="sc-vendor-label">Vendor</div><div class="sc-vendor-name">Ana Lim</div></div>
-            </div>
-            <div class="sc-footer">
-              <button class="sc-btn">View</button>
-              <button class="sc-btn" onclick="openEditModal()">Edit</button>
-              <button class="sc-btn post">Post</button>
-            </div>
-          </div>
-          <div class="stall-card vacant">
-            <div class="sc-header"><div class="sc-num">#22</div><span class="status-badge vacant">Vacant</span></div>
-            <div class="sc-body">
-              <div class="sc-type">🧺 General</div>
-              <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Section E · Row 1 &nbsp;·&nbsp; <span class="sc-size">4×4 m²</span></div>
-              <div class="sc-vendor"><div class="sc-vendor-label">Status</div><div class="sc-vendor-name" style="color:var(--am)">Available for Application</div></div>
-            </div>
-            <div class="sc-footer">
-              <button class="sc-btn">View</button>
-              <button class="sc-btn" onclick="openEditModal()">Edit</button>
-              <button class="sc-btn post">Posted ✓</button>
-            </div>
-            <div class="posted-ribbon">POSTED</div>
-          </div>
-          <div class="stall-card occupied">
-            <div class="sc-header"><div class="sc-num">#24</div><span class="status-badge occupied">Occupied</span></div>
-            <div class="sc-body">
-              <div class="sc-type">🐠 Fish Section</div>
-              <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Section D · Row 2 &nbsp;·&nbsp; <span class="sc-size">5×4 m²</span></div>
-              <div class="sc-vendor"><div class="sc-vendor-label">Vendor</div><div class="sc-vendor-name">Roberto Go</div></div>
-            </div>
-            <div class="sc-footer">
-              <button class="sc-btn">View</button>
-              <button class="sc-btn" onclick="openEditModal()">Edit</button>
-              <button class="sc-btn post">Post</button>
-            </div>
-          </div>
-        </div>
+      <!-- Tabs -->
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab('list', this)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6" />
+            <line x1="8" y1="12" x2="21" y2="12" />
+            <line x1="8" y1="18" x2="21" y2="18" />
+            <line x1="3" y1="6" x2="3.01" y2="6" />
+            <line x1="3" y1="12" x2="3.01" y2="12" />
+            <line x1="3" y1="18" x2="3.01" y2="18" />
+          </svg>
+          Stall List
+        </button>
+        <button class="tab-btn" onclick="switchTab('map', this)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+            <line x1="8" y1="2" x2="8" y2="18" />
+            <line x1="16" y1="6" x2="16" y2="22" />
+          </svg>
+          Map View
+        </button>
+        <button class="tab-btn" onclick="switchTab('posted', this)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          Publicly Posted
+          <span
+            style="background:var(--cy);color:white;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:700">4</span>
+        </button>
       </div>
-    </div>
 
-    <!-- ── MAP TAB ── -->
-    <div id="tab-map" style="display:none">
-      <div class="map-container">
-        <div class="map-header">
-          <div class="map-title">Arkipaisi Public Market — Stall Layout</div>
-          <div class="map-legend">
-            <div class="map-legend-item"><div class="map-legend-swatch" style="background:var(--acl);border:2px solid var(--acs)"></div>Occupied</div>
-            <div class="map-legend-item"><div class="map-legend-swatch" style="background:var(--aml);border:2px solid var(--ams)"></div>Vacant</div>
-            <div class="map-legend-item"><div class="map-legend-swatch" style="background:var(--grl);border:2px solid var(--grs)"></div>Posted</div>
-            <div class="map-legend-item"><div class="map-legend-swatch" style="background:var(--rdl);border:2px solid var(--rds)"></div>Maintenance</div>
+      <!-- ── LIST TAB ── -->
+      <div id="tab-list">
+        <div class="filters-bar">
+          <div class="filter-input">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input type="text" placeholder="Search stall number, vendor, location..." />
           </div>
-        </div>
-        <div class="map-body">
-          <div class="market-map">
-            <div class="map-entrance">🚪 Main Entrance</div>
-            <div class="map-section-label">Section A — Wet Market / Meat</div>
-            <div class="map-row">
-              <div class="map-stall occupied tooltip" data-tip="Stall #01 · Wet Market · Juan D.C." onclick="openViewModal('#01','Wet Market','Section A','Juan Dela Cruz','occupied')"><div class="map-stall-num">#01</div><div class="map-stall-type">Wet</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #02 · Meat · Rosa M." onclick="openViewModal('#02','Meat','Section A','Rosa Magno','occupied')"><div class="map-stall-num">#02</div><div class="map-stall-type">Meat</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #03 · Meat · Pedro R." onclick="openViewModal('#03','Meat Section','Section A','Pedro Reyes','occupied')"><div class="map-stall-num">#03</div><div class="map-stall-type">Meat</div></div>
-              <div class="map-stall vacant tooltip" data-tip="Stall #04 · Wet Market · Vacant" onclick="openViewModal('#04','Wet Market','Section A','','vacant')"><div class="map-stall-num">#04</div><div class="map-stall-type">Wet</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #05 · Wet Market · Carla B."><div class="map-stall-num">#05</div><div class="map-stall-type">Wet</div></div>
-            </div>
-            <div class="map-aisle">── Aisle A ──</div>
-            <div class="map-section-label">Section B — Dry Goods</div>
-            <div class="map-row">
-              <div class="map-stall posted tooltip" data-tip="Stall #06 · Dry Goods · POSTED for Application" onclick="openPostModal('#06','Dry Goods','Section B')"><div class="map-stall-num">#06</div><div class="map-stall-type">Dry</div><div class="map-stall-posted-dot"></div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #07 · Dry Goods · Maria S."><div class="map-stall-num">#07</div><div class="map-stall-type">Dry</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #08 · Dry Goods · Luis V."><div class="map-stall-num">#08</div><div class="map-stall-type">Dry</div></div>
-              <div class="map-stall vacant tooltip" data-tip="Stall #09 · Dry Goods · Vacant"><div class="map-stall-num">#09</div><div class="map-stall-type">Dry</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #10 · Dry Goods · Grace C."><div class="map-stall-num">#10</div><div class="map-stall-type">Dry</div></div>
-            </div>
-            <div class="map-aisle">── Aisle B ──</div>
-            <div class="map-section-label">Section C — Vegetables</div>
-            <div class="map-row">
-              <div class="map-stall posted tooltip" data-tip="Stall #11 · Vegetables · POSTED" onclick="openPostModal('#11','Vegetables','Section C')"><div class="map-stall-num">#11</div><div class="map-stall-type">Veg</div><div class="map-stall-posted-dot"></div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #12 · Vegetables · Juan D.C."><div class="map-stall-num">#12</div><div class="map-stall-type">Veg</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #13 · Vegetables · Nena E."><div class="map-stall-num">#13</div><div class="map-stall-type">Veg</div></div>
-              <div class="map-stall maintenance tooltip" data-tip="Stall #14 · Fish · Under Maintenance"><div class="map-stall-num">#14</div><div class="map-stall-type">⚠ Fix</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #15 · Vegetables · Ramon F."><div class="map-stall-num">#15</div><div class="map-stall-type">Veg</div></div>
-              <div class="map-stall vacant tooltip" data-tip="Stall #16 · Vegetables · Vacant"><div class="map-stall-num">#16</div><div class="map-stall-type">Veg</div></div>
-            </div>
-            <div class="map-aisle">── Aisle C ──</div>
-            <div class="map-section-label">Section D — Fish Section</div>
-            <div class="map-row">
-              <div class="map-stall occupied tooltip" data-tip="Stall #17 · Fish · Roberto G."><div class="map-stall-num">#17</div><div class="map-stall-type">Fish</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #18 · Fish · Rosa M."><div class="map-stall-num">#18</div><div class="map-stall-type">Fish</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #19 · Veg · Ana L."><div class="map-stall-num">#19</div><div class="map-stall-type">Veg</div></div>
-              <div class="map-stall maintenance tooltip" data-tip="Stall #20 · Fish · Under Maintenance"><div class="map-stall-num">#20</div><div class="map-stall-type">⚠ Fix</div></div>
-            </div>
-            <div class="map-aisle">── Aisle D ──</div>
-            <div class="map-section-label">Section E — General</div>
-            <div class="map-row">
-              <div class="map-stall occupied tooltip" data-tip="Stall #21 · General · Carla B."><div class="map-stall-num">#21</div><div class="map-stall-type">Gen</div></div>
-              <div class="map-stall posted tooltip" data-tip="Stall #22 · General · POSTED" onclick="openPostModal('#22','General','Section E')"><div class="map-stall-num">#22</div><div class="map-stall-type">Gen</div><div class="map-stall-posted-dot"></div></div>
-              <div class="map-stall vacant tooltip" data-tip="Stall #23 · General · Vacant"><div class="map-stall-num">#23</div><div class="map-stall-type">Gen</div></div>
-              <div class="map-stall occupied tooltip" data-tip="Stall #24 · Fish · Roberto G."><div class="map-stall-num">#24</div><div class="map-stall-type">Fish</div></div>
-              <div class="map-stall posted tooltip" data-tip="Stall #25 · General · POSTED"><div class="map-stall-num">#25</div><div class="map-stall-type">Gen</div><div class="map-stall-posted-dot"></div></div>
-              <div class="map-stall vacant tooltip" data-tip="Stall #26 · General · Vacant"><div class="map-stall-num">#26</div><div class="map-stall-type">Gen</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── POSTED TAB ── -->
-    <div id="tab-posted" style="display:none">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
-        <!-- Public Posting Cards -->
-        <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)">
-          <div style="height:100px;background:linear-gradient(135deg,var(--aml),var(--ams));display:flex;align-items:center;justify-content:center;position:relative">
-            <div style="font-size:36px">🛒</div>
-            <div style="position:absolute;top:10px;right:10px;background:var(--gr);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:.3px">OPEN</div>
-          </div>
-          <div style="padding:16px">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-              <div>
-                <div style="font-size:18px;font-weight:700;letter-spacing:-.3px">Stall #06</div>
-                <div style="font-size:12.5px;color:var(--t3);margin-top:2px">Arkipaisi Public Market</div>
-              </div>
-              <span class="stall-type-pill dry">Dry Goods</span>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
-              <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Section B · Row 1</div>
-              <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>3 × 3 m² stall space</div>
-              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Suitable for general merchandise, clothing</div>
-            </div>
-            <div style="padding:8px 10px;background:var(--aml);border-radius:var(--rs);display:flex;align-items:center;gap:8px;margin-bottom:12px">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--am);flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <div style="font-size:12px;font-weight:600;color:var(--am)">Application Deadline: March 20, 2026</div>
-            </div>
-            <div style="display:flex;gap:8px">
-              <button class="btn ghost sm" style="flex:1" onclick="openEditModal()">Edit Posting</button>
-              <button class="btn danger-ghost sm" onclick="unpublishStall()">Unpublish</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)">
-          <div style="height:100px;background:linear-gradient(135deg,var(--grl),var(--grs));display:flex;align-items:center;justify-content:center;position:relative">
-            <div style="font-size:36px">🥦</div>
-            <div style="position:absolute;top:10px;right:10px;background:var(--gr);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:.3px">OPEN</div>
-          </div>
-          <div style="padding:16px">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-              <div>
-                <div style="font-size:18px;font-weight:700;letter-spacing:-.3px">Stall #11</div>
-                <div style="font-size:12.5px;color:var(--t3);margin-top:2px">Arkipaisi Public Market</div>
-              </div>
-              <span class="stall-type-pill veggie">Vegetables</span>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
-              <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Section C · Row 2</div>
-              <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>4 × 3 m² stall space</div>
-              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Fresh produce, vegetables, condiments</div>
-            </div>
-            <div style="padding:8px 10px;background:var(--aml);border-radius:var(--rs);display:flex;align-items:center;gap:8px;margin-bottom:12px">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--am);flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <div style="font-size:12px;font-weight:600;color:var(--am)">Application Deadline: March 22, 2026</div>
-            </div>
-            <div style="display:flex;gap:8px">
-              <button class="btn ghost sm" style="flex:1" onclick="openEditModal()">Edit Posting</button>
-              <button class="btn danger-ghost sm">Unpublish</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)">
-          <div style="height:100px;background:linear-gradient(135deg,var(--vil),var(--vis));display:flex;align-items:center;justify-content:center;position:relative">
-            <div style="font-size:36px">🧺</div>
-            <div style="position:absolute;top:10px;right:10px;background:var(--gr);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:.3px">OPEN</div>
-          </div>
-          <div style="padding:16px">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-              <div>
-                <div style="font-size:18px;font-weight:700;letter-spacing:-.3px">Stall #22</div>
-                <div style="font-size:12.5px;color:var(--t3);margin-top:2px">Arkipaisi Public Market</div>
-              </div>
-              <span class="stall-type-pill general">General</span>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
-              <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Section E · Row 1</div>
-              <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>4 × 4 m² stall space</div>
-              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Open for any general merchandise use</div>
-            </div>
-            <div style="padding:8px 10px;background:var(--aml);border-radius:var(--rs);display:flex;align-items:center;gap:8px;margin-bottom:12px">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--am);flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <div style="font-size:12px;font-weight:600;color:var(--am)">Application Deadline: March 25, 2026</div>
-            </div>
-            <div style="display:flex;gap:8px">
-              <button class="btn ghost sm" style="flex:1" onclick="openEditModal()">Edit Posting</button>
-              <button class="btn danger-ghost sm">Unpublish</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Add New Posting CTA -->
-        <div style="background:var(--s2);border:2px dashed var(--brd);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;gap:10px;cursor:pointer;transition:all .15s" onclick="openPostModal('','','')">
-          <div style="width:42px;height:42px;background:var(--acl);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--ac)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </div>
-          <div style="font-size:14px;font-weight:600;color:var(--t2)">Post New Stall</div>
-          <div style="font-size:12px;color:var(--t3);text-align:center">Make a vacant stall available for public application</div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<!-- ── ADD/EDIT STALL MODAL ── -->
-<div class="modal-backdrop" id="addModal">
-  <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title" id="modalTitle">Add New Stall</div>
-      <div class="modal-close" onclick="closeModal('addModal')">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </div>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Stall Number *</label>
-          <input class="form-control" placeholder="e.g. #59" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Stall Type *</label>
-          <select class="form-control">
-            <option>Select type...</option>
+          <select class="filter-select">
+            <option>All Types</option>
             <option>Wet Market</option>
             <option>Dry Goods</option>
             <option>Meat Section</option>
@@ -1016,367 +167,1171 @@ textarea.form-control { resize: vertical; min-height: 80px; }
             <option>Fish Section</option>
             <option>General</option>
           </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Section</label>
-          <select class="form-control">
-            <option>Section A</option>
-            <option>Section B</option>
-            <option>Section C</option>
-            <option>Section D</option>
-            <option>Section E</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Row</label>
-          <input class="form-control" placeholder="e.g. Row 1" />
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Size (Width m)</label>
-          <input class="form-control" type="number" placeholder="e.g. 4" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Size (Length m)</label>
-          <input class="form-control" type="number" placeholder="e.g. 4" />
-        </div>
-      </div>
-      <div class="form-row single">
-        <div class="form-group">
-          <label class="form-label">Monthly Rental Rate (₱)</label>
-          <input class="form-control" type="number" placeholder="e.g. 1500" />
-        </div>
-      </div>
-      <div class="form-row single">
-        <div class="form-group">
-          <label class="form-label">Stall Status *</label>
-          <div class="status-selector">
-            <div class="status-opt vacant active" onclick="selectStatus('vacant', this)">Vacant</div>
-            <div class="status-opt occupied" onclick="selectStatus('occupied', this)">Occupied</div>
-            <div class="status-opt maintenance" onclick="selectStatus('maintenance', this)">Under Maintenance</div>
+          <div class="filter-badge all active" onclick="filterStatus('all', this)"><span class="dot"></span>All (58)
+          </div>
+          <div class="filter-badge occupied" onclick="filterStatus('occupied', this)"><span class="dot"></span>Occupied
+            (42)</div>
+          <div class="filter-badge vacant" onclick="filterStatus('vacant', this)"><span class="dot"></span>Vacant (11)
+          </div>
+          <div class="filter-badge maintenance" onclick="filterStatus('maintenance', this)"><span
+              class="dot"></span>Maintenance (5)</div>
+          <div class="view-toggle">
+            <button class="view-btn active tooltip" data-tip="Table View" onclick="switchView('table', this)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <line x1="3" y1="9" x2="21" y2="9" />
+                <line x1="3" y1="15" x2="21" y2="15" />
+                <line x1="9" y1="3" x2="9" y2="21" />
+              </svg>
+            </button>
+            <button class="view-btn tooltip" data-tip="Card View" onclick="switchView('grid', this)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+              </svg>
+            </button>
           </div>
         </div>
-      </div>
-      <div class="form-row single">
-        <div class="form-group">
-          <label class="form-label">Description / Notes</label>
-          <textarea class="form-control" placeholder="Additional details about this stall..."></textarea>
-        </div>
-      </div>
-      <div class="section-divider">Stall Layout Map</div>
-      <div class="upload-zone" onclick="this.querySelector('input').click()">
-        <input type="file" style="display:none" accept="image/*,.pdf" />
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        <div class="upload-zone-text">Drag & drop stall map image or click to upload</div>
-        <div class="upload-zone-sub">PNG, JPG, PDF — Max 10MB</div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn ghost" onclick="closeModal('addModal')">Cancel</button>
-      <button class="btn primary">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Save Stall
-      </button>
-    </div>
-  </div>
-</div>
 
-<!-- ── POST STALL MODAL ── -->
-<div class="modal-backdrop" id="postModal">
-  <div class="modal post-modal">
-    <div class="modal-head">
-      <div class="modal-title">Post Stall for Public Application</div>
-      <div class="modal-close" onclick="closeModal('postModal')">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </div>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:12.5px;color:var(--t3);margin-bottom:16px">This will make the stall visible on the public application portal. Interested vendors can view details and submit pre-screening applications.</p>
-      <!-- Public Preview Card -->
-      <div class="post-preview">
-        <div class="post-preview-img">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
-        <div class="post-preview-body">
-          <div class="post-preview-stall" id="previewStall">Stall #06 — Dry Goods</div>
-          <div class="post-preview-meta">
-            <div class="post-meta-item">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span id="previewLoc">Section B · Row 1</span>
+        <!-- Table View -->
+        <div id="view-table" class="table-panel">
+          <div class="tbl-wrap">
+            <table class="stall-table">
+              <thead>
+                <tr>
+                  <th style="width:40px">
+                    <div class="checkbox" onclick="toggleAll(this)"></div>
+                  </th>
+                  <th class="sortable">Stall # <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3">
+                        <polyline points="18 15 12 9 6 15" />
+                      </svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg></span></th>
+                  <th class="sortable">Type</th>
+                  <th>Location</th>
+                  <th>Size</th>
+                  <th>Vendor / Occupant</th>
+                  <th>Status</th>
+                  <th>Posted</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="checkbox"></div>
+                  </td>
+                  <td><span class="stall-num">#01</span></td>
+                  <td><span class="stall-type-pill wet">Wet Market</span></td>
+                  <td style="font-size:12.5px;color:var(--t2)">Section A · Row 1</td>
+                  <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">4×4 m²</td>
+                  <td><span class="vendor-link">Juan Dela Cruz</span></td>
+                  <td><span class="status-badge occupied">Occupied</span></td>
+                  <td><span class="posted-badge not-posted">Not Posted</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <div class="action-icon tooltip" data-tip="View Details"
+                        onclick="openViewModal('#01','Wet Market','Section A · Row 1','Juan Dela Cruz','occupied')"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Post Stall"
+                        onclick="openPostModal('#01','Wet Market','Section A · Row 1')"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox"></div>
+                  </td>
+                  <td><span class="stall-num">#03</span></td>
+                  <td><span class="stall-type-pill meat">Meat Section</span></td>
+                  <td style="font-size:12.5px;color:var(--t2)">Section A · Row 2</td>
+                  <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">5×4 m²</td>
+                  <td><span class="vendor-link">Pedro Reyes</span></td>
+                  <td><span class="status-badge occupied">Occupied</span></td>
+                  <td><span class="posted-badge not-posted">Not Posted</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <div class="action-icon tooltip" data-tip="View Details"
+                        onclick="openViewModal('#03','Meat Section','Section A · Row 2','Pedro Reyes','occupied')"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Post Stall"
+                        onclick="openPostModal('#03','Meat Section','Section A · Row 2')"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox"></div>
+                  </td>
+                  <td><span class="stall-num">#06</span></td>
+                  <td><span class="stall-type-pill dry">Dry Goods</span></td>
+                  <td style="font-size:12.5px;color:var(--t2)">Section B · Row 1</td>
+                  <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">3×3 m²</td>
+                  <td style="font-size:12.5px;color:var(--t3);font-style:italic">— Vacant —</td>
+                  <td><span class="status-badge vacant">Vacant</span></td>
+                  <td><span class="posted-badge posted">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      Posted
+                    </span></td>
+                  <td>
+                    <div class="row-actions">
+                      <div class="action-icon tooltip" data-tip="View Details"
+                        onclick="openViewModal('#06','Dry Goods','Section B · Row 1','','vacant')"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg></div>
+                      <div class="action-icon success tooltip" data-tip="Manage Posting"
+                        onclick="openPostModal('#06','Dry Goods','Section B · Row 1')"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox"></div>
+                  </td>
+                  <td><span class="stall-num">#07</span></td>
+                  <td><span class="stall-type-pill dry">Dry Goods</span></td>
+                  <td style="font-size:12.5px;color:var(--t2)">Section B · Row 1</td>
+                  <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">3×3 m²</td>
+                  <td><span class="vendor-link">Maria Santos</span></td>
+                  <td><span class="status-badge occupied">Occupied</span></td>
+                  <td><span class="posted-badge not-posted">Not Posted</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Post Stall"><svg xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox"></div>
+                  </td>
+                  <td><span class="stall-num">#11</span></td>
+                  <td><span class="stall-type-pill veggie">Vegetables</span></td>
+                  <td style="font-size:12.5px;color:var(--t2)">Section C · Row 2</td>
+                  <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">4×3 m²</td>
+                  <td style="font-size:12.5px;color:var(--t3);font-style:italic">— Vacant —</td>
+                  <td><span class="status-badge vacant">Vacant</span></td>
+                  <td><span class="posted-badge posted">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      Posted
+                    </span></td>
+                  <td>
+                    <div class="row-actions">
+                      <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg></div>
+                      <div class="action-icon success tooltip" data-tip="Manage Posting"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox"></div>
+                  </td>
+                  <td><span class="stall-num">#14</span></td>
+                  <td><span class="stall-type-pill fish">Fish Section</span></td>
+                  <td style="font-size:12.5px;color:var(--t2)">Section D · Row 1</td>
+                  <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">6×4 m²</td>
+                  <td style="font-size:12px;color:var(--t3);font-style:italic">— Under Maintenance —</td>
+                  <td><span class="status-badge maintenance">Maintenance</span></td>
+                  <td><span class="posted-badge not-posted">Not Posted</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg></div>
+                      <div class="action-icon danger tooltip" data-tip="Cannot Post — Maintenance"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                        </svg></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox"></div>
+                  </td>
+                  <td><span class="stall-num">#19</span></td>
+                  <td><span class="stall-type-pill veggie">Vegetables</span></td>
+                  <td style="font-size:12.5px;color:var(--t2)">Section C · Row 4</td>
+                  <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">3×3 m²</td>
+                  <td><span class="vendor-link">Ana Lim</span></td>
+                  <td><span class="status-badge occupied">Occupied</span></td>
+                  <td><span class="posted-badge not-posted">Not Posted</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Post Stall"><svg xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox"></div>
+                  </td>
+                  <td><span class="stall-num">#22</span></td>
+                  <td><span class="stall-type-pill general">General</span></td>
+                  <td style="font-size:12.5px;color:var(--t2)">Section E · Row 1</td>
+                  <td style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">4×4 m²</td>
+                  <td style="font-size:12.5px;color:var(--t3);font-style:italic">— Vacant —</td>
+                  <td><span class="status-badge vacant">Vacant</span></td>
+                  <td><span class="posted-badge posted">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      Posted
+                    </span></td>
+                  <td>
+                    <div class="row-actions">
+                      <div class="action-icon tooltip" data-tip="View Details"><svg xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg></div>
+                      <div class="action-icon tooltip" data-tip="Edit Stall" onclick="openEditModal()"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg></div>
+                      <div class="action-icon success tooltip" data-tip="Manage Posting"><svg
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg></div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <div class="table-info">Showing 8 of 58 stalls</div>
+            <div class="pagination">
+              <div class="pg-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg></div>
+              <div class="pg-btn active">1</div>
+              <div class="pg-btn">2</div>
+              <div class="pg-btn">3</div>
+              <div class="pg-btn">…</div>
+              <div class="pg-btn">8</div>
+              <div class="pg-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg></div>
             </div>
-            <div class="post-meta-item">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-              Arkipaisi Public Market
+          </div>
+        </div>
+
+        <!-- Grid View (hidden by default) -->
+        <div id="view-grid" style="display:none">
+          <div class="stall-grid">
+            <div class="stall-card occupied">
+              <div class="sc-header">
+                <div class="sc-num">#01</div><span class="status-badge occupied">Occupied</span>
+              </div>
+              <div class="sc-body">
+                <div class="sc-type">🐟 Wet Market</div>
+                <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>Section A · Row 1 &nbsp;·&nbsp; <span class="sc-size">4×4 m²</span></div>
+                <div class="sc-vendor">
+                  <div class="sc-vendor-label">Vendor</div>
+                  <div class="sc-vendor-name">Juan Dela Cruz</div>
+                </div>
+              </div>
+              <div class="sc-footer">
+                <button class="sc-btn"
+                  onclick="openViewModal('#01','Wet Market','Section A · Row 1','Juan Dela Cruz','occupied')">View</button>
+                <button class="sc-btn" onclick="openEditModal()">Edit</button>
+                <button class="sc-btn post"
+                  onclick="openPostModal('#01','Wet Market','Section A · Row 1')">Post</button>
+              </div>
+            </div>
+            <div class="stall-card vacant">
+              <div class="sc-header">
+                <div class="sc-num">#06</div><span class="status-badge vacant">Vacant</span>
+              </div>
+              <div class="sc-body">
+                <div class="sc-type">🛒 Dry Goods</div>
+                <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>Section B · Row 1 &nbsp;·&nbsp; <span class="sc-size">3×3 m²</span></div>
+                <div class="sc-vendor">
+                  <div class="sc-vendor-label">Status</div>
+                  <div class="sc-vendor-name" style="color:var(--am)">Available for Application</div>
+                </div>
+              </div>
+              <div class="sc-footer">
+                <button class="sc-btn"
+                  onclick="openViewModal('#06','Dry Goods','Section B · Row 1','','vacant')">View</button>
+                <button class="sc-btn" onclick="openEditModal()">Edit</button>
+                <button class="sc-btn post" onclick="openPostModal('#06','Dry Goods','Section B · Row 1')">Posted
+                  ✓</button>
+              </div>
+              <div class="posted-ribbon">POSTED</div>
+            </div>
+            <div class="stall-card maintenance">
+              <div class="sc-header">
+                <div class="sc-num">#14</div><span class="status-badge maintenance">Maintenance</span>
+              </div>
+              <div class="sc-body">
+                <div class="sc-type">🐠 Fish Section</div>
+                <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>Section D · Row 1 &nbsp;·&nbsp; <span class="sc-size">6×4 m²</span></div>
+                <div class="sc-vendor">
+                  <div class="sc-vendor-label">Note</div>
+                  <div class="sc-vendor-name" style="color:var(--rd)">Under Repair — Est. Mar 15</div>
+                </div>
+              </div>
+              <div class="sc-footer">
+                <button class="sc-btn">View</button>
+                <button class="sc-btn" onclick="openEditModal()">Edit</button>
+                <button class="sc-btn" style="opacity:.4;cursor:not-allowed">Cannot Post</button>
+              </div>
+            </div>
+            <div class="stall-card occupied">
+              <div class="sc-header">
+                <div class="sc-num">#19</div><span class="status-badge occupied">Occupied</span>
+              </div>
+              <div class="sc-body">
+                <div class="sc-type">🥦 Vegetables</div>
+                <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>Section C · Row 4 &nbsp;·&nbsp; <span class="sc-size">3×3 m²</span></div>
+                <div class="sc-vendor">
+                  <div class="sc-vendor-label">Vendor</div>
+                  <div class="sc-vendor-name">Ana Lim</div>
+                </div>
+              </div>
+              <div class="sc-footer">
+                <button class="sc-btn">View</button>
+                <button class="sc-btn" onclick="openEditModal()">Edit</button>
+                <button class="sc-btn post">Post</button>
+              </div>
+            </div>
+            <div class="stall-card vacant">
+              <div class="sc-header">
+                <div class="sc-num">#22</div><span class="status-badge vacant">Vacant</span>
+              </div>
+              <div class="sc-body">
+                <div class="sc-type">🧺 General</div>
+                <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>Section E · Row 1 &nbsp;·&nbsp; <span class="sc-size">4×4 m²</span></div>
+                <div class="sc-vendor">
+                  <div class="sc-vendor-label">Status</div>
+                  <div class="sc-vendor-name" style="color:var(--am)">Available for Application</div>
+                </div>
+              </div>
+              <div class="sc-footer">
+                <button class="sc-btn">View</button>
+                <button class="sc-btn" onclick="openEditModal()">Edit</button>
+                <button class="sc-btn post">Posted ✓</button>
+              </div>
+              <div class="posted-ribbon">POSTED</div>
+            </div>
+            <div class="stall-card occupied">
+              <div class="sc-header">
+                <div class="sc-num">#24</div><span class="status-badge occupied">Occupied</span>
+              </div>
+              <div class="sc-body">
+                <div class="sc-type">🐠 Fish Section</div>
+                <div class="sc-loc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>Section D · Row 2 &nbsp;·&nbsp; <span class="sc-size">5×4 m²</span></div>
+                <div class="sc-vendor">
+                  <div class="sc-vendor-label">Vendor</div>
+                  <div class="sc-vendor-name">Roberto Go</div>
+                </div>
+              </div>
+              <div class="sc-footer">
+                <button class="sc-btn">View</button>
+                <button class="sc-btn" onclick="openEditModal()">Edit</button>
+                <button class="sc-btn post">Post</button>
+              </div>
             </div>
           </div>
-          <div class="post-preview-desc">A 3×3 m² dry goods stall available for qualified vendors. Ideal for general merchandise, clothing, and household goods.</div>
-          <div class="post-preview-deadline">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <div class="post-preview-deadline-text" id="previewDeadline">Application Deadline: March 20, 2026</div>
+        </div>
+      </div>
+
+      <!-- ── MAP TAB ── -->
+      <div id="tab-map" style="display:none">
+        <div class="map-container">
+          <div class="map-header">
+            <div class="map-title">Arkipaisi Public Market — Stall Layout</div>
+            <div class="map-legend">
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background:var(--acl);border:2px solid var(--acs)"></div>Occupied
+              </div>
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background:var(--aml);border:2px solid var(--ams)"></div>Vacant
+              </div>
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background:var(--grl);border:2px solid var(--grs)"></div>Posted
+              </div>
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background:var(--rdl);border:2px solid var(--rds)"></div>
+                Maintenance
+              </div>
+            </div>
           </div>
-          <button class="post-preview-apply">Apply Now →</button>
+          <div class="map-body">
+            <div class="market-map">
+              <div class="map-entrance">🚪 Main Entrance</div>
+              <div class="map-section-label">Section A — Wet Market / Meat</div>
+              <div class="map-row">
+                <div class="map-stall occupied tooltip" data-tip="Stall #01 · Wet Market · Juan D.C."
+                  onclick="openViewModal('#01','Wet Market','Section A','Juan Dela Cruz','occupied')">
+                  <div class="map-stall-num">#01</div>
+                  <div class="map-stall-type">Wet</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #02 · Meat · Rosa M."
+                  onclick="openViewModal('#02','Meat','Section A','Rosa Magno','occupied')">
+                  <div class="map-stall-num">#02</div>
+                  <div class="map-stall-type">Meat</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #03 · Meat · Pedro R."
+                  onclick="openViewModal('#03','Meat Section','Section A','Pedro Reyes','occupied')">
+                  <div class="map-stall-num">#03</div>
+                  <div class="map-stall-type">Meat</div>
+                </div>
+                <div class="map-stall vacant tooltip" data-tip="Stall #04 · Wet Market · Vacant"
+                  onclick="openViewModal('#04','Wet Market','Section A','','vacant')">
+                  <div class="map-stall-num">#04</div>
+                  <div class="map-stall-type">Wet</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #05 · Wet Market · Carla B.">
+                  <div class="map-stall-num">#05</div>
+                  <div class="map-stall-type">Wet</div>
+                </div>
+              </div>
+              <div class="map-aisle">── Aisle A ──</div>
+              <div class="map-section-label">Section B — Dry Goods</div>
+              <div class="map-row">
+                <div class="map-stall posted tooltip" data-tip="Stall #06 · Dry Goods · POSTED for Application"
+                  onclick="openPostModal('#06','Dry Goods','Section B')">
+                  <div class="map-stall-num">#06</div>
+                  <div class="map-stall-type">Dry</div>
+                  <div class="map-stall-posted-dot"></div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #07 · Dry Goods · Maria S.">
+                  <div class="map-stall-num">#07</div>
+                  <div class="map-stall-type">Dry</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #08 · Dry Goods · Luis V.">
+                  <div class="map-stall-num">#08</div>
+                  <div class="map-stall-type">Dry</div>
+                </div>
+                <div class="map-stall vacant tooltip" data-tip="Stall #09 · Dry Goods · Vacant">
+                  <div class="map-stall-num">#09</div>
+                  <div class="map-stall-type">Dry</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #10 · Dry Goods · Grace C.">
+                  <div class="map-stall-num">#10</div>
+                  <div class="map-stall-type">Dry</div>
+                </div>
+              </div>
+              <div class="map-aisle">── Aisle B ──</div>
+              <div class="map-section-label">Section C — Vegetables</div>
+              <div class="map-row">
+                <div class="map-stall posted tooltip" data-tip="Stall #11 · Vegetables · POSTED"
+                  onclick="openPostModal('#11','Vegetables','Section C')">
+                  <div class="map-stall-num">#11</div>
+                  <div class="map-stall-type">Veg</div>
+                  <div class="map-stall-posted-dot"></div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #12 · Vegetables · Juan D.C.">
+                  <div class="map-stall-num">#12</div>
+                  <div class="map-stall-type">Veg</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #13 · Vegetables · Nena E.">
+                  <div class="map-stall-num">#13</div>
+                  <div class="map-stall-type">Veg</div>
+                </div>
+                <div class="map-stall maintenance tooltip" data-tip="Stall #14 · Fish · Under Maintenance">
+                  <div class="map-stall-num">#14</div>
+                  <div class="map-stall-type">⚠ Fix</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #15 · Vegetables · Ramon F.">
+                  <div class="map-stall-num">#15</div>
+                  <div class="map-stall-type">Veg</div>
+                </div>
+                <div class="map-stall vacant tooltip" data-tip="Stall #16 · Vegetables · Vacant">
+                  <div class="map-stall-num">#16</div>
+                  <div class="map-stall-type">Veg</div>
+                </div>
+              </div>
+              <div class="map-aisle">── Aisle C ──</div>
+              <div class="map-section-label">Section D — Fish Section</div>
+              <div class="map-row">
+                <div class="map-stall occupied tooltip" data-tip="Stall #17 · Fish · Roberto G.">
+                  <div class="map-stall-num">#17</div>
+                  <div class="map-stall-type">Fish</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #18 · Fish · Rosa M.">
+                  <div class="map-stall-num">#18</div>
+                  <div class="map-stall-type">Fish</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #19 · Veg · Ana L.">
+                  <div class="map-stall-num">#19</div>
+                  <div class="map-stall-type">Veg</div>
+                </div>
+                <div class="map-stall maintenance tooltip" data-tip="Stall #20 · Fish · Under Maintenance">
+                  <div class="map-stall-num">#20</div>
+                  <div class="map-stall-type">⚠ Fix</div>
+                </div>
+              </div>
+              <div class="map-aisle">── Aisle D ──</div>
+              <div class="map-section-label">Section E — General</div>
+              <div class="map-row">
+                <div class="map-stall occupied tooltip" data-tip="Stall #21 · General · Carla B.">
+                  <div class="map-stall-num">#21</div>
+                  <div class="map-stall-type">Gen</div>
+                </div>
+                <div class="map-stall posted tooltip" data-tip="Stall #22 · General · POSTED"
+                  onclick="openPostModal('#22','General','Section E')">
+                  <div class="map-stall-num">#22</div>
+                  <div class="map-stall-type">Gen</div>
+                  <div class="map-stall-posted-dot"></div>
+                </div>
+                <div class="map-stall vacant tooltip" data-tip="Stall #23 · General · Vacant">
+                  <div class="map-stall-num">#23</div>
+                  <div class="map-stall-type">Gen</div>
+                </div>
+                <div class="map-stall occupied tooltip" data-tip="Stall #24 · Fish · Roberto G.">
+                  <div class="map-stall-num">#24</div>
+                  <div class="map-stall-type">Fish</div>
+                </div>
+                <div class="map-stall posted tooltip" data-tip="Stall #25 · General · POSTED">
+                  <div class="map-stall-num">#25</div>
+                  <div class="map-stall-type">Gen</div>
+                  <div class="map-stall-posted-dot"></div>
+                </div>
+                <div class="map-stall vacant tooltip" data-tip="Stall #26 · General · Vacant">
+                  <div class="map-stall-num">#26</div>
+                  <div class="map-stall-type">Gen</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <!-- Form -->
-      <div class="form-row single">
-        <div class="form-group">
-          <label class="form-label">Public Description</label>
-          <textarea class="form-control" style="min-height:70px" placeholder="Brief description visible to applicants...">A 3×3 m² dry goods stall available for qualified vendors. Ideal for general merchandise, clothing, and household goods.</textarea>
+
+      <!-- ── POSTED TAB ── -->
+      <div id="tab-posted" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+          <!-- Public Posting Cards -->
+          <div
+            style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)">
+            <div
+              style="height:100px;background:linear-gradient(135deg,var(--aml),var(--ams));display:flex;align-items:center;justify-content:center;position:relative">
+              <div style="font-size:36px">🛒</div>
+              <div
+                style="position:absolute;top:10px;right:10px;background:var(--gr);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:.3px">
+                OPEN</div>
+            </div>
+            <div style="padding:16px">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+                <div>
+                  <div style="font-size:18px;font-weight:700;letter-spacing:-.3px">Stall #06</div>
+                  <div style="font-size:12.5px;color:var(--t3);margin-top:2px">Arkipaisi Public Market</div>
+                </div>
+                <span class="stall-type-pill dry">Dry Goods</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
+                <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>Section B · Row 1</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                  </svg>3 × 3 m² stall space</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path
+                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>Suitable for general merchandise, clothing</div>
+              </div>
+              <div
+                style="padding:8px 10px;background:var(--aml);border-radius:var(--rs);display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" style="color:var(--am);flex-shrink:0">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <div style="font-size:12px;font-weight:600;color:var(--am)">Application Deadline: March 20, 2026</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn ghost sm" style="flex:1" onclick="openEditModal()">Edit Posting</button>
+                <button class="btn danger-ghost sm" onclick="unpublishStall()">Unpublish</button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)">
+            <div
+              style="height:100px;background:linear-gradient(135deg,var(--grl),var(--grs));display:flex;align-items:center;justify-content:center;position:relative">
+              <div style="font-size:36px">🥦</div>
+              <div
+                style="position:absolute;top:10px;right:10px;background:var(--gr);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:.3px">
+                OPEN</div>
+            </div>
+            <div style="padding:16px">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+                <div>
+                  <div style="font-size:18px;font-weight:700;letter-spacing:-.3px">Stall #11</div>
+                  <div style="font-size:12.5px;color:var(--t3);margin-top:2px">Arkipaisi Public Market</div>
+                </div>
+                <span class="stall-type-pill veggie">Vegetables</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
+                <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>Section C · Row 2</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                  </svg>4 × 3 m² stall space</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path
+                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>Fresh produce, vegetables, condiments</div>
+              </div>
+              <div
+                style="padding:8px 10px;background:var(--aml);border-radius:var(--rs);display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" style="color:var(--am);flex-shrink:0">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <div style="font-size:12px;font-weight:600;color:var(--am)">Application Deadline: March 22, 2026</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn ghost sm" style="flex:1" onclick="openEditModal()">Edit Posting</button>
+                <button class="btn danger-ghost sm">Unpublish</button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)">
+            <div
+              style="height:100px;background:linear-gradient(135deg,var(--vil),var(--vis));display:flex;align-items:center;justify-content:center;position:relative">
+              <div style="font-size:36px">🧺</div>
+              <div
+                style="position:absolute;top:10px;right:10px;background:var(--gr);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:.3px">
+                OPEN</div>
+            </div>
+            <div style="padding:16px">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+                <div>
+                  <div style="font-size:18px;font-weight:700;letter-spacing:-.3px">Stall #22</div>
+                  <div style="font-size:12.5px;color:var(--t3);margin-top:2px">Arkipaisi Public Market</div>
+                </div>
+                <span class="stall-type-pill general">General</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
+                <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>Section E · Row 1</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t2)"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                  </svg>4 × 4 m² stall space</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path
+                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>Open for any general merchandise use</div>
+              </div>
+              <div
+                style="padding:8px 10px;background:var(--aml);border-radius:var(--rs);display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" style="color:var(--am);flex-shrink:0">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <div style="font-size:12px;font-weight:600;color:var(--am)">Application Deadline: March 25, 2026</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn ghost sm" style="flex:1" onclick="openEditModal()">Edit Posting</button>
+                <button class="btn danger-ghost sm">Unpublish</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add New Posting CTA -->
+          <div
+            style="background:var(--s2);border:2px dashed var(--brd);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;gap:10px;cursor:pointer;transition:all .15s"
+            onclick="openPostModal('','','')">
+            <div
+              style="width:42px;height:42px;background:var(--acl);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--ac)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </div>
+            <div style="font-size:14px;font-weight:600;color:var(--t2)">Post New Stall</div>
+            <div style="font-size:12px;color:var(--t3);text-align:center">Make a vacant stall available for public
+              application</div>
+          </div>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Application Deadline *</label>
-          <input class="form-control" type="date" value="2026-03-20" onchange="updateDeadline(this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Max Applicants</label>
-          <input class="form-control" type="number" placeholder="Unlimited" />
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <!-- ── ADD/EDIT STALL MODAL ── -->
+  <div class="modal-backdrop" id="addModal">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Add New Stall</div>
+        <div class="modal-close" onclick="closeModal('addModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </div>
       </div>
-      <div class="post-toggle">
-        <div class="post-toggle-info">
-          <div class="post-toggle-label">✓ Publish to Public Portal</div>
-          <div class="post-toggle-desc">Visible to all interested applicants immediately</div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Stall Number *</label>
+            <input class="form-control" placeholder="e.g. #59" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stall Type *</label>
+            <select class="form-control">
+              <option>Select type...</option>
+              <option>Wet Market</option>
+              <option>Dry Goods</option>
+              <option>Meat Section</option>
+              <option>Vegetables</option>
+              <option>Fish Section</option>
+              <option>General</option>
+            </select>
+          </div>
         </div>
-        <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <select class="form-control">
+              <option>Section A</option>
+              <option>Section B</option>
+              <option>Section C</option>
+              <option>Section D</option>
+              <option>Section E</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Row</label>
+            <input class="form-control" placeholder="e.g. Row 1" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Size (Width m)</label>
+            <input class="form-control" type="number" placeholder="e.g. 4" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Size (Length m)</label>
+            <input class="form-control" type="number" placeholder="e.g. 4" />
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label class="form-label">Monthly Rental Rate (₱)</label>
+            <input class="form-control" type="number" placeholder="e.g. 1500" />
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label class="form-label">Stall Status *</label>
+            <div class="status-selector">
+              <div class="status-opt vacant active" onclick="selectStatus('vacant', this)">Vacant</div>
+              <div class="status-opt occupied" onclick="selectStatus('occupied', this)">Occupied</div>
+              <div class="status-opt maintenance" onclick="selectStatus('maintenance', this)">Under Maintenance</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label class="form-label">Description / Notes</label>
+            <textarea class="form-control" placeholder="Additional details about this stall..."></textarea>
+          </div>
+        </div>
+        <div class="section-divider">Stall Layout Map</div>
+        <div class="upload-zone" onclick="this.querySelector('input').click()">
+          <input type="file" style="display:none" accept="image/*,.pdf" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+          <div class="upload-zone-text">Drag & drop stall map image or click to upload</div>
+          <div class="upload-zone-sub">PNG, JPG, PDF — Max 10MB</div>
+        </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn ghost" onclick="closeModal('postModal')">Cancel</button>
-      <button class="btn success">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        Publish Stall
-      </button>
+      <div class="modal-footer">
+        <button class="btn ghost" onclick="closeModal('addModal')">Cancel</button>
+        <button class="btn primary">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <polyline points="9 11 12 14 22 4" />
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+          </svg>
+          Save Stall
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ── VIEW MODAL ── -->
-<div class="modal-backdrop" id="viewModal">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-head">
-      <div class="modal-title" id="viewTitle">Stall Details</div>
-      <div class="modal-close" onclick="closeModal('viewModal')">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </div>
-    </div>
-    <div class="modal-body" id="viewBody">
-    </div>
-    <div class="modal-footer">
-      <button class="btn ghost" onclick="closeModal('viewModal')">Close</button>
-      <button class="btn primary" onclick="closeModal('viewModal');openEditModal()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        Edit Stall
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ── UPLOAD MAP MODAL ── -->
-<div class="modal-backdrop" id="uploadModal">
-  <div class="modal" style="max-width:440px">
-    <div class="modal-head">
-      <div class="modal-title">Upload Stall Layout Map</div>
-      <div class="modal-close" onclick="closeModal('uploadModal')">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </div>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:12.5px;color:var(--t3);margin-bottom:16px">Upload the official market layout map or individual stall plan. Supported: PNG, JPG, PDF, DWG</p>
-      <div class="upload-zone" style="padding:40px 20px" onclick="this.querySelector('input').click()">
-        <input type="file" style="display:none" />
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <div class="upload-zone-text">Drag & drop or click to select file</div>
-        <div class="upload-zone-sub">PNG, JPG, PDF, DWG — Max 50MB</div>
-      </div>
-      <div class="form-row single" style="margin-top:14px">
-        <div class="form-group">
-          <label class="form-label">Map Type</label>
-          <select class="form-control">
-            <option>Full Market Layout</option>
-            <option>Section A Map</option>
-            <option>Section B Map</option>
-            <option>Section C Map</option>
-            <option>Section D Map</option>
-            <option>Section E Map</option>
-          </select>
+  <!-- ── POST STALL MODAL ── -->
+  <div class="modal-backdrop" id="postModal">
+    <div class="modal post-modal">
+      <div class="modal-head">
+        <div class="modal-title">Post Stall for Public Application</div>
+        <div class="modal-close" onclick="closeModal('postModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn ghost" onclick="closeModal('uploadModal')">Cancel</button>
-      <button class="btn primary">Upload Map</button>
+      <div class="modal-body">
+        <p style="font-size:12.5px;color:var(--t3);margin-bottom:16px">This will make the stall visible on the public
+          application portal. Interested vendors can view details and submit pre-screening applications.</p>
+        <!-- Public Preview Card -->
+        <div class="post-preview">
+          <div class="post-preview-img">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          </div>
+          <div class="post-preview-body">
+            <div class="post-preview-stall" id="previewStall">Stall #06 — Dry Goods</div>
+            <div class="post-preview-meta">
+              <div class="post-meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span id="previewLoc">Section B · Row 1</span>
+              </div>
+              <div class="post-meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                </svg>
+                Arkipaisi Public Market
+              </div>
+            </div>
+            <div class="post-preview-desc">A 3×3 m² dry goods stall available for qualified vendors. Ideal for general
+              merchandise, clothing, and household goods.</div>
+            <div class="post-preview-deadline">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <div class="post-preview-deadline-text" id="previewDeadline">Application Deadline: March 20, 2026</div>
+            </div>
+            <button class="post-preview-apply">Apply Now →</button>
+          </div>
+        </div>
+        <!-- Form -->
+        <div class="form-row single">
+          <div class="form-group">
+            <label class="form-label">Public Description</label>
+            <textarea class="form-control" style="min-height:70px"
+              placeholder="Brief description visible to applicants...">A 3×3 m² dry goods stall available for qualified vendors. Ideal for general merchandise, clothing, and household goods.</textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Application Deadline *</label>
+            <input class="form-control" type="date" value="2026-03-20" onchange="updateDeadline(this.value)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max Applicants</label>
+            <input class="form-control" type="number" placeholder="Unlimited" />
+          </div>
+        </div>
+        <div class="post-toggle">
+          <div class="post-toggle-info">
+            <div class="post-toggle-label">✓ Publish to Public Portal</div>
+            <div class="post-toggle-desc">Visible to all interested applicants immediately</div>
+          </div>
+          <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn ghost" onclick="closeModal('postModal')">Cancel</button>
+        <button class="btn success">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          Publish Stall
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-// ── SIDEBAR ──
-let SB_OPEN=window.innerWidth>=900;
-function openSB(){
-  SB_OPEN=true;
-  document.getElementById('sb').style.transform='translateX(0)';
-  if(window.innerWidth<768){
-    document.getElementById('veil').style.display='block';
-    document.getElementById('main').style.marginLeft='0';
-  }else{
-    document.getElementById('veil').style.display='none';
-    document.getElementById('main').style.marginLeft='var(--sidebar-w)';
-  }
-}
-function closeSB(){
-  SB_OPEN=false;
-  document.getElementById('sb').style.transform='translateX(calc(-1 * var(--sidebar-w)))';
-  document.getElementById('veil').style.display='none';
-  document.getElementById('main').style.marginLeft='0';
-}
-function toggleSB(){SB_OPEN?closeSB():openSB();}
-(function(){
-  if(window.innerWidth<768)closeSB();else openSB();
-  window.addEventListener('resize',function(){
-    if(window.innerWidth>=768){
-      document.getElementById('veil').style.display='none';
-      if(SB_OPEN)document.getElementById('main').style.marginLeft='var(--sidebar-w)';
-    }else{
-      document.getElementById('main').style.marginLeft='0';
-      if(SB_OPEN)document.getElementById('veil').style.display='block';
-    }
-  });
-})();
-function toggleSidebar(){toggleSB();}
-
-// ── THEME ──
-let isDark = false;
-function toggleTheme() {
-  isDark = !isDark;
-  document.documentElement.classList.toggle('dark', isDark);
-  const i = document.getElementById('themeIcon');
-  i.innerHTML = isDark
-    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
-    : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-}
-
-// ── TABS ──
-function switchTab(tab, btn) {
-  ['list','map','posted'].forEach(t => {
-    document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
-  });
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-// ── VIEW TOGGLE ──
-function switchView(view, btn) {
-  document.getElementById('view-table').style.display = view === 'table' ? 'block' : 'none';
-  document.getElementById('view-grid').style.display = view === 'grid' ? 'block' : 'none';
-  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-// ── FILTER ──
-function filterStatus(status, el) {
-  document.querySelectorAll('.filter-badge').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-}
-
-// ── STATUS SELECT ──
-function selectStatus(s, el) {
-  document.querySelectorAll('.status-opt').forEach(o => o.classList.remove('active'));
-  el.classList.add('active', s);
-}
-
-// ── MODALS ──
-function openModal(id) {
-  document.getElementById(id).classList.add('open');
-}
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-function openAddModal() {
-  document.getElementById('modalTitle').textContent = 'Add New Stall';
-  openModal('addModal');
-}
-function openEditModal() {
-  document.getElementById('modalTitle').textContent = 'Edit Stall Details';
-  openModal('addModal');
-}
-function openUploadModal() { openModal('uploadModal'); }
-
-function openPostModal(num, type, loc) {
-  if (num) {
-    document.getElementById('previewStall').textContent = `Stall ${num} — ${type}`;
-    document.getElementById('previewLoc').textContent = loc;
-  }
-  openModal('postModal');
-}
-
-function updateDeadline(val) {
-  const d = new Date(val);
-  const opts = { year:'numeric', month:'long', day:'numeric' };
-  document.getElementById('previewDeadline').textContent = 'Application Deadline: ' + d.toLocaleDateString('en-US', opts);
-}
-
-function openViewModal(num, type, loc, vendor, status) {
-  document.getElementById('viewTitle').textContent = `Stall ${num} — Details`;
-  const colors = { occupied: 'var(--ac)', vacant: 'var(--am)', maintenance: 'var(--rd)' };
-  const labels = { occupied: 'Occupied', vacant: 'Vacant', maintenance: 'Under Maintenance' };
-  const vendorRow = vendor
-    ? `<div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ac),#7c3aed);display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:700">${vendor.split(' ').map(w=>w[0]).slice(0,2).join('')}</div><div><div style="font-size:13px;font-weight:600">${vendor}</div><div style="font-size:11px;color:var(--t3)">Current Vendor</div></div></div>`
-    : `<span style="color:var(--t3);font-style:italic;font-size:13px">No current vendor</span>`;
-  document.getElementById('viewBody').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-      <div style="background:var(--s2);border:1px solid var(--brd);border-radius:8px;padding:12px">
-        <div style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Stall Number</div>
-        <div style="font-size:22px;font-weight:700;font-family:'DM Mono',monospace">${num}</div>
+  <!-- ── VIEW MODAL ── -->
+  <div class="modal-backdrop" id="viewModal">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-head">
+        <div class="modal-title" id="viewTitle">Stall Details</div>
+        <div class="modal-close" onclick="closeModal('viewModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </div>
       </div>
-      <div style="background:var(--s2);border:1px solid var(--brd);border-radius:8px;padding:12px">
-        <div style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Status</div>
-        <span class="status-badge ${status}">${labels[status]}</span>
+      <div class="modal-body" id="viewBody">
+      </div>
+      <div class="modal-footer">
+        <button class="btn ghost" onclick="closeModal('viewModal')">Close</button>
+        <button class="btn primary" onclick="closeModal('viewModal');openEditModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+          Edit Stall
+        </button>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--brd2)">
-        <span style="font-size:12px;color:var(--t3);font-weight:600">Type</span>
-        <span style="font-size:13px;font-weight:600">${type}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--brd2)">
-        <span style="font-size:12px;color:var(--t3);font-weight:600">Location</span>
-        <span style="font-size:13px;font-weight:600">${loc}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--brd2)">
-        <span style="font-size:12px;color:var(--t3);font-weight:600">Size</span>
-        <span style="font-size:13px;font-weight:600;font-family:'DM Mono',monospace">4 × 4 m²</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--brd2)">
-        <span style="font-size:12px;color:var(--t3);font-weight:600">Monthly Rate</span>
-        <span style="font-size:13px;font-weight:700;font-family:'DM Mono',monospace;color:var(--gr)">₱1,500.00</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">
-        <span style="font-size:12px;color:var(--t3);font-weight:600">Vendor</span>
-        ${vendorRow}
-      </div>
-    </div>`;
-  openModal('viewModal');
-}
+  </div>
 
-// Close on backdrop click
-document.querySelectorAll('.modal-backdrop').forEach(b => {
-  b.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('open');
-  });
-});
+  <!-- ── UPLOAD MAP MODAL ── -->
+  <div class="modal-backdrop" id="uploadModal">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-head">
+        <div class="modal-title">Upload Stall Layout Map</div>
+        <div class="modal-close" onclick="closeModal('uploadModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:12.5px;color:var(--t3);margin-bottom:16px">Upload the official market layout map or
+          individual stall plan. Supported: PNG, JPG, PDF, DWG</p>
+        <div class="upload-zone" style="padding:40px 20px" onclick="this.querySelector('input').click()">
+          <input type="file" style="display:none" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <div class="upload-zone-text">Drag & drop or click to select file</div>
+          <div class="upload-zone-sub">PNG, JPG, PDF, DWG — Max 50MB</div>
+        </div>
+        <div class="form-row single" style="margin-top:14px">
+          <div class="form-group">
+            <label class="form-label">Map Type</label>
+            <select class="form-control">
+              <option>Full Market Layout</option>
+              <option>Section A Map</option>
+              <option>Section B Map</option>
+              <option>Section C Map</option>
+              <option>Section D Map</option>
+              <option>Section E Map</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn ghost" onclick="closeModal('uploadModal')">Cancel</button>
+        <button class="btn primary">Upload Map</button>
+      </div>
+    </div>
+  </div>
 
-// Toggle all checkboxes
-function toggleAll(el) {
-  el.classList.toggle('checked');
-  document.querySelectorAll('.stall-table td .checkbox').forEach(c => {
-    c.classList.toggle('checked', el.classList.contains('checked'));
-  });
-}
-</script>
+  <script src="/js/admin/stall-management.js"></script>
 </body>
+
 </html>

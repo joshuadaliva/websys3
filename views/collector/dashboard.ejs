@@ -1,0 +1,2510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>ARKIPAISI — Staff Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg: #f0f2f8;
+      --surf: #fff;
+      --s2: #f6f7fb;
+      --s3: #eef0f7;
+      --brd: #e2e6f0;
+      --brd2: #eaecf5;
+      --t1: #0c0f1e;
+      --t2: #566080;
+      --t3: #9099b8;
+      --ac: #1d4ed8;
+      --acl: #eff3ff;
+      --acs: #c7d7fd;
+      --gr: #15803d;
+      --grl: #f0fdf4;
+      --grs: #bbf7d0;
+      --am: #b45309;
+      --aml: #fffbeb;
+      --ams: #fde68a;
+      --rd: #b91c1c;
+      --rdl: #fff1f2;
+      --rds: #fecdd3;
+      --vi: #6d28d9;
+      --vil: #f5f3ff;
+      --vis: #ddd6fe;
+      --cy: #0e7490;
+      --cyl: #ecfeff;
+      --cys: #a5f3fc;
+      --or: #c2410c;
+      --orl: #fff7ed;
+      --ors: #fed7aa;
+      --sidebar-w: 240px;
+      --r: 12px;
+      --rs: 7px;
+      --sh: 0 1px 3px rgba(12, 18, 60, .06), 0 1px 2px rgba(12, 18, 60, .04);
+      --shm: 0 4px 16px rgba(12, 18, 60, .09), 0 2px 5px rgba(12, 18, 60, .05);
+      --shl: 0 16px 48px rgba(12, 18, 60, .14), 0 4px 12px rgba(12, 18, 60, .07);
+    }
+
+    html.dark {
+      --bg: #080b15;
+      --surf: #10152a;
+      --s2: #151c32;
+      --s3: #1c2440;
+      --brd: #202844;
+      --brd2: #1a2238;
+      --t1: #e0e6f8;
+      --t2: #6878a8;
+      --t3: #384060;
+      --ac: #4a6ef5;
+      --acl: #171e48;
+      --acs: #1f2e80;
+      --grl: #061410;
+      --grs: #0f3020;
+      --aml: #150e00;
+      --ams: #381e00;
+      --rdl: #150408;
+      --rds: #380412;
+      --sh: 0 1px 3px rgba(0, 0, 0, .4);
+      --shm: 0 4px 16px rgba(0, 0, 0, .5);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--t1);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden
+    }
+
+    /* ── SIDEBAR ── */
+    .sb {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--surf);
+      border-right: 1px solid var(--brd);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 60;
+      transition: transform .28s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .sb-logo {
+      height: 56px;
+      padding: 0 16px 0 20px;
+      border-bottom: 1px solid var(--brd);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0
+    }
+
+    .logo-m {
+      width: 32px;
+      height: 32px;
+      background: var(--ac);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0
+    }
+
+    .logo-n {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.3px
+    }
+
+    .logo-sub {
+      font-size: 9.5px;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-top: 1px
+    }
+
+    .sb-x {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid var(--brd);
+      background: var(--s2);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--t2);
+      flex-shrink: 0;
+      transition: all .14s
+    }
+
+    .sb-x:hover {
+      background: var(--rdl);
+      color: var(--rd);
+      border-color: var(--rds)
+    }
+
+    .sb-x svg {
+      width: 13px;
+      height: 13px
+    }
+
+    .sb-nav {
+      flex: 1;
+      padding: 10px 8px;
+      overflow-y: auto
+    }
+
+    .nsec {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--t3);
+      letter-spacing: .9px;
+      text-transform: uppercase;
+      padding: 10px 10px 4px;
+      margin-top: 4px
+    }
+
+    .ni {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 12px;
+      border-radius: var(--rs);
+      color: var(--t2);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .14s;
+      margin-bottom: 1px;
+      text-decoration: none
+    }
+
+    .ni:hover {
+      background: var(--s2);
+      color: var(--t1)
+    }
+
+    .ni.on {
+      background: var(--acl);
+      color: var(--ac);
+      font-weight: 600
+    }
+
+    .ni svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0
+    }
+
+    .nbdg {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: 'DM Mono', monospace;
+      background: var(--rds);
+      color: var(--rd)
+    }
+
+    .nbdg.am {
+      background: var(--ams);
+      color: var(--am)
+    }
+
+    .nbdg.gr {
+      background: var(--grs);
+      color: var(--gr)
+    }
+
+    .sb-foot {
+      padding: 12px 8px;
+      border-top: 1px solid var(--brd);
+      flex-shrink: 0
+    }
+
+    .urow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: var(--rs);
+      cursor: pointer;
+      transition: background .14s
+    }
+
+    .urow:hover {
+      background: var(--s2)
+    }
+
+    .uav {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gr), var(--cy));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0
+    }
+
+    .veil {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      z-index: 55;
+      cursor: pointer
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+      transition: margin-left .28s cubic-bezier(.4, 0, .2, 1);
+      min-width: 0;
+      overflow-x: hidden
+    }
+
+    /* ── NAV ── */
+    .nav {
+      height: 56px;
+      background: var(--surf);
+      border-bottom: 1px solid var(--brd);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      flex-shrink: 0
+    }
+
+    .togbtn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--rs);
+      border: 1px solid var(--brd);
+      background: var(--surf);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--t2);
+      transition: all .14s;
+      flex-shrink: 0
+    }
+
+    .togbtn:hover {
+      border-color: var(--ac);
+      color: var(--ac);
+      background: var(--acl)
+    }
+
+    .togbtn svg {
+      width: 15px;
+      height: 15px
+    }
+
+    .nav-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .nav-ttl {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .nav-bc {
+      font-size: 11px;
+      color: var(--t3)
+    }
+
+    .nav-r {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0
+    }
+
+    .nsrch {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--s2);
+      border: 1px solid var(--brd);
+      border-radius: var(--rs);
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--t3);
+      cursor: text;
+      min-width: 170px
+    }
+
+    .nsrch svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0
+    }
+
+    .nsrch kbd {
+      margin-left: auto;
+      font-size: 10px;
+      background: var(--surf);
+      border: 1px solid var(--brd);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: 'DM Mono', monospace
+    }
+
+    .nico {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--rs);
+      border: 1px solid var(--brd);
+      background: var(--surf);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--t2);
+      transition: all .14s;
+      flex-shrink: 0;
+      position: relative
+    }
+
+    .nico:hover {
+      border-color: var(--ac);
+      color: var(--ac);
+      background: var(--acl)
+    }
+
+    .nico svg {
+      width: 14px;
+      height: 14px
+    }
+
+    .nico-dot {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 7px;
+      height: 7px;
+      background: var(--rd);
+      border-radius: 50%;
+      border: 1.5px solid var(--surf)
+    }
+
+    .avp {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 3px 10px 3px 3px;
+      border-radius: var(--rs);
+      border: 1px solid var(--brd);
+      background: var(--surf);
+      cursor: pointer;
+      transition: all .14s;
+      flex-shrink: 0
+    }
+
+    .avp:hover {
+      border-color: var(--ac)
+    }
+
+    .avp-a {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gr), var(--cy));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      padding: 20px;
+      flex: 1
+    }
+
+    /* ── DATE BANNER ── */
+    .date-banner {
+      background: linear-gradient(135deg, var(--ac) 0%, var(--vi) 100%);
+      border-radius: var(--r);
+      padding: 18px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: #fff
+    }
+
+    .db-left {}
+
+    .db-greeting {
+      font-size: 11px;
+      font-weight: 600;
+      opacity: .8;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 3px
+    }
+
+    .db-name {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.4px
+    }
+
+    .db-sub {
+      font-size: 12px;
+      opacity: .75;
+      margin-top: 3px
+    }
+
+    .db-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px
+    }
+
+    .db-time {
+      font-size: 26px;
+      font-weight: 700;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: -1px
+    }
+
+    .db-date {
+      font-size: 12px;
+      opacity: .75
+    }
+
+    /* ── STAT CARDS ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px
+    }
+
+    .sc {
+      background: var(--surf);
+      border: 1px solid var(--brd);
+      border-radius: var(--r);
+      padding: 16px 18px;
+      box-shadow: var(--sh);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all .18s
+    }
+
+    .sc:hover {
+      box-shadow: var(--shm);
+      transform: translateY(-1px)
+    }
+
+    .sc-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0
+    }
+
+    .sc-icon svg {
+      width: 20px;
+      height: 20px
+    }
+
+    .sc-icon.bl {
+      background: var(--acl);
+      color: var(--ac)
+    }
+
+    .sc-icon.gr {
+      background: var(--grl);
+      color: var(--gr)
+    }
+
+    .sc-icon.am {
+      background: var(--aml);
+      color: var(--am)
+    }
+
+    .sc-icon.rd {
+      background: var(--rdl);
+      color: var(--rd)
+    }
+
+    .sc-icon.vi {
+      background: var(--vil);
+      color: var(--vi)
+    }
+
+    .sc-val {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+      line-height: 1;
+      font-family: 'DM Mono', monospace
+    }
+
+    .sc-lbl {
+      font-size: 11.5px;
+      color: var(--t3);
+      margin-top: 3px;
+      font-weight: 500
+    }
+
+    .sc-change {
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 3px
+    }
+
+    .sc-change.up {
+      color: var(--gr)
+    }
+
+    .sc-change.down {
+      color: var(--rd)
+    }
+
+    .sc-change svg {
+      width: 10px;
+      height: 10px
+    }
+
+    /* ── TWO-COL LAYOUT ── */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 16px;
+      align-items: start
+    }
+
+    /* ── PANELS ── */
+    .panel {
+      background: var(--surf);
+      border: 1px solid var(--brd);
+      border-radius: var(--r);
+      box-shadow: var(--sh);
+      overflow: hidden;
+      margin-bottom: 16px
+    }
+
+    .panel:last-child {
+      margin-bottom: 0
+    }
+
+    .ph {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--brd);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .ph-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .ph-title svg {
+      width: 15px;
+      height: 15px;
+      color: var(--ac);
+      flex-shrink: 0
+    }
+
+    .ph-sub {
+      font-size: 11.5px;
+      color: var(--t3);
+      margin-top: 2px
+    }
+
+    /* ── TABLE ── */
+    .tbl-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      width: 100%
+    }
+
+    .tbl {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 520px
+    }
+
+    .tbl th {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      padding: 9px 14px;
+      text-align: left;
+      background: var(--s2);
+      border-bottom: 1px solid var(--brd)
+    }
+
+    .tbl td {
+      padding: 11px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--brd2);
+      vertical-align: middle
+    }
+
+    .tbl tr:last-child td {
+      border-bottom: none
+    }
+
+    .tbl tbody tr {
+      cursor: pointer;
+      transition: background .12s
+    }
+
+    .tbl tbody tr:hover td {
+      background: var(--s2)
+    }
+
+    .vcell {
+      display: flex;
+      align-items: center;
+      gap: 9px
+    }
+
+    .vav {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0
+    }
+
+    /* ── BADGE ── */
+    .bdg {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap
+    }
+
+    .bdg.gr {
+      background: var(--grs);
+      color: var(--gr)
+    }
+
+    .bdg.am {
+      background: var(--ams);
+      color: var(--am)
+    }
+
+    .bdg.rd {
+      background: var(--rds);
+      color: var(--rd)
+    }
+
+    .bdg.ac {
+      background: var(--acs);
+      color: var(--ac)
+    }
+
+    .bdg.vi {
+      background: var(--vis);
+      color: var(--vi)
+    }
+
+    .bdg.cy {
+      background: var(--cys);
+      color: var(--cy)
+    }
+
+    .bdg.gy {
+      background: var(--s3);
+      color: var(--t3)
+    }
+
+    /* ── QUICK ACTION BUTTONS ── */
+    .qa-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 14px
+    }
+
+    .qa-btn {
+      background: var(--s2);
+      border: 1.5px solid var(--brd);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all .16s;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px
+    }
+
+    .qa-btn:hover {
+      border-color: var(--ac);
+      background: var(--acl)
+    }
+
+    .qa-btn:hover .qa-icon {
+      background: var(--ac);
+      color: #fff
+    }
+
+    .qa-btn:hover .qa-lbl {
+      color: var(--ac)
+    }
+
+    .qa-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      transition: all .16s
+    }
+
+    .qa-icon svg {
+      width: 18px;
+      height: 18px
+    }
+
+    .qa-icon.gr {
+      background: var(--grl);
+      color: var(--gr)
+    }
+
+    .qa-icon.ac {
+      background: var(--acl);
+      color: var(--ac)
+    }
+
+    .qa-icon.am {
+      background: var(--aml);
+      color: var(--am)
+    }
+
+    .qa-icon.vi {
+      background: var(--vil);
+      color: var(--vi)
+    }
+
+    .qa-icon.cy {
+      background: var(--cyl);
+      color: var(--cy)
+    }
+
+    .qa-icon.rd {
+      background: var(--rdl);
+      color: var(--rd)
+    }
+
+    .qa-lbl {
+      font-size: 12.5px;
+      font-weight: 700;
+      transition: color .16s
+    }
+
+    .qa-desc {
+      font-size: 11px;
+      color: var(--t3);
+      line-height: 1.4
+    }
+
+    /* ── ACTIVITY FEED ── */
+    .act-list {
+      padding: 6px 0
+    }
+
+    .act-item {
+      display: flex;
+      gap: 12px;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--brd2);
+      transition: background .12s;
+      cursor: pointer
+    }
+
+    .act-item:last-child {
+      border-bottom: none
+    }
+
+    .act-item:hover {
+      background: var(--s2)
+    }
+
+    .act-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px
+    }
+
+    .act-dot svg {
+      width: 14px;
+      height: 14px
+    }
+
+    .act-dot.gr {
+      background: var(--grl);
+      color: var(--gr)
+    }
+
+    .act-dot.ac {
+      background: var(--acl);
+      color: var(--ac)
+    }
+
+    .act-dot.am {
+      background: var(--aml);
+      color: var(--am)
+    }
+
+    .act-dot.rd {
+      background: var(--rdl);
+      color: var(--rd)
+    }
+
+    .act-dot.vi {
+      background: var(--vil);
+      color: var(--vi)
+    }
+
+    .act-dot.cy {
+      background: var(--cyl);
+      color: var(--cy)
+    }
+
+    .act-body {
+      flex: 1;
+      min-width: 0
+    }
+
+    .act-text {
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--t1)
+    }
+
+    .act-text strong {
+      font-weight: 700
+    }
+
+    .act-time {
+      font-size: 11px;
+      color: var(--t3);
+      margin-top: 3px
+    }
+
+    /* ── TODAY COLLECTIONS PROGRESS ── */
+    .coll-bar-wrap {
+      padding: 16px 18px
+    }
+
+    .coll-row {
+      margin-bottom: 14px
+    }
+
+    .coll-row:last-child {
+      margin-bottom: 0
+    }
+
+    .coll-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px
+    }
+
+    .coll-lbl {
+      font-size: 12.5px;
+      font-weight: 600
+    }
+
+    .coll-val {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: var(--t2)
+    }
+
+    .bar-track {
+      height: 7px;
+      background: var(--brd);
+      border-radius: 4px;
+      overflow: hidden
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width .6s ease
+    }
+
+    .bar-fill.gr {
+      background: linear-gradient(90deg, var(--gr), var(--cy))
+    }
+
+    .bar-fill.ac {
+      background: linear-gradient(90deg, var(--ac), var(--vi))
+    }
+
+    .bar-fill.am {
+      background: linear-gradient(90deg, var(--am), var(--or))
+    }
+
+    .bar-fill.rd {
+      background: var(--rd)
+    }
+
+    /* ── OVERDUE NOTICE ── */
+    .overdue-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--brd2);
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .overdue-item:last-child {
+      border-bottom: none
+    }
+
+    .ov-left {
+      display: flex;
+      align-items: center;
+      gap: 9px
+    }
+
+    .ov-av {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0
+    }
+
+    .ov-name {
+      font-size: 12.5px;
+      font-weight: 600
+    }
+
+    .ov-stall {
+      font-size: 11px;
+      color: var(--t3)
+    }
+
+    .ov-amount {
+      font-size: 13px;
+      font-weight: 800;
+      font-family: 'DM Mono', monospace;
+      color: var(--rd)
+    }
+
+    .ov-days {
+      font-size: 11px;
+      color: var(--rd);
+      font-weight: 600
+    }
+
+    /* ── MINI CALENDAR ── */
+    .cal-wrap {
+      padding: 14px 16px
+    }
+
+    .cal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px
+    }
+
+    .cal-month {
+      font-size: 13px;
+      font-weight: 700
+    }
+
+    .cal-nav {
+      display: flex;
+      gap: 4px
+    }
+
+    .cal-nav-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid var(--brd);
+      background: var(--s2);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--t2);
+      transition: all .14s
+    }
+
+    .cal-nav-btn:hover {
+      border-color: var(--ac);
+      color: var(--ac)
+    }
+
+    .cal-nav-btn svg {
+      width: 12px;
+      height: 12px
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px
+    }
+
+    .cal-day-hdr {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--t3);
+      padding: 4px 0;
+      text-transform: uppercase
+    }
+
+    .cal-day {
+      height: 30px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .14s;
+      color: var(--t2);
+      font-weight: 500
+    }
+
+    .cal-day:hover {
+      background: var(--s2);
+      color: var(--t1)
+    }
+
+    .cal-day.today {
+      background: var(--ac);
+      color: #fff;
+      font-weight: 700
+    }
+
+    .cal-day.has-event {
+      position: relative
+    }
+
+    .cal-day.has-event::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: var(--am);
+      border-radius: 50%
+    }
+
+    .cal-day.today.has-event::after {
+      background: #fff
+    }
+
+    .cal-day.other-month {
+      opacity: .3
+    }
+
+    .cal-day.weekend {
+      color: var(--rd)
+    }
+
+    .cal-day.today.weekend {
+      color: #fff
+    }
+
+    /* ── UPCOMING TASKS ── */
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--brd2);
+      cursor: pointer;
+      transition: background .12s
+    }
+
+    .task-item:last-child {
+      border-bottom: none
+    }
+
+    .task-item:hover {
+      background: var(--s2)
+    }
+
+    .task-cb {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 2px solid var(--brd);
+      flex-shrink: 0;
+      margin-top: 2px;
+      cursor: pointer;
+      transition: all .14s;
+      display: grid;
+      place-items: center
+    }
+
+    .task-cb.done {
+      background: var(--gr);
+      border-color: var(--gr)
+    }
+
+    .task-cb.done svg {
+      display: block
+    }
+
+    .task-cb svg {
+      display: none;
+      width: 10px;
+      height: 10px;
+      color: #fff
+    }
+
+    .task-body {
+      flex: 1;
+      min-width: 0
+    }
+
+    .task-lbl {
+      font-size: 12.5px;
+      font-weight: 600;
+      line-height: 1.3
+    }
+
+    .task-lbl.done {
+      text-decoration: line-through;
+      color: var(--t3)
+    }
+
+    .task-meta {
+      font-size: 11px;
+      color: var(--t3);
+      margin-top: 2px
+    }
+
+    .task-due {
+      font-size: 11px;
+      font-weight: 700
+    }
+
+    .task-due.late {
+      color: var(--rd)
+    }
+
+    .task-due.soon {
+      color: var(--am)
+    }
+
+    .task-due.ok {
+      color: var(--gr)
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      padding: 7px 14px;
+      border-radius: var(--rs);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .14s
+    }
+
+    .btn svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0
+    }
+
+    .btn.pri {
+      background: var(--ac);
+      color: #fff
+    }
+
+    .btn.pri:hover {
+      filter: brightness(1.1)
+    }
+
+    .btn.gh {
+      background: var(--surf);
+      border: 1px solid var(--brd);
+      color: var(--t2)
+    }
+
+    .btn.gh:hover {
+      border-color: var(--ac);
+      color: var(--ac)
+    }
+
+    .btn.gr {
+      background: var(--gr);
+      color: #fff
+    }
+
+    .btn.gr:hover {
+      filter: brightness(1.08)
+    }
+
+    .btn.xs {
+      padding: 4px 9px;
+      font-size: 11.5px
+    }
+
+    .btn.sm {
+      padding: 6px 12px;
+      font-size: 12px
+    }
+
+    /* ── MODAL ── */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(12, 18, 60, .45);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s
+    }
+
+    .modal-bg.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .modal {
+      background: var(--surf);
+      border-radius: var(--r);
+      box-shadow: var(--shl);
+      width: 100%;
+      max-width: 460px;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(10px);
+      transition: transform .22s
+    }
+
+    .modal-bg.open .modal {
+      transform: translateY(0)
+    }
+
+    .modal-head {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--brd);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0
+    }
+
+    .modal-title {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .modal-title svg {
+      width: 16px;
+      height: 16px;
+      color: var(--gr);
+      flex-shrink: 0
+    }
+
+    .modal-x {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--brd);
+      background: var(--s2);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--t2);
+      transition: all .14s;
+      flex-shrink: 0
+    }
+
+    .modal-x:hover {
+      background: var(--rdl);
+      color: var(--rd);
+      border-color: var(--rds)
+    }
+
+    .modal-x svg {
+      width: 13px;
+      height: 13px
+    }
+
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      overflow-y: auto;
+      max-height: 70vh
+    }
+
+    .modal-foot {
+      padding: 12px 20px;
+      border-top: 1px solid var(--brd);
+      background: var(--s2);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-shrink: 0
+    }
+
+    .fgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .fgrid.full {
+      grid-template-columns: 1fr
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 5px
+    }
+
+    .fg label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--t2);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .finp {
+      background: var(--s2);
+      border: 1px solid var(--brd);
+      border-radius: var(--rs);
+      padding: 8px 11px;
+      font-size: 13px;
+      color: var(--t1);
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border .14s;
+      width: 100%
+    }
+
+    .finp:focus {
+      border-color: var(--ac);
+      background: var(--surf)
+    }
+
+    .finp::placeholder {
+      color: var(--t3)
+    }
+
+    select.finp {
+      cursor: pointer
+    }
+
+    .pfx {
+      display: flex;
+      border: 1px solid var(--brd);
+      border-radius: var(--rs);
+      overflow: hidden;
+      background: var(--s2);
+      transition: border .14s
+    }
+
+    .pfx:focus-within {
+      border-color: var(--ac)
+    }
+
+    .pfx-lbl {
+      padding: 0 10px;
+      background: var(--s3);
+      border-right: 1px solid var(--brd);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--t3);
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      flex-shrink: 0
+    }
+
+    .pfx .finp {
+      border: none;
+      background: transparent;
+      border-radius: 0
+    }
+
+    .pfx .finp:focus {
+      background: transparent
+    }
+
+    .infobox {
+      display: flex;
+      gap: 9px;
+      padding: 10px 13px;
+      border-radius: var(--rs);
+      font-size: 12.5px;
+      line-height: 1.5
+    }
+
+    .infobox svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-top: 1px
+    }
+
+    .infobox.gr {
+      background: var(--grl);
+      border: 1px solid var(--grs);
+      color: var(--gr)
+    }
+
+    .infobox.am {
+      background: var(--aml);
+      border: 1px solid var(--ams);
+      color: var(--am)
+    }
+
+    .infobox.bl {
+      background: var(--acl);
+      border: 1px solid var(--acs);
+      color: var(--ac)
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--t1);
+      color: var(--surf);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all .22s;
+      white-space: nowrap
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1200px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:1024px) {
+      .dash-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:768px) {
+      .main {
+        margin-left: 0 !important;
+        min-width: 0
+      }
+
+      .sb {
+        transform: translateX(calc(-1 * var(--sidebar-w)))
+      }
+
+      .nsrch {
+        display: none
+      }
+
+      .avp span,
+      .avp svg:last-child {
+        display: none
+      }
+
+      .content {
+        padding: 14px
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .qa-grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    @media(max-width:540px) {
+      .content {
+        padding: 10px
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .sc {
+        padding: 12px 14px
+      }
+
+      .sc-val {
+        font-size: 18px
+      }
+
+      .db-time {
+        font-size: 20px
+      }
+
+      .db-name {
+        font-size: 16px
+      }
+
+      .ph {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px
+      }
+
+      .modal-bg {
+        padding: 0;
+        align-items: flex-end
+      }
+
+      .modal {
+        border-radius: 14px 14px 0 0;
+        max-width: 100%
+      }
+
+      .fgrid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:380px) {
+      .stats {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .qa-grid {
+        grid-template-columns: 1fr
+      }
+
+      .sc-val {
+        font-size: 16px
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--brd);
+      border-radius: 10px
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="veil" id="veil" onclick="closeSB()"></div>
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sb" id="sb">
+    <div class="sb-logo">
+      <div class="logo-m">AP</div>
+      <div style="flex:1;min-width:0">
+        <div class="logo-n">ARKIPAISI</div>
+        <div class="logo-sub">Market Office</div>
+      </div>
+      <div class="sb-x" onclick="closeSB()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="nsec">Main</div>
+      <div class="ni on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+        </svg>Dashboard</div>
+      <div class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>My Stalls</div>
+      <div class="nsec">Collections</div>
+      <div class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23" />
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>Record Payment<span class="nbdg am">5</span></div>
+      <div class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>Payment History</div>
+      <div class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>Overdue Accounts<span class="nbdg">8</span></div>
+      <div class="nsec">Reports</div>
+      <div class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>Daily RCD</div>
+      <div class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>Monthly Summary</div>
+      <div class="nsec">System</div>
+      <div class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>Notifications<span class="nbdg">3</span></div>
+      <div class="ni"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>My Profile</div>
+    </nav>
+    <div class="sb-foot">
+      <div class="urow">
+        <div class="uav">JR</div>
+        <div>
+          <div style="font-size:13px;font-weight:600">Juan R. Reyes</div>
+          <div style="font-size:10.5px;color:var(--t3)">Collector</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main" id="main">
+
+    <!-- NAV -->
+    <header class="nav">
+      <div class="togbtn" onclick="toggleSB()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg></div>
+      <div class="nav-info">
+        <div class="nav-ttl">Dashboard</div>
+        <div class="nav-bc">ARKIPAISI &rsaquo; Staff &rsaquo; Dashboard</div>
+      </div>
+      <div class="nav-r">
+        <div class="nsrch"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>Search...<kbd>&#8984;K</kbd></div>
+        <div class="nico" onclick="toggleTheme()"><svg id="themeIco" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg></div>
+        <div class="nico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <div class="nico-dot"></div>
+        </div>
+        <div class="avp">
+          <div class="avp-a">JR</div><span style="font-size:12px;font-weight:600">Reyes</span><svg
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            width="11" height="11">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- Date / Greeting Banner -->
+      <div class="date-banner">
+        <div class="db-left">
+          <div class="db-greeting">Good morning</div>
+          <div class="db-name">Juan R. Reyes</div>
+          <div class="db-sub">Collector &mdash; Pili Public Market</div>
+        </div>
+        <div class="db-right">
+          <div class="db-time" id="liveClock">--:--</div>
+          <div class="db-date" id="liveDate">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stats">
+        <div class="sc">
+          <div class="sc-icon gr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg></div>
+          <div>
+            <div class="sc-val">&#8369;14,800</div>
+            <div class="sc-lbl">Collected Today</div>
+            <div class="sc-change up"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3">
+                <polyline points="18 15 12 9 6 15" />
+              </svg>+&#8369;2,200 vs yesterday</div>
+          </div>
+        </div>
+        <div class="sc">
+          <div class="sc-icon bl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg></div>
+          <div>
+            <div class="sc-val">12</div>
+            <div class="sc-lbl">Receipts Issued</div>
+            <div class="sc-change up"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3">
+                <polyline points="18 15 12 9 6 15" />
+              </svg>3 more than yesterday</div>
+          </div>
+        </div>
+        <div class="sc">
+          <div class="sc-icon am"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            </svg></div>
+          <div>
+            <div class="sc-val">8</div>
+            <div class="sc-lbl">Overdue Accounts</div>
+            <div class="sc-change down"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>&#8369;38,400 total balance</div>
+          </div>
+        </div>
+        <div class="sc">
+          <div class="sc-icon vi"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            </svg></div>
+          <div>
+            <div class="sc-val">42</div>
+            <div class="sc-lbl">Assigned Stalls</div>
+            <div class="sc-change up" style="color:var(--t3)">38 active &middot; 4 vacant</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main 2-col grid -->
+      <div class="dash-grid">
+
+        <!-- LEFT COLUMN -->
+        <div>
+
+          <!-- Quick Actions -->
+          <div class="panel">
+            <div class="ph">
+              <div>
+                <div class="ph-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                  </svg>Quick Actions</div>
+              </div>
+            </div>
+            <div class="qa-grid">
+              <div class="qa-btn" onclick="openPaymentModal()">
+                <div class="qa-icon gr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg></div>
+                <div class="qa-lbl">Record Payment</div>
+                <div class="qa-desc">Collect and issue official receipt for a vendor</div>
+              </div>
+              <div class="qa-btn" onclick="showToast('Opening Overdue list...')">
+                <div class="qa-icon am"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg></div>
+                <div class="qa-lbl">View Overdue</div>
+                <div class="qa-desc">Check and follow up on overdue accounts</div>
+              </div>
+              <div class="qa-btn" onclick="showToast('Opening Daily RCD...')">
+                <div class="qa-icon ac"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg></div>
+                <div class="qa-lbl">Daily RCD</div>
+                <div class="qa-desc">Submit today's collection report</div>
+              </div>
+              <div class="qa-btn" onclick="showToast('Opening Payment History...')">
+                <div class="qa-icon vi"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg></div>
+                <div class="qa-lbl">Payment History</div>
+                <div class="qa-desc">View and print past receipts</div>
+              </div>
+              <div class="qa-btn" onclick="showToast('Opening My Stalls...')">
+                <div class="qa-icon cy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  </svg></div>
+                <div class="qa-lbl">My Stalls</div>
+                <div class="qa-desc">View stalls assigned to your route</div>
+              </div>
+              <div class="qa-btn" onclick="showToast('Opening Monthly Summary...')">
+                <div class="qa-icon rd"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg></div>
+                <div class="qa-lbl">Monthly Report</div>
+                <div class="qa-desc">View and download monthly summary</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Collections -->
+          <div class="panel">
+            <div class="ph">
+              <div>
+                <div class="ph-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>Recent Collections</div>
+                <div class="ph-sub">Today &mdash; March 18, 2026</div>
+              </div>
+              <button class="btn pri sm" onclick="openPaymentModal()"><svg xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>Record New</button>
+            </div>
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th>Vendor</th>
+                    <th>Stall</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Time</th>
+                    <th>OR No.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="vcell">
+                        <div class="vav" style="background:linear-gradient(135deg,#3b82f6,#6366f1)">JD</div>
+                        <div>
+                          <div style="font-size:12.5px;font-weight:600">Juan Dela Cruz</div>
+                          <div style="font-size:11px;color:var(--t3)">VND-001</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700">#01</span></td>
+                    <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">&#8369;1,200</td>
+                    <td><span class="bdg gr">Cash</span></td>
+                    <td style="font-size:12px;color:var(--t3)">09:12 AM</td>
+                    <td style="font-family:'DM Mono',monospace;font-size:11.5px;color:var(--t3)">OR-2026-0841</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="vcell">
+                        <div class="vav" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">PR</div>
+                        <div>
+                          <div style="font-size:12.5px;font-weight:600">Pedro Reyes</div>
+                          <div style="font-size:11px;color:var(--t3)">VND-002</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700">#03</span></td>
+                    <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">&#8369;1,400</td>
+                    <td><span class="bdg vi">GCash</span></td>
+                    <td style="font-size:12px;color:var(--t3)">09:35 AM</td>
+                    <td style="font-family:'DM Mono',monospace;font-size:11.5px;color:var(--t3)">OR-2026-0842</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="vcell">
+                        <div class="vav" style="background:linear-gradient(135deg,#10b981,#0891b2)">MS</div>
+                        <div>
+                          <div style="font-size:12.5px;font-weight:600">Maria Santos</div>
+                          <div style="font-size:11px;color:var(--t3)">VND-003</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700">#07</span></td>
+                    <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">&#8369;1,000</td>
+                    <td><span class="bdg gr">Cash</span></td>
+                    <td style="font-size:12px;color:var(--t3)">10:02 AM</td>
+                    <td style="font-family:'DM Mono',monospace;font-size:11.5px;color:var(--t3)">OR-2026-0843</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="vcell">
+                        <div class="vav" style="background:linear-gradient(135deg,#8b5cf6,#d946ef)">AL</div>
+                        <div>
+                          <div style="font-size:12.5px;font-weight:600">Ana Lim</div>
+                          <div style="font-size:11px;color:var(--t3)">VND-004</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700">#19</span></td>
+                    <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">&#8369;1,500</td>
+                    <td><span class="bdg cy">Maya</span></td>
+                    <td style="font-size:12px;color:var(--t3)">10:28 AM</td>
+                    <td style="font-family:'DM Mono',monospace;font-size:11.5px;color:var(--t3)">OR-2026-0844</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="vcell">
+                        <div class="vav" style="background:linear-gradient(135deg,#f97316,#ef4444)">RG</div>
+                        <div>
+                          <div style="font-size:12.5px;font-weight:600">Roberto Go</div>
+                          <div style="font-size:11px;color:var(--t3)">VND-005</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700">#24</span></td>
+                    <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">&#8369;1,200</td>
+                    <td><span class="bdg gr">Cash</span></td>
+                    <td style="font-size:12px;color:var(--t3)">11:15 AM</td>
+                    <td style="font-family:'DM Mono',monospace;font-size:11.5px;color:var(--t3)">OR-2026-0845</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div
+              style="padding:10px 16px;background:var(--s2);border-top:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+              <span style="font-size:12px;color:var(--t3)">Showing 5 of 12 today &mdash; <span
+                  style="font-weight:700;color:var(--gr)">Total: &#8369;14,800</span></span>
+              <button class="btn gh xs" onclick="showToast('Loading full history...')">View All</button>
+            </div>
+          </div>
+
+          <!-- Overdue Accounts -->
+          <div class="panel">
+            <div class="ph">
+              <div>
+                <div class="ph-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>Overdue Accounts</div>
+                <div class="ph-sub">8 vendors require follow-up</div>
+              </div>
+              <span class="bdg am">&#8369;38,400 total</span>
+            </div>
+            <div>
+              <div class="overdue-item">
+                <div class="ov-left">
+                  <div class="ov-av" style="background:linear-gradient(135deg,#ef4444,#f97316)">CB</div>
+                  <div>
+                    <div class="ov-name">Carla Bautista</div>
+                    <div class="ov-stall">Stall #06 &middot; Dry Goods</div>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div class="ov-amount">&#8369;3,600</div>
+                  <div class="ov-days">45 days overdue</div>
+                </div>
+              </div>
+              <div class="overdue-item">
+                <div class="ov-left">
+                  <div class="ov-av" style="background:linear-gradient(135deg,#8b5cf6,#6366f1)">LV</div>
+                  <div>
+                    <div class="ov-name">Luis Villanueva</div>
+                    <div class="ov-stall">Stall #11 &middot; Vegetables</div>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div class="ov-amount">&#8369;2,000</div>
+                  <div class="ov-days">32 days overdue</div>
+                </div>
+              </div>
+              <div class="overdue-item">
+                <div class="ov-left">
+                  <div class="ov-av" style="background:linear-gradient(135deg,#f59e0b,#10b981)">GC</div>
+                  <div>
+                    <div class="ov-name">Grace Cruz</div>
+                    <div class="ov-stall">Stall #09 &middot; Wet Market</div>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div class="ov-amount">&#8369;5,600</div>
+                  <div class="ov-days">28 days overdue</div>
+                </div>
+              </div>
+              <div class="overdue-item">
+                <div class="ov-left">
+                  <div class="ov-av" style="background:linear-gradient(135deg,#0891b2,#3b82f6)">DC</div>
+                  <div>
+                    <div class="ov-name">Diego Cruz</div>
+                    <div class="ov-stall">Stall #15 &middot; General</div>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div class="ov-amount">&#8369;4,500</div>
+                  <div class="ov-days">21 days overdue</div>
+                </div>
+              </div>
+            </div>
+            <div
+              style="padding:10px 16px;background:var(--s2);border-top:1px solid var(--brd);display:flex;justify-content:flex-end">
+              <button class="btn gh xs" onclick="showToast('Loading all overdue...')">View All 8</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div>
+
+          <!-- Today's Collection Progress -->
+          <div class="panel">
+            <div class="ph">
+              <div>
+                <div class="ph-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>Today's Progress</div>
+                <div class="ph-sub">vs. monthly target</div>
+              </div>
+            </div>
+            <div class="coll-bar-wrap">
+              <div class="coll-row">
+                <div class="coll-top"><span class="coll-lbl">Cash</span><span class="coll-val">&#8369;9,800 /
+                    &#8369;42,000</span></div>
+                <div class="bar-track">
+                  <div class="bar-fill gr" style="width:23%"></div>
+                </div>
+              </div>
+              <div class="coll-row">
+                <div class="coll-top"><span class="coll-lbl">GCash</span><span class="coll-val">&#8369;3,400 /
+                    &#8369;18,000</span></div>
+                <div class="bar-track">
+                  <div class="bar-fill ac" style="width:19%"></div>
+                </div>
+              </div>
+              <div class="coll-row">
+                <div class="coll-top"><span class="coll-lbl">Maya</span><span class="coll-val">&#8369;1,600 /
+                    &#8369;8,000</span></div>
+                <div class="bar-track">
+                  <div class="bar-fill am" style="width:20%"></div>
+                </div>
+              </div>
+              <div class="coll-row">
+                <div class="coll-top"><span class="coll-lbl" style="color:var(--rd)">Overdue Balance</span><span
+                    class="coll-val" style="color:var(--rd)">&#8369;38,400</span></div>
+                <div class="bar-track">
+                  <div class="bar-fill rd" style="width:55%"></div>
+                </div>
+              </div>
+              <div
+                style="margin-top:14px;padding-top:12px;border-top:1px solid var(--brd2);display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div
+                    style="font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.3px">
+                    Total Collected</div>
+                  <div
+                    style="font-size:20px;font-weight:800;font-family:'DM Mono',monospace;color:var(--gr);letter-spacing:-1px">
+                    &#8369;14,800</div>
+                </div>
+                <div style="text-align:right">
+                  <div
+                    style="font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.3px">
+                    Month Target</div>
+                  <div style="font-size:20px;font-weight:800;font-family:'DM Mono',monospace;letter-spacing:-1px">
+                    &#8369;68,000</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mini Calendar -->
+          <div class="panel">
+            <div class="ph">
+              <div>
+                <div class="ph-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>Calendar</div>
+              </div>
+            </div>
+            <div class="cal-wrap">
+              <div class="cal-head">
+                <div class="cal-month" id="calMonth">March 2026</div>
+                <div class="cal-nav">
+                  <div class="cal-nav-btn" onclick="changeMonth(-1)"><svg xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg></div>
+                  <div class="cal-nav-btn" onclick="changeMonth(1)"><svg xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg></div>
+                </div>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+            </div>
+          </div>
+
+          <!-- Tasks -->
+          <div class="panel">
+            <div class="ph">
+              <div>
+                <div class="ph-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="9 11 12 14 22 4" />
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                  </svg>Today's Tasks</div>
+              </div><button class="btn gh xs" onclick="showToast('Add task')"><svg xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg></button>
+            </div>
+            <div>
+              <div class="task-item">
+                <div class="task-cb done" onclick="toggleTask(this)"><svg xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></div>
+                <div class="task-body">
+                  <div class="task-lbl done">Collect Section A payments</div>
+                  <div class="task-meta">12 stalls &middot; Completed 10:30 AM</div>
+                </div>
+                <div class="task-due ok">Done</div>
+              </div>
+              <div class="task-item">
+                <div class="task-cb done" onclick="toggleTask(this)"><svg xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></div>
+                <div class="task-body">
+                  <div class="task-lbl done">Issue OR for Carla Bautista</div>
+                  <div class="task-meta">OR-2026-0841 &middot; Completed</div>
+                </div>
+                <div class="task-due ok">Done</div>
+              </div>
+              <div class="task-item">
+                <div class="task-cb" onclick="toggleTask(this)"><svg xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></div>
+                <div class="task-body">
+                  <div class="task-lbl">Collect Section B &amp; C payments</div>
+                  <div class="task-meta">18 stalls remaining</div>
+                </div>
+                <div class="task-due soon">Due 12:00 PM</div>
+              </div>
+              <div class="task-item">
+                <div class="task-cb" onclick="toggleTask(this)"><svg xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></div>
+                <div class="task-body">
+                  <div class="task-lbl">Follow up: Luis Villanueva overdue</div>
+                  <div class="task-meta">Stall #11 &middot; 32 days</div>
+                </div>
+                <div class="task-due late">Overdue</div>
+              </div>
+              <div class="task-item">
+                <div class="task-cb" onclick="toggleTask(this)"><svg xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></div>
+                <div class="task-body">
+                  <div class="task-lbl">Submit Daily RCD Report</div>
+                  <div class="task-meta">Due by 5:00 PM today</div>
+                </div>
+                <div class="task-due soon">Due 5:00 PM</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="panel">
+            <div class="ph">
+              <div>
+                <div class="ph-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>Recent Activity</div>
+              </div>
+            </div>
+            <div class="act-list">
+              <div class="act-item">
+                <div class="act-dot gr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></div>
+                <div class="act-body">
+                  <div class="act-text"><strong>Payment recorded</strong> &mdash; Roberto Go, Stall #24, &#8369;1,200
+                    cash</div>
+                  <div class="act-time">11:15 AM &middot; OR-2026-0845</div>
+                </div>
+              </div>
+              <div class="act-item">
+                <div class="act-dot ac"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect x="5" y="2" width="14" height="20" rx="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" />
+                  </svg></div>
+                <div class="act-body">
+                  <div class="act-text"><strong>GCash payment</strong> &mdash; Ana Lim, Stall #19, &#8369;1,500 via Maya
+                  </div>
+                  <div class="act-time">10:28 AM &middot; OR-2026-0844</div>
+                </div>
+              </div>
+              <div class="act-item">
+                <div class="act-dot am"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07" />
+                  </svg></div>
+                <div class="act-body">
+                  <div class="act-text"><strong>SMS reminder sent</strong> &mdash; Grace Cruz, Stall #09 overdue notice
+                  </div>
+                  <div class="act-time">09:00 AM &middot; Automated</div>
+                </div>
+              </div>
+              <div class="act-item">
+                <div class="act-dot gr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></div>
+                <div class="act-body">
+                  <div class="act-text"><strong>Payment recorded</strong> &mdash; Maria Santos, Stall #07, &#8369;1,000
+                    cash</div>
+                  <div class="act-time">10:02 AM &middot; OR-2026-0843</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ RECORD PAYMENT MODAL ═══ -->
+  <div class="modal-bg" id="paymentModal">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>Record Payment</div>
+        <div class="modal-x" onclick="closeModal('paymentModal')"><svg xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></div>
+      </div>
+      <div class="modal-body">
+        <div class="infobox bl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <div>An Official Receipt will be auto-generated after saving.</div>
+        </div>
+        <div class="fgrid">
+          <div class="fg"><label>Vendor / Stall</label>
+            <select class="finp" id="pm-vendor">
+              <option value="">-- Select Vendor --</option>
+              <option>Juan Dela Cruz &mdash; Stall #01</option>
+              <option>Pedro Reyes &mdash; Stall #03</option>
+              <option>Maria Santos &mdash; Stall #07</option>
+              <option>Ana Lim &mdash; Stall #19</option>
+              <option>Roberto Go &mdash; Stall #24</option>
+              <option>Carla Bautista &mdash; Stall #06</option>
+              <option>Luis Villanueva &mdash; Stall #11</option>
+              <option>Grace Cruz &mdash; Stall #09</option>
+              <option>Diego Cruz &mdash; Stall #15</option>
+            </select>
+          </div>
+          <div class="fg"><label>Payment Period</label>
+            <select class="finp" id="pm-period">
+              <option selected>March 2026</option>
+              <option>February 2026</option>
+              <option>January 2026</option>
+            </select>
+          </div>
+        </div>
+        <div class="fgrid">
+          <div class="fg"><label>Amount (PHP)</label>
+            <div class="pfx"><span class="pfx-lbl">&#8369;</span><input class="finp" id="pm-amount" type="number"
+                min="0" step="50" placeholder="0.00" /></div>
+          </div>
+          <div class="fg"><label>Payment Method</label>
+            <select class="finp" id="pm-method">
+              <option>Cash</option>
+              <option>GCash</option>
+              <option>Maya (PayMaya)</option>
+              <option>Bank Transfer</option>
+            </select>
+          </div>
+        </div>
+        <div class="fgrid">
+          <div class="fg"><label>Date Paid</label><input class="finp" id="pm-date" type="date" /></div>
+          <div class="fg"><label>OR Number</label><input class="finp" id="pm-or" placeholder="Auto-generated" readonly
+              style="background:var(--s3);color:var(--t3)" /></div>
+        </div>
+        <div class="fgrid full">
+          <div class="fg"><label>Remarks (optional)</label><input class="finp" id="pm-remarks"
+              placeholder="e.g. Partial payment, installment 1 of 2" /></div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn gh sm" onclick="closeModal('paymentModal')">Cancel</button>
+        <button class="btn gr sm" onclick="savePayment()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>Save &amp; Issue OR</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/js/collector/dashboard.js"></script>
+</body>
+
+</html>

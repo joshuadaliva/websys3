@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>ARKIPAISI — Admin Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/css/admin/settings.css">
+</head>
+
+<body>
+
+  <%- include("../partials/sidebar.ejs") %>
+  
+  <div class="main" id="main">
+        <%- include("../partials/header.ejs") %>
+        
+
+        <div class="content">
+            <div class="pghdr">
+                <div>
+                    <h1>Settings</h1>
+                    <p>Configure market operations, payments, and system preferences</p>
+                </div>
+            </div>
+
+            <div class="settings-wrap">
+                <!-- LEFT NAV -->
+                <div class="settings-nav">
+                    <div class="sn-item on" onclick="setTab('market',this)"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        </svg>Market Info</div>
+                    <div class="sn-item" onclick="setTab('payment',this)"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" />
+                            <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>Payment</div>
+                    <div class="sn-item" onclick="setTab('fees',this)"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>Fees &amp; Rates</div>
+                    <div class="sn-item" onclick="setTab('notif',this)"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>Notifications</div>
+                    <div class="sn-item" onclick="setTab('users',this)"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>Users &amp; Access</div>
+                    <div class="sn-item" onclick="setTab('profile',this)"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>My Profile</div>
+                    <div class="sn-sep"></div>
+                    <div class="sn-item danger" onclick="setTab('danger',this)"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>Danger Zone</div>
+                </div>
+
+                <!-- PANELS -->
+                <div>
+                    <!-- MARKET INFO -->
+                    <div id="tab-market" class="settings-panel on">
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>Market Information</div>
+                                    <div class="scard-sub">Basic details about the public market</div>
+                                </div>
+                            </div>
+                            <div class="scard-body">
+                                <div class="fgrid full" style="margin-bottom:13px">
+                                    <div class="fg"><label>Market Name</label><input class="finp"
+                                            value="Pili Public Market" /></div>
+                                </div>
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>Municipality / City</label><input class="finp"
+                                            value="Pili" /></div>
+                                    <div class="fg"><label>Province</label><input class="finp" value="Camarines Sur" />
+                                    </div>
+                                </div>
+                                <div class="fgrid full" style="margin-bottom:13px">
+                                    <div class="fg"><label>Complete Address</label><input class="finp"
+                                            value="Pili Public Market, Pili, Camarines Sur, Philippines" /></div>
+                                </div>
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>Market Code</label><input class="finp"
+                                            value="MKT-PIL-2024-001" style="font-family:'DM Mono',monospace" /></div>
+                                    <div class="fg"><label>LGU / Office</label><input class="finp"
+                                            value="Office of the Market Administrator" /></div>
+                                </div>
+                                <div class="fgrid">
+                                    <div class="fg"><label>Contact Number</label><input class="finp"
+                                            value="+63 54 477 1234" /></div>
+                                    <div class="fg"><label>Email Address</label><input class="finp"
+                                            value="market@pili.gov.ph" /></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm">Cancel</button><button class="btn pri sm"
+                                    onclick="showToast('Market info saved')"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <polyline points="12 6 12 12 16 14" />
+                                        </svg>Operating Hours</div>
+                                    <div class="scard-sub">Market open and close schedules</div>
+                                </div>
+                            </div>
+                            <div class="scard-body">
+                                <div class="fgrid tri" style="margin-bottom:13px">
+                                    <div class="fg"><label>Opening Time</label><input class="finp" type="time"
+                                            value="05:00" /></div>
+                                    <div class="fg"><label>Closing Time</label><input class="finp" type="time"
+                                            value="20:00" /></div>
+                                    <div class="fg"><label>Rest Day</label><select class="finp">
+                                            <option selected>None (Open Daily)</option>
+                                            <option>Sunday</option>
+                                            <option>Monday</option>
+                                        </select></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Holiday Closure</div>
+                                        <div class="sw-desc">Auto-mark market closed on national holidays</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Show Hours on Public Page</div>
+                                        <div class="sw-desc">Display hours on the vendor application portal</div>
+                                    </div>
+                                    <div class="sw on blue" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm">Cancel</button><button class="btn pri sm"
+                                    onclick="showToast('Hours saved')"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+                    </div>
+
+                    <!-- PAYMENT -->
+                    <div id="tab-payment" class="settings-panel">
+
+                        <!-- Method selector card -->
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="1" y="4" width="22" height="16" rx="2" />
+                                            <line x1="1" y1="10" x2="23" y2="10" />
+                                        </svg>Accepted Payment Methods</div>
+                                    <div class="scard-sub">Click a method to configure its setup details</div>
+                                </div>
+                            </div>
+                            <div class="scard-body">
+                                <div class="pm-grid">
+                                    <div class="pm-card" data-pm="cash" onclick="selectPM(this)">
+                                        <div class="pm-top">
+                                            <div class="pm-icon cash"><svg xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <rect x="2" y="6" width="20" height="12" rx="2" />
+                                                    <circle cx="12" cy="12" r="2" />
+                                                </svg></div>
+                                            <div class="pm-radio"></div>
+                                        </div>
+                                        <div class="pm-name">Cash</div>
+                                        <div class="pm-desc">In-person at market office or collector</div>
+                                    </div>
+                                    <div class="pm-card" data-pm="bank" onclick="selectPM(this)">
+                                        <div class="pm-top">
+                                            <div class="pm-icon bank"><svg xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <line x1="12" y1="1" x2="12" y2="23" />
+                                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                                </svg></div>
+                                            <div class="pm-radio"></div>
+                                        </div>
+                                        <div class="pm-name">Bank Transfer / OTC</div>
+                                        <div class="pm-desc">Land Bank, DBP, PNB over-the-counter</div>
+                                    </div>
+                                    <div class="pm-card" data-pm="gcash" onclick="selectPM(this)">
+                                        <div class="pm-top">
+                                            <div class="pm-icon gcash"><svg xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <rect x="5" y="2" width="14" height="20" rx="2" />
+                                                    <line x1="12" y1="18" x2="12.01" y2="18" />
+                                                </svg></div>
+                                            <div class="pm-radio"></div>
+                                        </div>
+                                        <div class="pm-name">GCash</div>
+                                        <div class="pm-desc">Mobile wallet via GCash QR or number</div>
+                                    </div>
+                                    <div class="pm-card" data-pm="maya" onclick="selectPM(this)">
+                                        <div class="pm-top">
+                                            <div class="pm-icon maya"><svg xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <rect x="5" y="2" width="14" height="20" rx="2" />
+                                                    <polyline points="12 6 12 12 16 14" />
+                                                </svg></div>
+                                            <div class="pm-radio"></div>
+                                        </div>
+                                        <div class="pm-name">Maya (PayMaya)</div>
+                                        <div class="pm-desc">Mobile wallet via Maya QR or number</div>
+                                    </div>
+                                </div>
+                                <p class="pm-hint">Select a payment method above to view and edit its configuration.</p>
+                            </div>
+                        </div>
+
+                        <!-- Config cards: only one shows at a time -->
+                        <div id="cfg-cash" class="scard" style="display:none">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="2" y="6" width="20" height="12" rx="2" />
+                                            <circle cx="12" cy="12" r="2" />
+                                        </svg>Cash Collection Setup</div>
+                                    <div class="scard-sub">Configure how cash payments are collected and recorded</div>
+                                </div>
+                                <button class="btn gh xs" onclick="clearPM()"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>Close</button>
+                            </div>
+                            <div class="scard-body">
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>Collection Office</label><input class="finp"
+                                            value="Market Administration Office" /></div>
+                                    <div class="fg"><label>Collection Hours</label><input class="finp"
+                                            value="8:00 AM - 5:00 PM, Mon-Fri" /></div>
+                                </div>
+                                <div class="fgrid full" style="margin-bottom:13px">
+                                    <div class="fg"><label>Official Receipt Series</label><input class="finp"
+                                            value="OR-PIL-2026-XXXX" style="font-family:'DM Mono',monospace" /><span
+                                            class="hint">XXXX is auto-incremented for each receipt issued.</span></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Require Official Receipt</div>
+                                        <div class="sw-desc">Always issue an OR for every cash payment collected</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Mobile Collector Enabled</div>
+                                        <div class="sw-desc">Allow designated collectors to accept field payments</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm" onclick="clearPM()">Cancel</button><button
+                                    class="btn pri sm" onclick="showToast('Cash setup saved')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+
+                        <div id="cfg-bank" class="scard" style="display:none">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="1" x2="12" y2="23" />
+                                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                        </svg>Bank Account Details</div>
+                                    <div class="scard-sub">For over-the-counter and online bank transfers</div>
+                                </div>
+                                <button class="btn gh xs" onclick="clearPM()"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>Close</button>
+                            </div>
+                            <div class="scard-body">
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>Bank Name</label><select class="finp">
+                                            <option selected>Land Bank of the Philippines</option>
+                                            <option>Development Bank of the Philippines</option>
+                                            <option>Philippine National Bank</option>
+                                            <option>BDO Unibank</option>
+                                            <option>Metrobank</option>
+                                        </select></div>
+                                    <div class="fg"><label>Branch</label><input class="finp"
+                                            value="Pili, Camarines Sur Branch" /></div>
+                                </div>
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>Account Number</label><input class="finp"
+                                            value="1234-5678-90" style="font-family:'DM Mono',monospace" /></div>
+                                    <div class="fg"><label>Account Name</label><input class="finp"
+                                            value="LGU Pili - Market Fund" /></div>
+                                </div>
+                                <div class="fgrid">
+                                    <div class="fg"><label>Account Type</label><select class="finp">
+                                            <option selected>Savings Account</option>
+                                            <option>Current Account</option>
+                                        </select></div>
+                                    <div class="fg"><label>Swift / BIC Code</label><input class="finp" value="LBPHPHMM"
+                                            style="font-family:'DM Mono',monospace" /></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm" onclick="clearPM()">Cancel</button><button
+                                    class="btn pri sm" onclick="showToast('Bank details saved')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+
+                        <div id="cfg-gcash" class="scard" style="display:none">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" />
+                                            <line x1="12" y1="18" x2="12.01" y2="18" />
+                                        </svg>GCash Account Details</div>
+                                    <div class="scard-sub">Published on the vendor portal for payment instructions</div>
+                                </div>
+                                <button class="btn gh xs" onclick="clearPM()"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>Close</button>
+                            </div>
+                            <div class="scard-body">
+                                <div class="infobox bl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="8" x2="12" y2="12" />
+                                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                                    </svg>
+                                    <div>These details are shown to vendors when they select GCash as their payment
+                                        method.</div>
+                                </div>
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>GCash Number</label>
+                                        <div class="pfx"><span class="pfx-lbl">+63</span><input class="finp"
+                                                value="917 123 4567" placeholder="9XX XXX XXXX" /></div>
+                                    </div>
+                                    <div class="fg"><label>Account Name</label><input class="finp"
+                                            value="PILI PUBLIC MARKET" /></div>
+                                </div>
+                                <div class="fgrid full">
+                                    <div class="fg"><label>Payment Reference Format</label><input class="finp"
+                                            value="PIL-[STALL]-[DATE]" /><span class="hint">[STALL] and [DATE] are
+                                            auto-filled per transaction.</span></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm" onclick="clearPM()">Cancel</button><button
+                                    class="btn pri sm" onclick="showToast('GCash details saved')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+
+                        <div id="cfg-maya" class="scard" style="display:none">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" />
+                                            <polyline points="12 6 12 12 16 14" />
+                                        </svg>Maya Account Details</div>
+                                    <div class="scard-sub">Published on the vendor portal for Maya payment instructions
+                                    </div>
+                                </div>
+                                <button class="btn gh xs" onclick="clearPM()"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>Close</button>
+                            </div>
+                            <div class="scard-body">
+                                <div class="infobox bl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="8" x2="12" y2="12" />
+                                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                                    </svg>
+                                    <div>These details are shown to vendors when they select Maya as their payment
+                                        method.</div>
+                                </div>
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>Maya Number</label>
+                                        <div class="pfx"><span class="pfx-lbl">+63</span><input class="finp"
+                                                value="918 765 4321" placeholder="9XX XXX XXXX" /></div>
+                                    </div>
+                                    <div class="fg"><label>Account Name</label><input class="finp"
+                                            value="PILI PUBLIC MARKET" /></div>
+                                </div>
+                                <div class="fgrid full">
+                                    <div class="fg"><label>Payment Reference Format</label><input class="finp"
+                                            value="PIL-[STALL]-[DATE]" /><span class="hint">[STALL] and [DATE] are
+                                            auto-filled per transaction.</span></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm" onclick="clearPM()">Cancel</button><button
+                                    class="btn pri sm" onclick="showToast('Maya details saved')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+
+                        <!-- Payment Rules always visible -->
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="9 11 12 14 22 4" />
+                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                        </svg>Payment Rules</div>
+                                    <div class="scard-sub">Due dates, grace periods, and penalty settings</div>
+                                </div>
+                            </div>
+                            <div class="scard-body">
+                                <div class="fgrid tri" style="margin-bottom:13px">
+                                    <div class="fg"><label>Payment Due Date</label><select class="finp">
+                                            <option selected>5th of the Month</option>
+                                            <option>10th of the Month</option>
+                                            <option>15th of the Month</option>
+                                            <option>Last Day of Month</option>
+                                        </select></div>
+                                    <div class="fg"><label>Grace Period (days)</label><input class="finp" type="number"
+                                            value="5" min="0" /></div>
+                                    <div class="fg"><label>Penalty Rate (%/mo)</label><input class="finp" type="number"
+                                            value="2" step="0.5" /></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Auto-send Payment Reminders</div>
+                                        <div class="sw-desc">Send SMS 3 days before due date and on due date</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Auto-mark Overdue</div>
+                                        <div class="sw-desc">Flag accounts as overdue after grace period lapses</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Accept Partial Payments</div>
+                                        <div class="sw-desc">Allow vendors to pay in installments toward balance</div>
+                                    </div>
+                                    <div class="sw" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm">Cancel</button><button class="btn pri sm"
+                                    onclick="showToast('Payment rules saved')"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+                    </div>
+
+                    <!-- FEES -->
+                    <div id="tab-fees" class="settings-panel">
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="1" x2="12" y2="23" />
+                                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                        </svg>Stall Rental Rates</div>
+                                    <div class="scard-sub">Monthly base rates by stall type</div>
+                                </div>
+                                <button class="btn pri xs" onclick="openAddRate()"><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>Add Rate</button>
+                            </div>
+                            <div class="scard-body" style="padding:0">
+                                <div style="overflow-x:auto">
+                                    <table class="ftbl">
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Size</th>
+                                                <th>Monthly Rate</th>
+                                                <th>Status</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="rateTableBody">
+                                            <tr>
+                                                <td><span class="bdg ac">Dry Goods</span></td>
+                                                <td style="font-family:'DM Mono',monospace;font-size:12px">3x3 m</td>
+                                                <td
+                                                    style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">
+                                                    P1,200.00</td>
+                                                <td><span class="bdg gr">Active</span></td>
+                                                <td><button class="btn gh xs" onclick="openEditRate(0)">Edit</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="bdg gr">Vegetables</span></td>
+                                                <td style="font-family:'DM Mono',monospace;font-size:12px">4x3 m</td>
+                                                <td
+                                                    style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">
+                                                    P1,000.00</td>
+                                                <td><span class="bdg gr">Active</span></td>
+                                                <td><button class="btn gh xs" onclick="openEditRate(1)">Edit</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="bdg am">Meat / Fish</span></td>
+                                                <td style="font-family:'DM Mono',monospace;font-size:12px">3x4 m</td>
+                                                <td
+                                                    style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">
+                                                    P1,400.00</td>
+                                                <td><span class="bdg gr">Active</span></td>
+                                                <td><button class="btn gh xs" onclick="openEditRate(2)">Edit</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="bdg"
+                                                        style="background:var(--vis);color:var(--vi)">General</span>
+                                                </td>
+                                                <td style="font-family:'DM Mono',monospace;font-size:12px">4x4 m</td>
+                                                <td
+                                                    style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">
+                                                    P1,500.00</td>
+                                                <td><span class="bdg gr">Active</span></td>
+                                                <td><button class="btn gh xs" onclick="openEditRate(3)">Edit</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="bdg"
+                                                        style="background:var(--s3);color:var(--t3)">Kiosk</span></td>
+                                                <td style="font-family:'DM Mono',monospace;font-size:12px">2x2 m</td>
+                                                <td
+                                                    style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gr)">
+                                                    P600.00</td>
+                                                <td><span class="bdg am">Draft</span></td>
+                                                <td><button class="btn gh xs" onclick="openEditRate(4)">Edit</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path
+                                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                        </svg>Other Fees</div>
+                                    <div class="scard-sub">Application, penalty, and miscellaneous charges</div>
+                                </div>
+                            </div>
+                            <div class="scard-body">
+                                <div class="fgrid tri" style="margin-bottom:13px">
+                                    <div class="fg"><label>Application Filing Fee</label>
+                                        <div class="pfx"><span class="pfx-lbl">P</span><input class="finp" type="number"
+                                                value="150" /></div>
+                                    </div>
+                                    <div class="fg"><label>Contract Processing Fee</label>
+                                        <div class="pfx"><span class="pfx-lbl">P</span><input class="finp" type="number"
+                                                value="250" /></div>
+                                    </div>
+                                    <div class="fg"><label>Penalty Rate (%/mo)</label>
+                                        <div class="pfx"><span class="pfx-lbl">%</span><input class="finp" type="number"
+                                                value="2" step="0.5" /></div>
+                                    </div>
+                                </div>
+                                <div class="fgrid">
+                                    <div class="fg"><label>Stall Transfer Fee</label>
+                                        <div class="pfx"><span class="pfx-lbl">P</span><input class="finp" type="number"
+                                                value="500" /></div>
+                                    </div>
+                                    <div class="fg"><label>Lost OR Replacement Fee</label>
+                                        <div class="pfx"><span class="pfx-lbl">P</span><input class="finp" type="number"
+                                                value="75" /></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm">Cancel</button><button class="btn pri sm"
+                                    onclick="showToast('Fees saved')"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+                    </div>
+
+                    <!-- NOTIFICATIONS -->
+                    <div id="tab-notif" class="settings-panel">
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07" />
+                                        </svg>SMS Configuration</div>
+                                    <div class="scard-sub">Automated text message settings</div>
+                                </div>
+                            </div>
+                            <div class="scard-body">
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>SMS Provider</label><select class="finp">
+                                            <option selected>Semaphore</option>
+                                            <option>ITEXMO</option>
+                                            <option>Vonage</option>
+                                            <option>Twilio</option>
+                                        </select></div>
+                                    <div class="fg"><label>Sender Name</label><input class="finp" value="ARKIPAISI" />
+                                    </div>
+                                </div>
+                                <div class="fgrid full" style="margin-bottom:13px">
+                                    <div class="fg"><label>API Key</label><input class="finp" type="password"
+                                            value="placeholder-key" /><span class="hint">Your SMS provider API key. Keep
+                                            this confidential.</span></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Application Received</div>
+                                        <div class="sw-desc">Notify applicant when their application is received</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Application Status Update</div>
+                                        <div class="sw-desc">Notify when application is qualified, rejected, or awarded
+                                        </div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Payment Due Reminder</div>
+                                        <div class="sw-desc">Remind vendors 3 days before monthly due date</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Overdue Notice</div>
+                                        <div class="sw-desc">Send notice when account becomes overdue</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Contract Expiry Warning</div>
+                                        <div class="sw-desc">Notify vendor 30 days before contract expiry</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Raffle Result</div>
+                                        <div class="sw-desc">Notify all applicants of raffle draw results</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm">Test SMS</button><button
+                                    class="btn pri sm" onclick="showToast('Notification settings saved')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+                    </div>
+
+                    <!-- USERS -->
+                    <div id="tab-users" class="settings-panel">
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                            <circle cx="9" cy="7" r="4" />
+                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                        </svg>Admin Users</div>
+                                    <div class="scard-sub">Staff accounts with dashboard access</div>
+                                </div>
+                                <button class="btn pri xs" onclick="showToast('Add user')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>Add User</button>
+                            </div>
+                            <div class="scard-body" style="padding:0">
+                                <div style="overflow-x:auto">
+                                    <table class="ftbl">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th>Last Login</th>
+                                                <th>Status</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div style="display:flex;align-items:center;gap:8px">
+                                                        <div
+                                                            style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--vi));display:grid;place-items:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0">
+                                                            MA</div>
+                                                        <div>
+                                                            <div style="font-size:12.5px;font-weight:600">Maria A.
+                                                                Torres</div>
+                                                            <div style="font-size:11px;color:var(--t3)"><a
+                                                                    href="/cdn-cgi/l/email-protection"
+                                                                    class="__cf_email__"
+                                                                    data-cfemail="345550595d5a74445d585d1a535b421a445c">[email&#160;protected]</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="bdg ac">Super Admin</span></td>
+                                                <td style="font-size:12px;color:var(--t3)">Today, 09:45 AM</td>
+                                                <td><span class="bdg gr">Active</span></td>
+                                                <td><button class="btn gh xs"
+                                                        onclick="showToast('Edit user')">Edit</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div style="display:flex;align-items:center;gap:8px">
+                                                        <div
+                                                            style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gr),var(--cy));display:grid;place-items:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0">
+                                                            JR</div>
+                                                        <div>
+                                                            <div style="font-size:12.5px;font-weight:600">Juan R. Reyes
+                                                            </div>
+                                                            <div style="font-size:11px;color:var(--t3)"><a
+                                                                    href="/cdn-cgi/l/email-protection"
+                                                                    class="__cf_email__"
+                                                                    data-cfemail="a8c2dacdd1cddbe8d8c1c4c186cfc7de86d8c0">[email&#160;protected]</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="bdg gr">Collector</span></td>
+                                                <td style="font-size:12px;color:var(--t3)">Yesterday, 2:10 PM</td>
+                                                <td><span class="bdg gr">Active</span></td>
+                                                <td><button class="btn gh xs"
+                                                        onclick="showToast('Edit user')">Edit</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div style="display:flex;align-items:center;gap:8px">
+                                                        <div
+                                                            style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--am),var(--or));display:grid;place-items:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0">
+                                                            CS</div>
+                                                        <div>
+                                                            <div style="font-size:12.5px;font-weight:600">Carla B.
+                                                                Santos</div>
+                                                            <div style="font-size:11px;color:var(--t3)"><a
+                                                                    href="/cdn-cgi/l/email-protection"
+                                                                    class="__cf_email__"
+                                                                    data-cfemail="c1a2b2a0afb5aeb281b1a8ada8efa6aeb7efb1a9">[email&#160;protected]</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="bdg am">Clerk</span></td>
+                                                <td style="font-size:12px;color:var(--t3)">Mar 15, 2026</td>
+                                                <td><span class="bdg am">Inactive</span></td>
+                                                <td><button class="btn gh xs"
+                                                        onclick="showToast('Edit user')">Edit</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>Security Settings</div>
+                                    <div class="scard-sub">Authentication and session policies</div>
+                                </div>
+                            </div>
+                            <div class="scard-body">
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>Session Timeout (minutes)</label><input class="finp"
+                                            type="number" value="60" /></div>
+                                    <div class="fg"><label>Max Login Attempts</label><input class="finp" type="number"
+                                            value="5" /></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Two-Factor Authentication</div>
+                                        <div class="sw-desc">Require OTP on login for all admin accounts</div>
+                                    </div>
+                                    <div class="sw on blue" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">Login Audit Log</div>
+                                        <div class="sw-desc">Track all login attempts and admin activity</div>
+                                    </div>
+                                    <div class="sw on" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                                <div class="sw-row">
+                                    <div>
+                                        <div class="sw-lbl">IP Restriction</div>
+                                        <div class="sw-desc">Only allow access from LGU office IP addresses</div>
+                                    </div>
+                                    <div class="sw" onclick="this.classList.toggle('on')"></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm">Cancel</button><button class="btn pri sm"
+                                    onclick="showToast('Security settings saved')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+                    </div>
+
+                    <!-- PROFILE -->
+                    <div id="tab-profile" class="settings-panel">
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>Profile Information</div>
+                                    <div class="scard-sub">Your admin account details</div>
+                                </div>
+                            </div>
+                            <div class="scard-body">
+                                <div class="av-upload">
+                                    <div class="av-big">MA<div class="av-edit"><svg xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            </svg></div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size:14px;font-weight:700;margin-bottom:3px">Maria A. Torres
+                                        </div>
+                                        <div style="font-size:12px;color:var(--t3);margin-bottom:9px">Super
+                                            Administrator</div><button class="btn gh xs"
+                                            onclick="showToast('Upload photo')">Change Photo</button>
+                                    </div>
+                                </div>
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>First Name</label><input class="finp"
+                                            value="Maria Antonia" /></div>
+                                    <div class="fg"><label>Last Name</label><input class="finp" value="Torres" /></div>
+                                </div>
+                                <div class="fgrid" style="margin-bottom:13px">
+                                    <div class="fg"><label>Email Address</label><input class="finp"
+                                            value="admin@pili.gov.ph" type="email" /></div>
+                                    <div class="fg"><label>Mobile Number</label><input class="finp"
+                                            value="+63 912 345 6789" /></div>
+                                </div>
+                                <div class="fgrid">
+                                    <div class="fg"><label>Position</label><input class="finp"
+                                            value="Market Administrator" /></div>
+                                    <div class="fg"><label>Department</label><input class="finp"
+                                            value="Office of Market Administration" /></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm">Cancel</button><button class="btn pri sm"
+                                    onclick="showToast('Profile saved')"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Save Changes</button></div>
+                        </div>
+                        <div class="scard">
+                            <div class="scard-head">
+                                <div>
+                                    <div class="scard-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>Change Password</div>
+                                    <div class="scard-sub">Update your login credentials</div>
+                                </div>
+                            </div>
+                            <div class="scard-body">
+                                <div class="fgrid full" style="margin-bottom:13px">
+                                    <div class="fg"><label>Current Password</label><input class="finp" type="password"
+                                            placeholder="Enter current password" /></div>
+                                </div>
+                                <div class="fgrid">
+                                    <div class="fg"><label>New Password</label><input class="finp" type="password"
+                                            placeholder="Minimum 8 characters" /></div>
+                                    <div class="fg"><label>Confirm New Password</label><input class="finp"
+                                            type="password" placeholder="Repeat new password" /></div>
+                                </div>
+                            </div>
+                            <div class="scard-foot"><button class="btn gh sm">Cancel</button><button class="btn pri sm"
+                                    onclick="showToast('Password updated')"><svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>Update Password</button></div>
+                        </div>
+                    </div>
+
+                    <!-- DANGER -->
+                    <div id="tab-danger" class="settings-panel">
+                        <div class="infobox am"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                            <div>Actions here are <strong>irreversible</strong>. Proceed only if absolutely sure.</div>
+                        </div>
+                        <div class="dz">
+                            <div class="dz-head"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                </svg><span>Danger Zone</span></div>
+                            <div class="dz-row">
+                                <div>
+                                    <div class="dz-lbl">Clear All Archived Records</div>
+                                    <div class="dz-desc">Permanently delete all archived vendor and payment records.
+                                    </div>
+                                </div><button class="btn rd-gh sm" onclick="showToast('Confirmation required')">Clear
+                                    Archives</button>
+                            </div>
+                            <div class="dz-row">
+                                <div>
+                                    <div class="dz-lbl">Reset Payment Ledger</div>
+                                    <div class="dz-desc">Wipe all payment history for the current fiscal year.</div>
+                                </div><button class="btn rd-gh sm" onclick="showToast('Confirmation required')">Reset
+                                    Ledger</button>
+                            </div>
+                            <div class="dz-row">
+                                <div>
+                                    <div class="dz-lbl">Export All Data</div>
+                                    <div class="dz-desc">Download a full export of all market, vendor, and payment data.
+                                    </div>
+                                </div><button class="btn gh sm" onclick="showToast('Export started')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="7 10 12 15 17 10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                    </svg>Export</button>
+                            </div>
+                            <div class="dz-row">
+                                <div>
+                                    <div class="dz-lbl">Reset System to Default</div>
+                                    <div class="dz-desc">Remove all configuration and restore factory settings.</div>
+                                </div><button class="btn rd sm" onclick="showToast('Confirmation required')">Reset
+                                    System</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+
+    <!-- Edit Rate Modal -->
+    <div class="modal-bg" id="editRateModal">
+        <div class="modal">
+            <div class="modal-head">
+                <div class="modal-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>Edit Rental Rate</div>
+                <div class="modal-x" onclick="closeModal('editRateModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="modal-body">
+                <div class="fgrid">
+                    <div class="fg"><label>Stall Type</label><input class="finp" id="er-type"
+                            placeholder="e.g. Dry Goods" /></div>
+                    <div class="fg"><label>Status</label><select class="finp" id="er-status">
+                            <option value="active">Active</option>
+                            <option value="draft">Draft</option>
+                            <option value="inactive">Inactive</option>
+                        </select></div>
+                </div>
+                <div class="fgrid">
+                    <div class="fg"><label>Stall Size (m)</label>
+                        <div class="pfx"><span class="pfx-lbl">m</span><input class="finp" id="er-size"
+                                placeholder="e.g. 3x3" /></div>
+                    </div>
+                    <div class="fg"><label>Monthly Rate (PHP)</label>
+                        <div class="pfx"><span class="pfx-lbl">P</span><input class="finp" id="er-rate" type="number"
+                                min="0" step="50" placeholder="0" /></div>
+                    </div>
+                </div>
+                <div class="fgrid full">
+                    <div class="fg"><label>Description (optional)</label><input class="finp" id="er-desc"
+                            placeholder="e.g. Standard covered stall" /></div>
+                </div>
+                <div class="fgrid">
+                    <div class="fg"><label>Effective Date</label><input class="finp" id="er-date" type="date" /></div>
+                    <div class="fg"><label>Section / Zone</label><input class="finp" id="er-zone"
+                            placeholder="e.g. Section B" /></div>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn gh sm" onclick="closeModal('editRateModal')">Cancel</button>
+                <button class="btn pri sm" onclick="saveRate()"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Rate Modal -->
+    <div class="modal-bg" id="addRateModal">
+        <div class="modal">
+            <div class="modal-head">
+                <div class="modal-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>Add New Rate</div>
+                <div class="modal-x" onclick="closeModal('addRateModal')"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></div>
+            </div>
+            <div class="modal-body">
+                <div class="fgrid">
+                    <div class="fg"><label>Stall Type</label><input class="finp" id="ar-type"
+                            placeholder="e.g. Bakery, Cosmetics" /></div>
+                    <div class="fg"><label>Status</label><select class="finp" id="ar-status">
+                            <option value="draft" selected>Draft</option>
+                            <option value="active">Active</option>
+                        </select></div>
+                </div>
+                <div class="fgrid">
+                    <div class="fg"><label>Stall Size (m)</label>
+                        <div class="pfx"><span class="pfx-lbl">m</span><input class="finp" id="ar-size"
+                                placeholder="e.g. 3x3" /></div>
+                    </div>
+                    <div class="fg"><label>Monthly Rate (PHP)</label>
+                        <div class="pfx"><span class="pfx-lbl">P</span><input class="finp" id="ar-rate" type="number"
+                                min="0" step="50" placeholder="0" /></div>
+                    </div>
+                </div>
+                <div class="fgrid full">
+                    <div class="fg"><label>Description (optional)</label><input class="finp" id="ar-desc"
+                            placeholder="e.g. Standard covered stall" /></div>
+                </div>
+                <div class="fgrid">
+                    <div class="fg"><label>Effective Date</label><input class="finp" id="ar-date" type="date" /></div>
+                    <div class="fg"><label>Section / Zone</label><input class="finp" id="ar-zone"
+                            placeholder="e.g. Section A" /></div>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn gh sm" onclick="closeModal('addRateModal')">Cancel</button>
+                <button class="btn pri sm" onclick="addRate()"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>Add Rate</button>
+            </div>
+        </div>
+    </div>
+    <script src="/js/admin/settings.js"></script>
+</body>
+
+</html>
