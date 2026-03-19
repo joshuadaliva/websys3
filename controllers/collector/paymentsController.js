@@ -1,0 +1,65 @@
+const onlinePayments = [
+  { id: 0, vendor: 'Pedro Reyes',    init: 'PR', grad: '135deg,#f59e0b,#ef4444', stall: '#03', amount: 1400, method: 'GCash', ref: 'PIL-#03-MAR26', time: '11:22 AM', period: 'March 2026' },
+  { id: 1, vendor: 'Grace Cruz',     init: 'GC', grad: '135deg,#f59e0b,#10b981', stall: '#09', amount: 600,  method: 'GCash', ref: 'PIL-#09-MAR26', time: '11:41 AM', period: 'March 2026' },
+  { id: 2, vendor: 'Carla Bautista', init: 'CB', grad: '135deg,#ef4444,#f97316', stall: '#06', amount: 1200, method: 'Maya',  ref: 'PIL-#06-MAR26', time: '12:05 PM', period: 'March 2026' },
+  { id: 3, vendor: 'Diego Cruz',     init: 'DC', grad: '135deg,#0891b2,#3b82f6', stall: '#15', amount: 750,  method: 'Maya',  ref: 'PIL-#15-MAR26', time: '12:18 PM', period: 'March 2026' },
+  { id: 4, vendor: 'Nena Estrada',   init: 'NE', grad: '135deg,#14b8a6,#6366f1', stall: '#22', amount: 1500, method: 'GCash', ref: 'PIL-#22-MAR26', time: '12:44 PM', period: 'March 2026' },
+];
+
+const confirmedOnline = [
+  { vendor: 'Ana Lim',         stall: '#19', amount: 1500, method: 'Maya',  ref: 'PIL-#19-MAR26', time: '09:14 AM', or: 'OR-2026-0844', period: 'March 2026' },
+  { vendor: 'Luis Villanueva', stall: '#11', amount: 2000, method: 'GCash', ref: 'PIL-#11-MAR26', time: '10:45 AM', or: 'OR-2026-0846', period: 'March 2026' },
+];
+
+const cashReceipts = [
+  { or: 'OR-2026-0841', vendor: 'Juan Dela Cruz', stall: '#01', period: 'March 2026', amount: 1200, time: '09:12 AM' },
+  { or: 'OR-2026-0842', vendor: 'Pedro Reyes',    stall: '#03', period: 'March 2026', amount: 1400, time: '09:35 AM' },
+  { or: 'OR-2026-0843', vendor: 'Maria Santos',   stall: '#07', period: 'March 2026', amount: 1000, time: '10:02 AM' },
+  { or: 'OR-2026-0845', vendor: 'Roberto Go',     stall: '#24', period: 'March 2026', amount: 1400, time: '11:15 AM' },
+  { or: 'OR-2026-0847', vendor: 'Pablo Santos',   stall: '#33', period: 'March 2026', amount: 1200, time: '11:52 AM' },
+  { or: 'OR-2026-0848', vendor: 'Diego Cruz',     stall: '#15', period: 'March 2026', amount: 750,  time: '12:30 PM' },
+];
+
+const historyBase = [
+  { or: 'OR-2026-0841', vendor: 'Juan Dela Cruz', stall: '#01', period: 'March 2026', amount: 1200, method: 'Cash',  posted: '09:12 AM', source: 'manual' },
+  { or: 'OR-2026-0842', vendor: 'Pedro Reyes',    stall: '#03', period: 'March 2026', amount: 1400, method: 'Cash',  posted: '09:35 AM', source: 'manual' },
+  { or: 'OR-2026-0843', vendor: 'Maria Santos',   stall: '#07', period: 'March 2026', amount: 1000, method: 'Cash',  posted: '10:02 AM', source: 'manual' },
+  { or: 'OR-2026-0844', vendor: 'Ana Lim',         stall: '#19', period: 'March 2026', amount: 1500, method: 'Maya',  posted: '09:14 AM', source: 'auto' },
+  { or: 'OR-2026-0845', vendor: 'Roberto Go',      stall: '#24', period: 'March 2026', amount: 1400, method: 'Cash',  posted: '11:15 AM', source: 'manual' },
+  { or: 'OR-2026-0846', vendor: 'Luis Villanueva', stall: '#11', period: 'March 2026', amount: 2000, method: 'GCash', posted: '10:45 AM', source: 'auto' },
+  { or: 'OR-2026-0847', vendor: 'Pablo Santos',    stall: '#33', period: 'March 2026', amount: 1200, method: 'Cash',  posted: '11:52 AM', source: 'manual' },
+];
+
+const overdueAccounts = [
+  { init:'CB', grad:'135deg,#ef4444,#f97316', vendor:'Carla Bautista', vendorId:'VND-009', stall:'#06', type:'Dry Goods',   typeCls:'ac', rate:1200, overdueDays:48, balance:4800, lastPaid:'Dec 5, 2025' },
+  { init:'PR', grad:'135deg,#f59e0b,#ef4444', vendor:'Pedro Reyes',    vendorId:'VND-002', stall:'#03', type:'Meat / Fish', typeCls:'am', rate:1400, overdueDays:45, balance:4200, lastPaid:'Jan 10, 2026' },
+  { init:'LV', grad:'135deg,#8b5cf6,#6366f1', vendor:'Luis Villanueva',vendorId:'VND-007', stall:'#11', type:'Vegetables',  typeCls:'gr', rate:1000, overdueDays:32, balance:3000, lastPaid:'Jan 15, 2026' },
+  { init:'GC', grad:'135deg,#f59e0b,#10b981', vendor:'Grace Cruz',     vendorId:'VND-008', stall:'#09', type:'Wet Market',  typeCls:'cy', rate:1200, overdueDays:28, balance:2400, lastPaid:'Feb 1, 2026' },
+];
+
+const vendorOptions = [
+  { value:'0', rate:1200, bal:0,    label:'Stall #01 &mdash; Juan Dela Cruz' },
+  { value:'1', rate:1400, bal:4200, label:'Stall #03 &mdash; Pedro Reyes (Overdue &#8369;4,200)' },
+  { value:'2', rate:1000, bal:0,    label:'Stall #07 &mdash; Maria Santos' },
+  { value:'3', rate:1200, bal:2400, label:'Stall #09 &mdash; Grace Cruz (Overdue &#8369;2,400)' },
+  { value:'4', rate:1000, bal:3000, label:'Stall #11 &mdash; Luis Villanueva (Overdue &#8369;3,000)' },
+  { value:'5', rate:1500, bal:750,  label:'Stall #15 &mdash; Diego Cruz (Partial &#8369;750)' },
+  { value:'6', rate:1200, bal:0,    label:'Stall #19 &mdash; Ana Lim' },
+  { value:'7', rate:1400, bal:0,    label:'Stall #24 &mdash; Roberto Go' },
+  { value:'8', rate:1200, bal:4800, label:'Stall #06 &mdash; Carla Bautista (Overdue &#8369;4,800)' },
+  { value:'9', rate:1500, bal:500,  label:'Stall #22 &mdash; Nena Estrada (Partial &#8369;500)' },
+];
+
+const showPayments = (req, res) => {
+  res.render('collector/payments', {
+    onlinePayments,
+    confirmedOnline,
+    cashReceipts,
+    historyBase,
+    overdueAccounts,
+    vendorOptions,
+    orBase: 847,
+  });
+};
+
+module.exports = { showPayments };

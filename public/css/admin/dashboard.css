@@ -16,15 +16,18 @@
       --text-primary: #0f1117;
       --text-secondary: #6b7280;
       --text-muted: #9ca3af;
-      --accent: #1d4ed8;
+      --accent: #f97316;
       --accent-light: #eff3ff;
       --accent-soft: #dbeafe;
+      --accent: #1d4ed8;
+      --accent-light: #eff3ff;
+      --accent-soft: #c7d7fd;
       --green: #16a34a;
       --green-light: #f0fdf4;
       --green-soft: #dcfce7;
-      --amber: #d97706;
-      --amber-light: #fffbeb;
-      --amber-soft: #fef3c7;
+      --amber: #1d4ed8;
+      --amber-light: #eff3ff;
+      --amber-soft: #c7d7fd;
       --red: #dc2626;
       --red-light: #fef2f2;
       --red-soft: #fee2e2;
@@ -167,7 +170,7 @@
     .logo-m {
       width: 32px;
       height: 32px;
-      background: var(--accent);
+      background: var(--ac);
       border-radius: 8px;
       display: grid;
       place-items: center;
@@ -253,8 +256,8 @@
     }
 
     .ni.on {
-      background: var(--accent-light);
-      color: var(--accent)
+      background: var(--acl);
+      color: var(--ac)
     }
 
     .ni svg {
@@ -308,7 +311,7 @@
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      background: linear-gradient(135deg, var(--ac), var(--acs));
       display: grid;
       place-items: center;
       color: #fff;
@@ -809,7 +812,7 @@
       display: grid;
       grid-template-columns: 1fr 340px;
       gap: 16px;
-      margin-bottom: 20px;
+      margin-top: 20px;
     }
 
     /* ── RECENT PAYMENTS ── */
@@ -956,6 +959,7 @@
     }
 
     /* ── NOTIFICATIONS ── */
+    
     .notif-list {}
 
     .notif-item {
@@ -1058,7 +1062,7 @@
     /* ── BOTTOM ROW ── */
     .three-col {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
 

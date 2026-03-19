@@ -424,31 +424,6 @@ function openStallDetail(idx) {
       </div>
     </div>`;
 
-  // Render pipeline
-  const pt = document.getElementById("pipelineTrack");
-  pt.innerHTML = "";
-  currentStall.pipeline.forEach((step, i) => {
-    const dot = document.createElement("div");
-    dot.className = "pipe-step";
-    const dotInner =
-      step.state === "done"
-        ? "✓"
-        : step.state === "raffle"
-        ? "🎲"
-        : step.state === "award"
-        ? "★"
-        : (i + 1).toString();
-    dot.innerHTML = `<div class="pipe-dot ${step.state}">${dotInner}</div><div class="pipe-label ${step.state}">${step.label}</div><div class="pipe-count ${step.state}">${step.count}</div>`;
-    pt.appendChild(dot);
-    if (i < currentStall.pipeline.length - 1) {
-      const line = document.createElement("div");
-      const prevDone = step.state === "done";
-      const nextDone = currentStall.pipeline[i + 1].state === "done";
-      line.className =
-        "pipe-connector" + (prevDone ? (nextDone ? " done" : " active") : "");
-      pt.appendChild(line);
-    }
-  });
 
   // Render table
   document.getElementById(

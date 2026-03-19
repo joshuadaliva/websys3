@@ -17,8 +17,8 @@
     --t2: #566080;
     --t3: #9099b8;
     --ac: #1d4ed8;
-    --acl: #eff3ff;
-    --acs: #c7d7fd;
+      --acl: #eff3ff;
+      --acs: #c7d7fd;
     --gr: #15803d;
     --grl: #f0fdf4;
     --grs: #bbf7d0;
@@ -182,7 +182,9 @@ body {
     font-size: 13px;
     font-weight: 500;
     transition: all .14s;
-    margin-bottom: 1px
+    margin-bottom: 1px;
+    text-decoration: none;
+
 }
 
 .ni:hover {

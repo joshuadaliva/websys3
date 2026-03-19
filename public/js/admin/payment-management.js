@@ -365,11 +365,10 @@ function setTab(id, btn) {
   CTAB = id;
   document.querySelectorAll(".tab").forEach((t) => t.classList.remove("on"));
   btn.classList.add("on");
-  ["records", "monthly", "ledger", "summary"].forEach((t) => {
+  ["records", "ledger", "summary"].forEach((t) => {
     document.getElementById("tab-" + t).style.display =
       t === id ? "block" : "none";
   });
-  if (id === "monthly") renderMonthly();
   if (id === "ledger") renderLedgerSearch();
   if (id === "summary") renderSummary();
 }
@@ -461,8 +460,8 @@ function renderRecords() {
             : `<span style="font-size:11px;color:var(--t3)">No OR yet</span>`;
           const mHtml = p.method
             ? `<span class="pm ${p.method}">${MT[p.method]}</span>`
-            : `<span style="font-size:11px;color:var(--t3)">—</span>`;
-          const dateHtml = p.date || `<span style="color:var(--t3)">—</span>`;
+            : `<span style="font-size:11px;color:var(--t3)">not paid yet</span>`;
+          const dateHtml = p.date || `<span style="color:var(--t3)">not paid yet</span>`;
           return `<tr onclick="viewPayment('${p.id}')">
           <td>${orHtml}</td>
           <td><div class="vcell"><div class="vav-sm" style="background:linear-gradient(${
@@ -470,16 +469,10 @@ function renderRecords() {
           })">${v.init}</div><div><div class="vn">${v.fn} ${
             v.ln
           }</div><div class="vi2">${v.id}</div></div></div></td>
-          <td style="font-family:'DM Mono',monospace;font-weight:700;font-size:12px">${
+          <td>${
             v.stall
           }</td>
-          <td class="mono" style="font-weight:700;color:${
-            p.status === "paid"
-              ? "var(--gr)"
-              : p.status === "overdue"
-              ? "var(--rd)"
-              : "var(--t1)"
-          }">₱${p.amount.toLocaleString()}</td>
+          <td class="font-weight:400">₱${p.amount.toLocaleString()}</td>
           <td style="font-size:12px">${dateHtml}</td>
           <td>${mHtml}</td>
           <td><span class="ps ${p.status}">${SL[p.status]}</span></td>
@@ -542,57 +535,6 @@ const MR_DATA = [
   { vid: "VND-008", status: "due", dueDate: "Mar 10, 2026", paidDate: null },
   { vid: "VND-009", status: "overdue", dueDate: "Mar 1, 2026", paidDate: null },
 ];
-function renderMonthly() {
-  const g = document.getElementById("mr-grid");
-  g.innerHTML = MR_DATA.map((m, i) => {
-    const v = VENDORS.find((x) => x.id === m.vid);
-    const balColor =
-      m.status === "paid"
-        ? "var(--gr)"
-        : m.status === "overdue"
-        ? "var(--rd)"
-        : m.status === "due"
-        ? "var(--or)"
-        : "var(--am)";
-    return `<div class="mr-card ${m.status}" style="animation-delay:${
-      i * 0.04
-    }s">
-        <div class="mr-top">
-          <div>
-            <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px">
-              <div class="vav-sm" style="background:linear-gradient(${
-                v.grad
-              })">${v.init}</div>
-              <div>
-                <div class="mr-vname">${v.fn} ${v.ln}</div>
-                <div class="mr-vsub">${v.stall} · ${v.id}</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="mr-amount" style="color:${balColor}">₱${v.rate.toLocaleString()}</div>
-            <div class="mr-due-lbl">Due ${m.dueDate}</div>
-          </div>
-        </div>
-        <div class="mr-foot">
-          <span class="ps ${m.status}">${SL[m.status]}</span>
-          <div style="display:flex;gap:5px">
-            ${
-              m.status !== "paid"
-                ? `<button class="btn pr xs" onclick="openM('recordModal')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Record</button>`
-                : `<span style="font-size:11px;color:var(--t3)">${m.paidDate}</span>`
-            }
-            ${
-              m.status !== "paid"
-                ? `<button class="btn ao xs" onclick="openReminder('${m.vid}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>`
-                : ""
-            }
-          </div>
-        </div>
-      </div>`;
-  }).join("");
-}
-
 /* ═══ RENDER LEDGER SEARCH ═══ */
 function renderLedgerSearch() {
   const q = (

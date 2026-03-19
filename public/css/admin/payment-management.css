@@ -18,8 +18,8 @@
   --t2: #566080;
   --t3: #9099b8;
   --ac: #1d4ed8;
-  --acl: #eff3ff;
-  --acs: #c7d7fd;
+      --acl: #eff3ff;
+      --acs: #c7d7fd;
   --gr: #15803d;
   --grl: #f0fdf4;
   --grs: #bbf7d0;
@@ -197,7 +197,8 @@ svg {
   transition: all .14s;
   margin-bottom: 1px;
   white-space: nowrap;
-  overflow: hidden
+  overflow: hidden;
+  text-decoration: none;
 }
 
 .ni:hover {
@@ -659,25 +660,6 @@ svg {
   height: 3px
 }
 
-.sc.cb::after {
-  background: linear-gradient(90deg, var(--ac), #818cf8)
-}
-
-.sc.cg::after {
-  background: linear-gradient(90deg, var(--gr), #4ade80)
-}
-
-.sc.ca::after {
-  background: linear-gradient(90deg, var(--am), #fbbf24)
-}
-
-.sc.cr::after {
-  background: linear-gradient(90deg, var(--rd), #f87171)
-}
-
-.sc.co::after {
-  background: linear-gradient(90deg, var(--or), #fb923c)
-}
 
 .sc:nth-child(1) {
   animation-delay: .04s
@@ -1090,11 +1072,6 @@ svg {
 .vi2 {
   font-size: 10.5px;
   color: var(--t3)
-}
-
-.mono {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px
 }
 
 .tbl-foot {

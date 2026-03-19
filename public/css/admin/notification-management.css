@@ -17,8 +17,8 @@
     --t2: #566080;
     --t3: #9099b8;
     --ac: #1d4ed8;
-    --acl: #eff3ff;
-    --acs: #c7d7fd;
+      --acl: #eff3ff;
+      --acs: #c7d7fd;
     --gr: #15803d;
     --grl: #f0fdf4;
     --grs: #bbf7d0;
@@ -201,7 +201,9 @@ svg {
     transition: all .14s;
     margin-bottom: 1px;
     white-space: nowrap;
-    overflow: hidden
+    overflow: hidden;
+    text-decoration: none;
+
 }
 
 .ni:hover {

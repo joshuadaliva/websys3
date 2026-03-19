@@ -1,0 +1,85 @@
+const months = [
+  {
+    key: '2026-3', label: 'March 2026', daysInMonth: 31, target: 68000,
+    transactions: [
+      { date: 'Mar 2',  or: 'OR-2026-0818',   vendor: 'Crisanto Gifts',    section: 'GF Misc',    amount: 300,  method: 'Cash',  source: 'manual' },
+      { date: 'Mar 5',  or: 'OR-2026-0829',   vendor: 'Ukay Masters',      section: 'SF Ukay',    amount: 700,  method: 'Cash',  source: 'manual' },
+      { date: 'Mar 5',  or: 'OR-2026-0831',   vendor: 'Juan Dela Cruz',    section: 'GF Eatery',  amount: 800,  method: 'Cash',  source: 'manual' },
+      { date: 'Mar 6',  or: 'OR-2026-0833',   vendor: 'Dress for Less',    section: 'GF RTW',     amount: 1000, method: 'Cash',  source: 'manual' },
+      { date: 'Mar 6',  or: 'OR-2026-0834',   vendor: 'Itlog ni Mang Ben', section: 'SF Egg',     amount: 700,  method: 'Cash',  source: 'manual' },
+      { date: 'Mar 6',  or: 'OR-2026-0835',   vendor: 'Carinderia ni Rosa',section: 'GF Eatery',  amount: 800,  method: 'Cash',  source: 'manual' },
+      { date: 'Mar 7',  or: 'OR-2026-0836',   vendor: 'Frutas ni Lola',    section: 'SF Fruit',   amount: 850,  method: 'Cash',  source: 'manual' },
+      { date: 'Mar 7',  or: 'OR-2026-0837',   vendor: 'Pasalubong ni Ate', section: 'GF Misc',    amount: 600,  method: 'GCash', source: 'auto'   },
+      { date: 'Mar 7',  or: 'OR-2026-0838',   vendor: 'Pablo Santos',      section: 'SF Ukay',    amount: 1200, method: 'Cash',  source: 'manual' },
+      { date: 'Mar 8',  or: 'OR-2026-0839',   vendor: 'Nena Food House',   section: 'GF Eatery',  amount: 800,  method: 'Cash',  source: 'manual' },
+      { date: 'Mar 8',  or: 'OR-2026-0840',   vendor: 'Juan Loading',      section: 'GF Service', amount: 700,  method: 'Cash',  source: 'manual' },
+      { date: 'Mar 8',  or: 'OR-2026-0843',   vendor: 'Tindahan ni Maria', section: 'SF Veggie',  amount: 900,  method: 'Cash',  source: 'manual' },
+      { date: 'Mar 9',  or: 'OR-2026-0841',   vendor: 'Buko Fresh',        section: 'SF Fruit',   amount: 850,  method: 'Maya',  source: 'auto'   },
+      { date: 'Mar 10', or: 'PIL-#01-MAR26',  vendor: 'Ukay Masters',      section: 'SF Ukay',    amount: 700,  method: 'GCash', source: 'auto'   },
+    ],
+    outstanding: [
+      { vendor: 'Pedro Carinderia', section: 'GF Eatery #4',  amount: 1600, days: 45, grad: '135deg,#f59e0b,#ef4444', init: 'PC' },
+      { vendor: 'Ganda Clothes',    section: 'GF RTW #13',    amount: 2000, days: 30, grad: '135deg,#ef4444,#f97316', init: 'GC' },
+      { vendor: 'Class A Ukay',     section: 'SF Ukay #9',    amount: 1400, days: 32, grad: '135deg,#ef4444,#f97316', init: 'CA' },
+      { vendor: 'Tropical Harvest', section: 'SF Fruit #5',   amount: 1700, days: 25, grad: '135deg,#f97316,#ef4444', init: 'TH' },
+      { vendor: 'Cris Food Hub',    section: 'GF Eatery #7',  amount: 400,  days: 0,  grad: '135deg,#8b5cf6,#6366f1', init: 'CF' },
+      { vendor: 'Pedro Gulay',      section: 'SF Veggie #10', amount: 450,  days: 0,  grad: '135deg,#8b5cf6,#6366f1', init: 'PG' },
+      { vendor: 'Crisanto Gifts',   section: 'GF Misc #6',    amount: 300,  days: 0,  grad: '135deg,#f59e0b,#10b981', init: 'CG' },
+    ],
+  },
+  {
+    key: '2026-2', label: 'February 2026', daysInMonth: 28, target: 68000,
+    transactions: [
+      { date: 'Feb 4',  or: 'OR-2026-0711', vendor: 'Juan Dela Cruz',    section: 'GF Eatery',  amount: 800,  method: 'Cash',  source: 'manual' },
+      { date: 'Feb 5',  or: 'OR-2026-0706', vendor: 'Tropical Harvest',  section: 'SF Fruit',   amount: 850,  method: 'Cash',  source: 'manual' },
+      { date: 'Feb 5',  or: 'OR-2026-0710', vendor: 'Itlog ni Mang Ben', section: 'SF Egg',     amount: 700,  method: 'Cash',  source: 'manual' },
+      { date: 'Feb 5',  or: 'OR-2026-0715', vendor: 'Dress for Less',    section: 'GF RTW',     amount: 1000, method: 'GCash', source: 'auto'   },
+      { date: 'Feb 6',  or: 'OR-2026-0719', vendor: 'Tindahan ni Maria', section: 'SF Veggie',  amount: 900,  method: 'Cash',  source: 'manual' },
+      { date: 'Feb 6',  or: 'OR-2026-0696', vendor: 'Juan Loading',      section: 'GF Service', amount: 700,  method: 'Cash',  source: 'manual' },
+      { date: 'Feb 7',  or: 'OR-2026-0722', vendor: 'Juan Loading',      section: 'GF Service', amount: 700,  method: 'Cash',  source: 'manual' },
+      { date: 'Feb 9',  or: 'OR-2026-0730', vendor: 'Ana Lim',           section: 'SF Veggie',  amount: 1200, method: 'Cash',  source: 'manual' },
+      { date: 'Feb 11', or: 'OR-2026-0742', vendor: 'Roberto Go',        section: 'GF Eatery',  amount: 1400, method: 'GCash', source: 'auto'   },
+    ],
+    outstanding: [
+      { vendor: 'Carla Bautista', section: 'GF Misc #8',   amount: 1200, days: 48, grad: '135deg,#ef4444,#f97316', init: 'CB' },
+      { vendor: 'Pedro Reyes',    section: 'GF Eatery #4', amount: 2800, days: 45, grad: '135deg,#f59e0b,#ef4444', init: 'PR' },
+      { vendor: 'Class A Ukay',   section: 'SF Ukay #9',   amount: 700,  days: 17, grad: '135deg,#ef4444,#f97316', init: 'CA' },
+    ],
+  },
+  {
+    key: '2026-1', label: 'January 2026', daysInMonth: 31, target: 68000,
+    transactions: [
+      { date: 'Jan 5',  or: 'OR-2026-0581', vendor: 'Grace Cruz',       section: 'SF Veggie',  amount: 1200, method: 'GCash', source: 'auto'   },
+      { date: 'Jan 6',  or: 'OR-2026-0583', vendor: 'Juan Dela Cruz',   section: 'GF Eatery',  amount: 800,  method: 'Cash',  source: 'manual' },
+      { date: 'Jan 10', or: 'OR-2026-0588', vendor: 'Pedro Carinderia', section: 'GF Eatery',  amount: 800,  method: 'Cash',  source: 'manual' },
+      { date: 'Jan 10', or: 'OR-2026-0591', vendor: 'Pedro Reyes',      section: 'GF Eatery',  amount: 1400, method: 'Cash',  source: 'manual' },
+      { date: 'Jan 15', or: 'OR-2026-0601', vendor: 'Class A Ukay',     section: 'SF Ukay',    amount: 700,  method: 'Cash',  source: 'manual' },
+      { date: 'Jan 15', or: 'OR-2026-0602', vendor: 'Luis Villanueva',  section: 'SF Veggie',  amount: 1000, method: 'Cash',  source: 'manual' },
+    ],
+    outstanding: [
+      { vendor: 'Carla Bautista', section: 'GF Misc #8', amount: 1200, days: 20, grad: '135deg,#ef4444,#f97316', init: 'CB' },
+    ],
+  },
+];
+
+// Month picker options (all months available for the dropdown)
+const monthOptions = [
+  { value: '2026-3',  label: 'March 2026'    },
+  { value: '2026-2',  label: 'February 2026' },
+  { value: '2026-1',  label: 'January 2026'  },
+  { value: '2025-12', label: 'December 2025' },
+  { value: '2025-11', label: 'November 2025' },
+];
+
+const showMonthlySummary = (req, res) => {
+  // Default to most recent month (index 0)
+  const currentMonth = months[0];
+  res.render('collector/monthly-summary', {
+    months,
+    currentMonth,
+    monthOptions,
+    initialMonthIdx: 0,
+  });
+};
+
+module.exports = { showMonthlySummary };
