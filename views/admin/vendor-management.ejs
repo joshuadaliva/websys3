@@ -12,10 +12,10 @@
 
 <body>
 
-  <%- include("../partials/sidebar.ejs") %>
+  <%- include("../partials/sidebar.ejs" , { currentRoute, role: "admin", initials: "admin", fullName: "joshua daliva"}) %>
 
   <div class="main" id="main">
-    <%- include("../partials/header.ejs") %>
+    <%- include("../partials/header.ejs", {role: "admin", initials: "admin", lastName: "daliva", }) %>
 
     <div class="content">
 

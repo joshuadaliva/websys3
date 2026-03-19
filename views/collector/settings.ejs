@@ -1,378 +1,1177 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>ARKIPAISI &mdash; Settings</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#f0f2f8;--surf:#fff;--s2:#f6f7fb;--s3:#eef0f7;
-  --brd:#e2e6f0;--brd2:#eaecf5;
-  --t1:#0c0f1e;--t2:#566080;--t3:#9099b8;
-  --ac:#1d4ed8;--acl:#eff3ff;--acs:#c7d7fd;--acd:#1e3a8a;
-  --rd:#b91c1c;--rdl:#fff1f2;--rds:#fecdd3;
-  --sidebar-w:240px;--r:12px;--rs:7px;
-  --sh:0 1px 3px rgba(12,18,60,.06),0 1px 2px rgba(12,18,60,.04);
-  --shm:0 4px 16px rgba(12,18,60,.09),0 2px 5px rgba(12,18,60,.05);
-}
-html.dark{
-  --bg:#080b15;--surf:#10152a;--s2:#151c32;--s3:#1c2440;
-  --brd:#202844;--brd2:#1a2238;--t1:#e0e6f8;--t2:#6878a8;--t3:#384060;
-  --ac:#4a6ef5;--acl:#171e48;--acs:#1f2e80;--rdl:#150408;--rds:#380412;
-  --sh:0 1px 3px rgba(0,0,0,.4);
-}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);display:flex;min-height:100vh;overflow-x:hidden}
-
-/* SIDEBAR */
-.sb{width:var(--sidebar-w);min-height:100vh;background:var(--surf);border-right:1px solid var(--brd);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:60;transition:transform .28s cubic-bezier(.4,0,.2,1)}
-.sb-logo{height:56px;padding:0 16px 0 20px;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:10px;flex-shrink:0}
-.logo-m{width:32px;height:32px;background:var(--ac);border-radius:8px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;flex-shrink:0}
-.logo-n{font-size:14px;font-weight:800;letter-spacing:-.3px}
-.logo-sub{font-size:9.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
-.sb-x{width:26px;height:26px;border-radius:6px;border:1px solid var(--brd);background:var(--s2);display:grid;place-items:center;cursor:pointer;color:var(--t2);flex-shrink:0;transition:all .14s}
-.sb-x:hover{background:var(--rdl);color:var(--rd);border-color:var(--rds)}
-.sb-x svg{width:13px;height:13px}
-.sb-nav{flex:1;padding:10px 8px;overflow-y:auto}
-.nsec{font-size:9.5px;font-weight:700;color:var(--t3);letter-spacing:.9px;text-transform:uppercase;padding:10px 10px 4px;margin-top:4px}
-.ni{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:var(--rs);color:var(--t2);cursor:pointer;font-size:13px;font-weight:500;transition:all .14s;margin-bottom:1px}
-.ni:hover{background:var(--s2);color:var(--t1)}
-.ni.on{background:var(--acl);color:var(--ac);font-weight:600}
-.ni svg{width:15px;height:15px;flex-shrink:0}
-.nbdg{margin-left:auto;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;font-family:'DM Mono',monospace;background:var(--rds);color:var(--rd)}
-.nbdg.bl{background:var(--acs);color:var(--ac)}
-.nbdg.am{background:#fde68a;color:#b45309}
-.sb-foot{padding:12px 8px;border-top:1px solid var(--brd);flex-shrink:0}
-.urow{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--rs);cursor:pointer;transition:background .14s}
-.urow:hover{background:var(--s2)}
-.uav{width:30px;height:30px;border-radius:50%;background:var(--ac);display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
-.veil{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55;cursor:pointer}
-
-/* MAIN */
-.main{flex:1;display:flex;flex-direction:column;margin-left:var(--sidebar-w);min-height:100vh;transition:margin-left .28s cubic-bezier(.4,0,.2,1);min-width:0;overflow-x:hidden}
-.nav{height:56px;background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 16px;gap:10px;position:sticky;top:0;z-index:40;flex-shrink:0}
-.togbtn{width:32px;height:32px;border-radius:var(--rs);border:1px solid var(--brd);background:var(--surf);display:grid;place-items:center;cursor:pointer;color:var(--t2);transition:all .14s;flex-shrink:0}
-.togbtn:hover{border-color:var(--ac);color:var(--ac);background:var(--acl)}
-.togbtn svg{width:15px;height:15px}
-.nav-info{flex:1;min-width:0}
-.nav-ttl{font-size:14px;font-weight:700;letter-spacing:-.2px}
-.nav-bc{font-size:11px;color:var(--t3)}
-.nav-r{display:flex;align-items:center;gap:7px;flex-shrink:0}
-.nico{width:32px;height:32px;border-radius:var(--rs);border:1px solid var(--brd);background:var(--surf);display:grid;place-items:center;cursor:pointer;color:var(--t2);transition:all .14s;flex-shrink:0}
-.nico:hover{border-color:var(--ac);color:var(--ac);background:var(--acl)}
-.nico svg{width:14px;height:14px}
-.avp{display:flex;align-items:center;gap:7px;padding:3px 10px 3px 3px;border-radius:var(--rs);border:1px solid var(--brd);background:var(--surf);cursor:pointer;flex-shrink:0}
-.avp-a{width:24px;height:24px;border-radius:50%;background:var(--ac);display:grid;place-items:center;color:#fff;font-size:9px;font-weight:700}
-.content{padding:20px;flex:1;max-width:720px}
-
-/* PAGE HEADER */
-.pghdr{margin-bottom:24px}
-.pghdr h1{font-size:20px;font-weight:800;letter-spacing:-.5px}
-.pghdr p{font-size:13px;color:var(--t3);margin-top:3px}
-
-/* SETTINGS CARD */
-.scard{background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:20px}
-.scard:last-child{margin-bottom:0}
-.scard-head{padding:14px 20px;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:10px}
-.scard-icon{width:32px;height:32px;border-radius:8px;background:var(--acl);display:grid;place-items:center;color:var(--ac);flex-shrink:0}
-.scard-icon svg{width:15px;height:15px}
-.scard-ttl{font-size:13.5px;font-weight:700}
-.scard-sub{font-size:12px;color:var(--t3);margin-top:1px}
-
-/* SETTING ROW */
-.s-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--brd2);gap:16px}
-.s-row:last-child{border-bottom:none}
-.s-left{flex:1;min-width:0}
-.s-lbl{font-size:13px;font-weight:600;color:var(--t1)}
-.s-desc{font-size:12px;color:var(--t3);margin-top:2px;line-height:1.5}
-.s-right{flex-shrink:0;display:flex;align-items:center;gap:8px}
-
-/* TOGGLE */
-.toggle{width:38px;height:22px;background:var(--brd);border-radius:20px;position:relative;cursor:pointer;transition:background .18s;flex-shrink:0}
-.toggle.on{background:var(--ac)}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.toggle.on::after{transform:translateX(16px)}
-
-/* SELECT */
-.s-select{background:var(--s2);border:1px solid var(--brd);border-radius:var(--rs);padding:6px 10px;font-size:12.5px;font-family:'DM Sans',sans-serif;color:var(--t1);cursor:pointer;outline:none;min-width:120px;transition:border .14s}
-.s-select:focus{border-color:var(--ac)}
-
-/* RADIO GROUP */
-.rgrp{display:flex;gap:6px;flex-wrap:wrap}
-.ropt{padding:5px 12px;border-radius:6px;border:1.5px solid var(--brd);font-size:12px;font-weight:600;cursor:pointer;color:var(--t2);transition:all .14s;white-space:nowrap}
-.ropt:hover{border-color:var(--ac);color:var(--ac)}
-.ropt.on{border-color:var(--ac);background:var(--acl);color:var(--ac)}
-
-/* THEME PICKER */
-.theme-opts{display:flex;gap:8px}
-.th-opt{width:36px;height:36px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .14s;position:relative}
-.th-opt.on{border-color:var(--ac)}
-.th-opt.on::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:5px;height:5px;background:var(--ac);border-radius:50%}
-.th-light{background:linear-gradient(135deg,#f0f2f8,#fff)}
-.th-dark{background:linear-gradient(135deg,#080b15,#10152a)}
-.th-auto{background:linear-gradient(135deg,#f0f2f8 50%,#10152a 50%)}
-
-/* DANGER ZONE */
-.danger-zone{border-color:var(--rds)}
-.danger-zone .scard-head{background:var(--rdl);border-bottom-color:var(--rds)}
-.danger-zone .scard-icon{background:var(--rds);color:var(--rd)}
-
-/* BUTTONS */
-.btn{padding:7px 14px;border-radius:var(--rs);font-size:12.5px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:6px;transition:all .14s}
-.btn.pri{background:var(--ac);color:#fff}
-.btn.pri:hover{background:var(--acd)}
-.btn.gh{background:var(--surf);border:1px solid var(--brd);color:var(--t2)}
-.btn.gh:hover{border-color:var(--ac);color:var(--ac)}
-.btn.danger{background:var(--surf);border:1px solid var(--rds);color:var(--rd)}
-.btn.danger:hover{background:var(--rdl)}
-
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--t1);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-@media(max-width:768px){.main{margin-left:0!important}.sb{transform:translateX(calc(-1 * var(--sidebar-w)))}.avp span,.avp svg:last-child{display:none}.content{padding:14px}}
-@media(max-width:540px){.content{padding:10px}}
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--brd);border-radius:10px}
-</style>
-</head>
-<body>
-<div class="veil" id="veil" onclick="closeSB()"></div>
-
-<%- include('../partials/sidebar.ejs') %>
-
-<div class="main" id="main">
-  <%- include('../partials/header.ejs') %>
-
-  <div class="content">
-    <div class="pghdr"><h1>Settings</h1><p>Customize how the app works for you</p></div>
-
-    <!-- Appearance -->
-    <div class="scard">
-      <div class="scard-head">
-        <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
-        <div><div class="scard-ttl">Appearance</div><div class="scard-sub">Display and visual preferences</div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Theme</div><div class="s-desc">Choose between light, dark, or system default</div></div>
-        <div class="s-right">
-          <div class="theme-opts">
-            <div class="th-opt th-light <%= settings.appearance.theme === 'light' ? 'on' : '' %>" id="th-light" onclick="setTheme('light')" title="Light"></div>
-            <div class="th-opt th-dark  <%= settings.appearance.theme === 'dark'  ? 'on' : '' %>" id="th-dark"  onclick="setTheme('dark')"  title="Dark"></div>
-            <div class="th-opt th-auto  <%= settings.appearance.theme === 'auto'  ? 'on' : '' %>" id="th-auto"  onclick="setTheme('auto')"  title="System"></div>
-          </div>
-        </div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Font Size</div><div class="s-desc">Adjust text size for readability</div></div>
-        <div class="s-right">
-          <div class="rgrp">
-            <div class="ropt <%= settings.appearance.fontSize === 'sm' ? 'on' : '' %>" id="fs-sm" onclick="setFontSize('sm')">Small</div>
-            <div class="ropt <%= settings.appearance.fontSize === 'md' ? 'on' : '' %>" id="fs-md" onclick="setFontSize('md')">Medium</div>
-            <div class="ropt <%= settings.appearance.fontSize === 'lg' ? 'on' : '' %>" id="fs-lg" onclick="setFontSize('lg')">Large</div>
-          </div>
-        </div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Compact Layout</div><div class="s-desc">Reduce spacing to fit more content on screen</div></div>
-        <div class="s-right"><div class="toggle <%= settings.appearance.compactLayout ? 'on' : '' %>" id="tog-compact" onclick="tog('compact')"></div></div>
-      </div>
-    </div>
-
-    <!-- Notifications -->
-    <div class="scard">
-      <div class="scard-head">
-        <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-        <div><div class="scard-ttl">Notifications</div><div class="scard-sub">Control which alerts you receive</div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Payment Alerts</div><div class="s-desc">Get notified when online payments are auto-detected for your stalls</div></div>
-        <div class="s-right"><div class="toggle <%= settings.notifications.paymentAlerts ? 'on' : '' %>" id="tog-npay" onclick="tog('npay')"></div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Overdue Reminders</div><div class="s-desc">Daily digest of overdue accounts on your route</div></div>
-        <div class="s-right"><div class="toggle <%= settings.notifications.overdueReminders ? 'on' : '' %>" id="tog-nover" onclick="tog('nover')"></div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">System Announcements</div><div class="s-desc">Route updates, admin messages, and maintenance notices</div></div>
-        <div class="s-right"><div class="toggle <%= settings.notifications.systemAnnouncements ? 'on' : '' %>" id="tog-nsys" onclick="tog('nsys')"></div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Reminder Time</div><div class="s-desc">When to send daily overdue digest</div></div>
-        <div class="s-right">
-          <select class="s-select" onchange="showToast('Reminder time saved')">
-            <option <%= settings.notifications.reminderTime === '7:00 AM' ? 'selected' : '' %>>7:00 AM</option>
-            <option <%= settings.notifications.reminderTime === '8:00 AM' ? 'selected' : '' %>>8:00 AM</option>
-            <option <%= settings.notifications.reminderTime === '9:00 AM' ? 'selected' : '' %>>9:00 AM</option>
-            <option <%= settings.notifications.reminderTime === '12:00 PM' ? 'selected' : '' %>>12:00 PM</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Collection -->
-    <div class="scard">
-      <div class="scard-head">
-        <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-        <div><div class="scard-ttl">Collection</div><div class="scard-sub">Payment and receipt preferences</div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Auto-fill Amount</div><div class="s-desc">Pre-fill the amount field with the vendor balance when selecting a vendor</div></div>
-        <div class="s-right"><div class="toggle <%= settings.collection.autoFillAmount ? 'on' : '' %>" id="tog-autofill" onclick="tog('autofill')"></div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">OR Number Format</div><div class="s-desc">Format used when printing official receipts</div></div>
-        <div class="s-right">
-          <div class="rgrp">
-            <div class="ropt <%= settings.collection.orFormat === 'num'  ? 'on' : '' %>" id="orf-num"  onclick="setORFormat('num')">OR-YYYY-0000</div>
-            <div class="ropt <%= settings.collection.orFormat === 'dash' ? 'on' : '' %>" id="orf-dash" onclick="setORFormat('dash')">OR-0000</div>
-          </div>
-        </div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Show Proof of Payment</div><div class="s-desc">Show the upload field in the cash payment form by default</div></div>
-        <div class="s-right"><div class="toggle <%= settings.collection.showProofUpload ? 'on' : '' %>" id="tog-proof" onclick="tog('proof')"></div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Default Payment Period</div><div class="s-desc">Pre-select the current month in the payment form</div></div>
-        <div class="s-right"><div class="toggle <%= settings.collection.defaultPaymentPeriod ? 'on' : '' %>" id="tog-defperiod" onclick="tog('defperiod')"></div></div>
-      </div>
-    </div>
-
-    <!-- Map -->
-    <div class="scard">
-      <div class="scard-head">
-        <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-        <div><div class="scard-ttl">Stall Map</div><div class="scard-sub">Market floor plan preferences</div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Default Floor</div><div class="s-desc">Which floor to show when opening My Stalls</div></div>
-        <div class="s-right">
-          <select class="s-select" onchange="showToast('Default floor saved')">
-            <option <%= settings.map.defaultFloor === 'Ground Floor'  ? 'selected' : '' %>>Ground Floor</option>
-            <option <%= settings.map.defaultFloor === 'Second Floor'  ? 'selected' : '' %>>Second Floor</option>
-          </select>
-        </div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Highlight My Stalls</div><div class="s-desc">Dim stalls not on your route to make yours stand out</div></div>
-        <div class="s-right"><div class="toggle <%= settings.map.highlightMyStalls ? 'on' : '' %>" id="tog-highlight" onclick="tog('highlight')"></div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Show Tooltips</div><div class="s-desc">Display vendor name and status on stall hover</div></div>
-        <div class="s-right"><div class="toggle <%= settings.map.showTooltips ? 'on' : '' %>" id="tog-tooltips" onclick="tog('tooltips')"></div></div>
-      </div>
-    </div>
-
-    <!-- About -->
-    <div class="scard">
-      <div class="scard-head">
-        <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-        <div><div class="scard-ttl">About</div><div class="scard-sub">Application info</div></div>
-      </div>
-      <div class="s-row"><div class="s-left"><div class="s-lbl">Application</div></div><div class="s-right" style="font-size:13px;font-weight:600;color:var(--t2)"><%= settings.about.appName %></div></div>
-      <div class="s-row"><div class="s-left"><div class="s-lbl">Version</div></div><div class="s-right" style="font-size:13px;font-family:'DM Mono',monospace;color:var(--ac)"><%= settings.about.version %></div></div>
-      <div class="s-row"><div class="s-left"><div class="s-lbl">Market</div></div><div class="s-right" style="font-size:13px;font-weight:600;color:var(--t2)"><%= settings.about.market %></div></div>
-      <div class="s-row"><div class="s-left"><div class="s-lbl">Last Sync</div></div><div class="s-right" style="font-size:12.5px;color:var(--t3)"><%= settings.about.lastSync %></div></div>
-    </div>
-
-    <!-- Danger zone -->
-    <div class="scard danger-zone">
-      <div class="scard-head">
-        <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
-        <div><div class="scard-ttl" style="color:var(--rd)">Sign Out</div><div class="scard-sub">End your current session</div></div>
-      </div>
-      <div class="s-row">
-        <div class="s-left"><div class="s-lbl">Sign out</div><div class="s-desc">You will be redirected to the login page</div></div>
-        <div class="s-right"><button class="btn danger" onclick="showToast('Signed out')">Sign Out</button></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-let SB_OPEN = window.innerWidth >= 768;
-let DARK = false;
-
-function openSB() {
-  SB_OPEN = true;
-  document.getElementById('sb').style.transform = 'translateX(0)';
-  if (window.innerWidth < 768) {
-    document.getElementById('veil').style.display = 'block';
-    document.getElementById('main').style.marginLeft = '0';
-  } else {
-    document.getElementById('veil').style.display = 'none';
-    document.getElementById('main').style.marginLeft = 'var(--sidebar-w)';
-  }
-}
-function closeSB() {
-  SB_OPEN = false;
-  document.getElementById('sb').style.transform = 'translateX(calc(-1 * var(--sidebar-w)))';
-  document.getElementById('veil').style.display = 'none';
-  document.getElementById('main').style.marginLeft = '0';
-}
-function toggleSB() { SB_OPEN ? closeSB() : openSB(); }
-
-(function () {
-  if (window.innerWidth < 768) closeSB(); else openSB();
-  window.addEventListener('resize', () => {
-    if (window.innerWidth >= 768) {
-      document.getElementById('veil').style.display = 'none';
-      if (SB_OPEN) document.getElementById('main').style.marginLeft = 'var(--sidebar-w)';
-    } else {
-      document.getElementById('main').style.marginLeft = '0';
-      if (SB_OPEN) document.getElementById('veil').style.display = 'block';
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>ARKIPAISI &mdash; Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
     }
-  });
-})();
 
-function toggleTheme() {
-  DARK = !DARK;
-  document.documentElement.classList.toggle('dark', DARK);
-  const ico = document.getElementById('themeIco');
-  ico.innerHTML = DARK
-    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
-    : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-}
+    :root {
+      --bg: #f0f2f8;
+      --surf: #fff;
+      --s2: #f6f7fb;
+      --s3: #eef0f7;
+      --brd: #e2e6f0;
+      --brd2: #eaecf5;
+      --t1: #0c0f1e;
+      --t2: #566080;
+      --t3: #9099b8;
+      --ac: #1d4ed8;
+      --acl: #eff3ff;
+      --acs: #c7d7fd;
+      --acd: #1e3a8a;
+      --rd: #b91c1c;
+      --rdl: #fff1f2;
+      --rds: #fecdd3;
+      --sidebar-w: 240px;
+      --r: 12px;
+      --rs: 7px;
+      --sh: 0 1px 3px rgba(12, 18, 60, .06), 0 1px 2px rgba(12, 18, 60, .04);
+      --shm: 0 4px 16px rgba(12, 18, 60, .09), 0 2px 5px rgba(12, 18, 60, .05);
+    }
 
-function tog(id) {
-  const el = document.getElementById('tog-' + id);
-  if (el) { el.classList.toggle('on'); showToast('Setting saved'); }
-}
+    html.dark {
+      --bg: #080b15;
+      --surf: #10152a;
+      --s2: #151c32;
+      --s3: #1c2440;
+      --brd: #202844;
+      --brd2: #1a2238;
+      --t1: #e0e6f8;
+      --t2: #6878a8;
+      --t3: #384060;
+      --ac: #4a6ef5;
+      --acl: #171e48;
+      --acs: #1f2e80;
+      --rdl: #150408;
+      --rds: #380412;
+      --sh: 0 1px 3px rgba(0, 0, 0, .4);
+    }
 
-function setTheme(t) {
-  ['light', 'dark', 'auto'].forEach(x => {
-    document.getElementById('th-' + x)?.classList.toggle('on', x === t);
-  });
-  DARK = t === 'dark';
-  document.documentElement.classList.toggle('dark', DARK);
-  showToast('Theme set to ' + t);
-}
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--t1);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden
+    }
 
-function setFontSize(s) {
-  ['sm', 'md', 'lg'].forEach(x => document.getElementById('fs-' + x)?.classList.toggle('on', x === s));
-  showToast('Font size set to ' + s);
-}
+    /* SIDEBAR */
+    .sb {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--surf);
+      border-right: 1px solid var(--brd);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 60;
+      transition: transform .28s cubic-bezier(.4, 0, .2, 1)
+    }
 
-function setORFormat(f) {
-  ['num', 'dash'].forEach(x => document.getElementById('orf-' + x)?.classList.toggle('on', x === f));
-  showToast('OR format saved');
-}
+    .sb-logo {
+      height: 56px;
+      padding: 0 16px 0 20px;
+      border-bottom: 1px solid var(--brd);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0
+    }
 
-let toastTimer = null;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
-}
-</script>
+    .logo-m {
+      width: 32px;
+      height: 32px;
+      background: var(--ac);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0
+    }
+
+    .logo-n {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.3px
+    }
+
+    .logo-sub {
+      font-size: 9.5px;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-top: 1px
+    }
+
+    .sb-x {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid var(--brd);
+      background: var(--s2);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--t2);
+      flex-shrink: 0;
+      transition: all .14s
+    }
+
+    .sb-x:hover {
+      background: var(--rdl);
+      color: var(--rd);
+      border-color: var(--rds)
+    }
+
+    .sb-x svg {
+      width: 13px;
+      height: 13px
+    }
+
+    .sb-nav {
+      flex: 1;
+      padding: 10px 8px;
+      overflow-y: auto
+    }
+
+    .nsec {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--t3);
+      letter-spacing: .9px;
+      text-transform: uppercase;
+      padding: 10px 10px 4px;
+      margin-top: 4px
+    }
+
+    .ni {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 12px;
+      border-radius: var(--rs);
+      color: var(--t2);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .14s;
+      margin-bottom: 1px
+    }
+
+    .ni:hover {
+      background: var(--s2);
+      color: var(--t1)
+    }
+
+    .ni.on {
+      background: var(--acl);
+      color: var(--ac);
+      font-weight: 600
+    }
+
+    .ni svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0
+    }
+
+    .nbdg {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: 'DM Mono', monospace;
+      background: var(--rds);
+      color: var(--rd)
+    }
+
+    .nbdg.bl {
+      background: var(--acs);
+      color: var(--ac)
+    }
+
+    .nbdg.am {
+      background: #fde68a;
+      color: #b45309
+    }
+
+    .sb-foot {
+      padding: 12px 8px;
+      border-top: 1px solid var(--brd);
+      flex-shrink: 0
+    }
+
+    .urow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: var(--rs);
+      cursor: pointer;
+      transition: background .14s
+    }
+
+    .urow:hover {
+      background: var(--s2)
+    }
+
+    .uav {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--ac);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0
+    }
+
+    .veil {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      z-index: 55;
+      cursor: pointer
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+      transition: margin-left .28s cubic-bezier(.4, 0, .2, 1);
+      min-width: 0;
+      overflow-x: hidden
+    }
+
+    /* NAV */
+    .nav {
+      height: 56px;
+      background: var(--surf);
+      border-bottom: 1px solid var(--brd);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      flex-shrink: 0
+    }
+
+    .togbtn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--rs);
+      border: 1px solid var(--brd);
+      background: var(--surf);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--t2);
+      transition: all .14s;
+      flex-shrink: 0
+    }
+
+    .togbtn:hover {
+      border-color: var(--ac);
+      color: var(--ac);
+      background: var(--acl)
+    }
+
+    .togbtn svg {
+      width: 15px;
+      height: 15px
+    }
+
+    .nav-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .nav-ttl {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -.2px
+    }
+
+    .nav-bc {
+      font-size: 11px;
+      color: var(--t3)
+    }
+
+    .nav-r {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0
+    }
+
+    .nsrch {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--s2);
+      border: 1px solid var(--brd);
+      border-radius: var(--rs);
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--t3);
+      cursor: text;
+      min-width: 160px
+    }
+
+    .nsrch svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0
+    }
+
+    .nico {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--rs);
+      border: 1px solid var(--brd);
+      background: var(--surf);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--t2);
+      transition: all .14s;
+      flex-shrink: 0;
+      position: relative
+    }
+
+    .nico:hover {
+      border-color: var(--ac);
+      color: var(--ac);
+      background: var(--acl)
+    }
+
+    .nico svg {
+      width: 14px;
+      height: 14px
+    }
+
+    .nico-dot {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 7px;
+      height: 7px;
+      background: var(--rd);
+      border-radius: 50%;
+      border: 1.5px solid var(--surf)
+    }
+
+    .avp {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 3px 10px 3px 3px;
+      border-radius: var(--rs);
+      border: 1px solid var(--brd);
+      background: var(--surf);
+      cursor: pointer;
+      flex-shrink: 0
+    }
+
+    .avp-a {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #15803d, #0e7490);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700
+    }
+
+    .content {
+      padding: 20px;
+      flex: 1;
+      max-width: 720px
+    }
+
+    /* PAGE HEADER */
+    .pghdr {
+      margin-bottom: 24px
+    }
+
+    .pghdr h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.5px
+    }
+
+    .pghdr p {
+      font-size: 13px;
+      color: var(--t3);
+      margin-top: 3px
+    }
+
+    /* SETTINGS CARD */
+    .scard {
+      background: var(--surf);
+      border: 1px solid var(--brd);
+      border-radius: var(--r);
+      box-shadow: var(--sh);
+      overflow: hidden;
+      margin-bottom: 20px
+    }
+
+    .scard:last-child {
+      margin-bottom: 0
+    }
+
+    .scard-head {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--brd);
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .scard-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--acl);
+      display: grid;
+      place-items: center;
+      color: var(--ac);
+      flex-shrink: 0
+    }
+
+    .scard-icon svg {
+      width: 15px;
+      height: 15px
+    }
+
+    .scard-ttl {
+      font-size: 13.5px;
+      font-weight: 700
+    }
+
+    .scard-sub {
+      font-size: 12px;
+      color: var(--t3);
+      margin-top: 1px
+    }
+
+    /* SETTING ROW */
+    .s-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--brd2);
+      gap: 16px
+    }
+
+    .s-row:last-child {
+      border-bottom: none
+    }
+
+    .s-left {
+      flex: 1;
+      min-width: 0
+    }
+
+    .s-lbl {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--t1)
+    }
+
+    .s-desc {
+      font-size: 12px;
+      color: var(--t3);
+      margin-top: 2px;
+      line-height: 1.5
+    }
+
+    .s-right {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    /* TOGGLE */
+    .toggle {
+      width: 38px;
+      height: 22px;
+      background: var(--brd);
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: background .18s;
+      flex-shrink: 0
+    }
+
+    .toggle.on {
+      background: var(--ac)
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform .18s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .2)
+    }
+
+    .toggle.on::after {
+      transform: translateX(16px)
+    }
+
+    /* SELECT */
+    .s-select {
+      background: var(--s2);
+      border: 1px solid var(--brd);
+      border-radius: var(--rs);
+      padding: 6px 10px;
+      font-size: 12.5px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--t1);
+      cursor: pointer;
+      outline: none;
+      min-width: 120px;
+      transition: border .14s
+    }
+
+    .s-select:focus {
+      border-color: var(--ac)
+    }
+
+    /* RADIO GROUP */
+    .rgrp {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    .ropt {
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1.5px solid var(--brd);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--t2);
+      transition: all .14s;
+      white-space: nowrap
+    }
+
+    .ropt:hover {
+      border-color: var(--ac);
+      color: var(--ac)
+    }
+
+    .ropt.on {
+      border-color: var(--ac);
+      background: var(--acl);
+      color: var(--ac)
+    }
+
+    /* THEME PICKER */
+    .theme-opts {
+      display: flex;
+      gap: 8px
+    }
+
+    .th-opt {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all .14s;
+      position: relative
+    }
+
+    .th-opt.on {
+      border-color: var(--ac)
+    }
+
+    .th-opt.on::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      background: var(--ac);
+      border-radius: 50%
+    }
+
+    .th-light {
+      background: linear-gradient(135deg, #f0f2f8, #fff)
+    }
+
+    .th-dark {
+      background: linear-gradient(135deg, #080b15, #10152a)
+    }
+
+    .th-auto {
+      background: linear-gradient(135deg, #f0f2f8 50%, #10152a 50%)
+    }
+
+    /* DANGER ZONE */
+    .danger-zone {
+      border-color: var(--rds)
+    }
+
+    .danger-zone .scard-head {
+      background: var(--rdl);
+      border-bottom-color: var(--rds)
+    }
+
+    .danger-zone .scard-icon {
+      background: var(--rds);
+      color: var(--rd)
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 7px 14px;
+      border-radius: var(--rs);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .14s
+    }
+
+    .btn.pri {
+      background: var(--ac);
+      color: #fff
+    }
+
+    .btn.pri:hover {
+      background: var(--acd)
+    }
+
+    .btn.gh {
+      background: var(--surf);
+      border: 1px solid var(--brd);
+      color: var(--t2)
+    }
+
+    .btn.gh:hover {
+      border-color: var(--ac);
+      color: var(--ac)
+    }
+
+    .btn.danger {
+      background: var(--surf);
+      border: 1px solid var(--rds);
+      color: var(--rd)
+    }
+
+    .btn.danger:hover {
+      background: var(--rdl)
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--t1);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all .22s;
+      white-space: nowrap
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+
+    @media(max-width:768px) {
+      .main {
+        margin-left: 0 !important
+      }
+
+      .sb {
+        transform: translateX(calc(-1 * var(--sidebar-w)))
+      }
+
+      .avp span,
+      .avp svg:last-child {
+        display: none
+      }
+
+      .content {
+        padding: 14px
+      }
+    }
+
+    @media(max-width:540px) {
+      .content {
+        padding: 10px
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--brd);
+      border-radius: 10px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="veil" id="veil" onclick="closeSB()"></div>
+
+  <%- include("../partials/sidebar.ejs", { currentRoute, role: "collector" , initials: "collector" ,
+    fullName: "joshua daliva" }) %>
+
+    <div class="main" id="main">
+      <%- include("../partials/header.ejs", {role: "collector" , initials: "collector" , lastName: "daliva" , }) %>
+
+        <div class="content">
+          <div class="pghdr">
+            <h1>Settings</h1>
+            <p>Customize how the app works for you</p>
+          </div>
+
+          <!-- Appearance -->
+          <div class="scard">
+            <div class="scard-head">
+              <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg></div>
+              <div>
+                <div class="scard-ttl">Appearance</div>
+                <div class="scard-sub">Display and visual preferences</div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Theme</div>
+                <div class="s-desc">Choose between light, dark, or system default</div>
+              </div>
+              <div class="s-right">
+                <div class="theme-opts">
+                  <div class="th-opt th-light <%= settings.appearance.theme === 'light' ? 'on' : '' %>" id="th-light"
+                    onclick="setTheme('light')" title="Light"></div>
+                  <div class="th-opt th-dark  <%= settings.appearance.theme === 'dark'  ? 'on' : '' %>" id="th-dark"
+                    onclick="setTheme('dark')" title="Dark"></div>
+                  <div class="th-opt th-auto  <%= settings.appearance.theme === 'auto'  ? 'on' : '' %>" id="th-auto"
+                    onclick="setTheme('auto')" title="System"></div>
+                </div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Font Size</div>
+                <div class="s-desc">Adjust text size for readability</div>
+              </div>
+              <div class="s-right">
+                <div class="rgrp">
+                  <div class="ropt <%= settings.appearance.fontSize === 'sm' ? 'on' : '' %>" id="fs-sm"
+                    onclick="setFontSize('sm')">Small</div>
+                  <div class="ropt <%= settings.appearance.fontSize === 'md' ? 'on' : '' %>" id="fs-md"
+                    onclick="setFontSize('md')">Medium</div>
+                  <div class="ropt <%= settings.appearance.fontSize === 'lg' ? 'on' : '' %>" id="fs-lg"
+                    onclick="setFontSize('lg')">Large</div>
+                </div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Compact Layout</div>
+                <div class="s-desc">Reduce spacing to fit more content on screen</div>
+              </div>
+              <div class="s-right">
+                <div class="toggle <%= settings.appearance.compactLayout ? 'on' : '' %>" id="tog-compact"
+                  onclick="tog('compact')"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="scard">
+            <div class="scard-head">
+              <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg></div>
+              <div>
+                <div class="scard-ttl">Notifications</div>
+                <div class="scard-sub">Control which alerts you receive</div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Payment Alerts</div>
+                <div class="s-desc">Get notified when online payments are auto-detected for your stalls</div>
+              </div>
+              <div class="s-right">
+                <div class="toggle <%= settings.notifications.paymentAlerts ? 'on' : '' %>" id="tog-npay"
+                  onclick="tog('npay')"></div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Overdue Reminders</div>
+                <div class="s-desc">Daily digest of overdue accounts on your route</div>
+              </div>
+              <div class="s-right">
+                <div class="toggle <%= settings.notifications.overdueReminders ? 'on' : '' %>" id="tog-nover"
+                  onclick="tog('nover')"></div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">System Announcements</div>
+                <div class="s-desc">Route updates, admin messages, and maintenance notices</div>
+              </div>
+              <div class="s-right">
+                <div class="toggle <%= settings.notifications.systemAnnouncements ? 'on' : '' %>" id="tog-nsys"
+                  onclick="tog('nsys')"></div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Reminder Time</div>
+                <div class="s-desc">When to send daily overdue digest</div>
+              </div>
+              <div class="s-right">
+                <select class="s-select" onchange="showToast('Reminder time saved')">
+                  <option <%=settings.notifications.reminderTime==='7:00 AM' ? 'selected' : '' %>>7:00 AM</option>
+                  <option <%=settings.notifications.reminderTime==='8:00 AM' ? 'selected' : '' %>>8:00 AM</option>
+                  <option <%=settings.notifications.reminderTime==='9:00 AM' ? 'selected' : '' %>>9:00 AM</option>
+                  <option <%=settings.notifications.reminderTime==='12:00 PM' ? 'selected' : '' %>>12:00 PM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collection -->
+          <div class="scard">
+            <div class="scard-head">
+              <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg></div>
+              <div>
+                <div class="scard-ttl">Collection</div>
+                <div class="scard-sub">Payment and receipt preferences</div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Auto-fill Amount</div>
+                <div class="s-desc">Pre-fill the amount field with the vendor balance when selecting a vendor</div>
+              </div>
+              <div class="s-right">
+                <div class="toggle <%= settings.collection.autoFillAmount ? 'on' : '' %>" id="tog-autofill"
+                  onclick="tog('autofill')"></div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">OR Number Format</div>
+                <div class="s-desc">Format used when printing official receipts</div>
+              </div>
+              <div class="s-right">
+                <div class="rgrp">
+                  <div class="ropt <%= settings.collection.orFormat === 'num'  ? 'on' : '' %>" id="orf-num"
+                    onclick="setORFormat('num')">OR-YYYY-0000</div>
+                  <div class="ropt <%= settings.collection.orFormat === 'dash' ? 'on' : '' %>" id="orf-dash"
+                    onclick="setORFormat('dash')">OR-0000</div>
+                </div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Show Proof of Payment</div>
+                <div class="s-desc">Show the upload field in the cash payment form by default</div>
+              </div>
+              <div class="s-right">
+                <div class="toggle <%= settings.collection.showProofUpload ? 'on' : '' %>" id="tog-proof"
+                  onclick="tog('proof')"></div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Default Payment Period</div>
+                <div class="s-desc">Pre-select the current month in the payment form</div>
+              </div>
+              <div class="s-right">
+                <div class="toggle <%= settings.collection.defaultPaymentPeriod ? 'on' : '' %>" id="tog-defperiod"
+                  onclick="tog('defperiod')"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map -->
+          <div class="scard">
+            <div class="scard-head">
+              <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg></div>
+              <div>
+                <div class="scard-ttl">Stall Map</div>
+                <div class="scard-sub">Market floor plan preferences</div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Default Floor</div>
+                <div class="s-desc">Which floor to show when opening My Stalls</div>
+              </div>
+              <div class="s-right">
+                <select class="s-select" onchange="showToast('Default floor saved')">
+                  <option <%=settings.map.defaultFloor==='Ground Floor' ? 'selected' : '' %>>Ground Floor</option>
+                  <option <%=settings.map.defaultFloor==='Second Floor' ? 'selected' : '' %>>Second Floor</option>
+                </select>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Highlight My Stalls</div>
+                <div class="s-desc">Dim stalls not on your route to make yours stand out</div>
+              </div>
+              <div class="s-right">
+                <div class="toggle <%= settings.map.highlightMyStalls ? 'on' : '' %>" id="tog-highlight"
+                  onclick="tog('highlight')"></div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Show Tooltips</div>
+                <div class="s-desc">Display vendor name and status on stall hover</div>
+              </div>
+              <div class="s-right">
+                <div class="toggle <%= settings.map.showTooltips ? 'on' : '' %>" id="tog-tooltips"
+                  onclick="tog('tooltips')"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- About -->
+          <div class="scard">
+            <div class="scard-head">
+              <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg></div>
+              <div>
+                <div class="scard-ttl">About</div>
+                <div class="scard-sub">Application info</div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Application</div>
+              </div>
+              <div class="s-right" style="font-size:13px;font-weight:600;color:var(--t2)">
+                <%= settings.about.appName %>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Version</div>
+              </div>
+              <div class="s-right" style="font-size:13px;font-family:'DM Mono',monospace;color:var(--ac)">
+                <%= settings.about.version %>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Market</div>
+              </div>
+              <div class="s-right" style="font-size:13px;font-weight:600;color:var(--t2)">
+                <%= settings.about.market %>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Last Sync</div>
+              </div>
+              <div class="s-right" style="font-size:12.5px;color:var(--t3)">
+                <%= settings.about.lastSync %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Danger zone -->
+          <div class="scard danger-zone">
+            <div class="scard-head">
+              <div class="scard-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg></div>
+              <div>
+                <div class="scard-ttl" style="color:var(--rd)">Sign Out</div>
+                <div class="scard-sub">End your current session</div>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-left">
+                <div class="s-lbl">Sign out</div>
+                <div class="s-desc">You will be redirected to the login page</div>
+              </div>
+              <div class="s-right"><button class="btn danger" onclick="showToast('Signed out')">Sign Out</button></div>
+            </div>
+          </div>
+
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      let SB_OPEN = window.innerWidth >= 768;
+      let DARK = false;
+
+      function openSB() {
+        SB_OPEN = true;
+        document.getElementById('sb').style.transform = 'translateX(0)';
+        if (window.innerWidth < 768) {
+          document.getElementById('veil').style.display = 'block';
+          document.getElementById('main').style.marginLeft = '0';
+        } else {
+          document.getElementById('veil').style.display = 'none';
+          document.getElementById('main').style.marginLeft = 'var(--sidebar-w)';
+        }
+      }
+      function closeSB() {
+        SB_OPEN = false;
+        document.getElementById('sb').style.transform = 'translateX(calc(-1 * var(--sidebar-w)))';
+        document.getElementById('veil').style.display = 'none';
+        document.getElementById('main').style.marginLeft = '0';
+      }
+      function toggleSB() { SB_OPEN ? closeSB() : openSB(); }
+
+      (function () {
+        if (window.innerWidth < 768) closeSB(); else openSB();
+        window.addEventListener('resize', () => {
+          if (window.innerWidth >= 768) {
+            document.getElementById('veil').style.display = 'none';
+            if (SB_OPEN) document.getElementById('main').style.marginLeft = 'var(--sidebar-w)';
+          } else {
+            document.getElementById('main').style.marginLeft = '0';
+            if (SB_OPEN) document.getElementById('veil').style.display = 'block';
+          }
+        });
+      })();
+
+      function toggleTheme() {
+        DARK = !DARK;
+        document.documentElement.classList.toggle('dark', DARK);
+        const ico = document.getElementById('themeIco');
+        ico.innerHTML = DARK
+          ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+          : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+      }
+
+      function tog(id) {
+        const el = document.getElementById('tog-' + id);
+        if (el) { el.classList.toggle('on'); showToast('Setting saved'); }
+      }
+
+      function setTheme(t) {
+        ['light', 'dark', 'auto'].forEach(x => {
+          document.getElementById('th-' + x)?.classList.toggle('on', x === t);
+        });
+        DARK = t === 'dark';
+        document.documentElement.classList.toggle('dark', DARK);
+        showToast('Theme set to ' + t);
+      }
+
+      function setFontSize(s) {
+        ['sm', 'md', 'lg'].forEach(x => document.getElementById('fs-' + x)?.classList.toggle('on', x === s));
+        showToast('Font size set to ' + s);
+      }
+
+      function setORFormat(f) {
+        ['num', 'dash'].forEach(x => document.getElementById('orf-' + x)?.classList.toggle('on', x === f));
+        showToast('OR format saved');
+      }
+
+      let toastTimer = null;
+      function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+      }
+    </script>
 </body>
+
 </html>

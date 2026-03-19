@@ -16,11 +16,11 @@
 <body>
 
   <!-- ═══ SIDEBAR ═══ -->
-  <%- include("../partials/sidebar.ejs", { currentRoute }) %>
+  <%- include("../partials/sidebar.ejs", { currentRoute, role: "admin", initials: "admin", fullName: "joshua daliva"}) %>
   
   <!-- ── MAIN ── -->
   <div class="main" id="main">
-      <%- include("../partials/header.ejs") %>
+      <%- include("../partials/header.ejs", {role: "admin", initials: "admin", lastName: "daliva"}) %>
 
     <!-- Navbar -->
 
