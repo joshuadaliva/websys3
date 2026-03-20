@@ -212,7 +212,7 @@ const vendors = [
   
   const showVendorManagement = (req, res) => {
     const stats = getStats(vendors);
-    res.render("admin/vendor-management", { vendors, stats });
+    res.render("pages/admin/vendor-management", { vendors, stats });
   };
   
   module.exports = { showVendorManagement };

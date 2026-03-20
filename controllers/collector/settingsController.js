@@ -30,7 +30,7 @@ const settings = {
 };
 
 const showSettings = (req, res) => {
-  res.render("collector/settings", { settings });
+  res.render("pages/collector/settings", { settings });
 };
 
 module.exports = { showSettings };

@@ -82,7 +82,7 @@ const security = {
 };
 
 const showProfile = (req, res) => {
-  res.render("collector/profile", {
+  res.render("pages/collector/profile", {
     user,
     employment,
     stats,

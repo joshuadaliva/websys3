@@ -4,7 +4,7 @@
 
 
 const showPaymentManagement = async (req, res) => {
-    res.render("admin/payment-management")
+    res.render("pages/admin/payment-management")
 }
 
 

@@ -22,7 +22,7 @@ router.get("/login", authController.showLoginPage)
 // Dashboard and main routes
 router.get("/dashboard", vendorPortalController.showDashboard)
 router.get("/payments", vendorPortalController.showPayments)
-router.get("/inquiries", vendorPortalController.showInquiry)
+router.get("/inquries", vendorPortalController.showInquiry)
 
 // Profile and settings routes
 router.get("/profile", vendorPortalController.showProfile)

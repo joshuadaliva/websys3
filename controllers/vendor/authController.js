@@ -2,7 +2,7 @@
 
 
 const showLoginPage = async (req, res) => {
-    res.render("vendor/login")
+    res.render("pages/vendor/login")
 }
 
 

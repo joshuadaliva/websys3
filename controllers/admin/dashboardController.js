@@ -1,7 +1,7 @@
 
 
 const showDashboard = async (req, res) => {
-    res.render("admin/dashboard")
+    res.render("pages/admin/dashboard")
 }
 
 

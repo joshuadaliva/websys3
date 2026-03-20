@@ -4,7 +4,7 @@
 
 
 const showApplicationManagement = async (req, res) => {
-    res.render("admin/application-management")
+    res.render("pages/admin/application-management")
 }
 
 

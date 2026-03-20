@@ -307,7 +307,7 @@ const vendorOptions = [
 ];
 
 const showPayments = (req, res) => {
-  res.render("collector/payments", {
+  res.render("pages/collector/payments", {
     onlinePayments,
     confirmedOnline,
     cashReceipts,

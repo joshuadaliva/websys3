@@ -4,7 +4,7 @@
 
 
 const showArchivingPage = async (req, res) => {
-    res.render("admin/archiving")
+    res.render("pages/admin/archiving")
 }
 
 

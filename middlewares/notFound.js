@@ -1,7 +1,7 @@
 
 
 const notFound = (req, res) => {
-    res.render("404")
+    res.render("partials/404")
 }
 
 

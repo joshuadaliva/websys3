@@ -4,7 +4,7 @@
 
 
 const showSettings = async (req, res) => {
-    res.render("admin/settings")
+    res.render("pages/admin/settings")
 }
 
 

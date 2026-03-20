@@ -82,7 +82,7 @@ function getNotifCounts(notifList) {
 
 const showNotifications = (req, res) => {
   const counts = getNotifCounts(notifications);
-  res.render("collector/notifications", { notifications, counts });
+  res.render("pages/collector/notifications", { notifications, counts });
 };
 
 module.exports = { showNotifications };

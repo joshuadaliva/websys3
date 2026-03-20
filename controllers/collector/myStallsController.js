@@ -2116,7 +2116,7 @@ function getMyStallSummary(stallData) {
 
 const showMyStalls = (req, res) => {
   const summary = getMyStallSummary(stalls);
-  res.render("collector/my-stalls", { stalls, summary });
+  res.render("pages/collector/my-stalls", { stalls, summary });
 };
 
 module.exports = { showMyStalls };

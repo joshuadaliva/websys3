@@ -392,7 +392,7 @@ const monthOptions = [
 const showMonthlySummary = (req, res) => {
   // Default to most recent month (index 0)
   const currentMonth = months[0];
-  res.render("collector/monthly-summary", {
+  res.render("pages/collector/monthly-summary", {
     months,
     currentMonth,
     monthOptions,

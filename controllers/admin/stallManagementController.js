@@ -2262,7 +2262,7 @@ function getStallSummary(stallData) {
 // ── CONTROLLER ────────────────────────────────────────────────────
 const showStallManagement = (req, res) => {
   const summary = getStallSummary(stalls);
-  res.render("admin/stall-management", {
+  res.render("pages/admin/stall-management", {
     user,
     stalls,
     stallListings,

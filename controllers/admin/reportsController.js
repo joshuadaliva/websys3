@@ -2,7 +2,7 @@
 
 
 const showReports = async (req, res) => {
-    res.render("admin/reports")
+    res.render("pages/admin/reports")
 }
 
 

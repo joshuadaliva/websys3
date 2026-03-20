@@ -219,7 +219,7 @@ const vendorOptions = [
 const orCounter = 846;
 
 const showDashboard = (req, res) => {
-  res.render("collector/dashboard", {
+  res.render("pages/collector/dashboard", {
     user,
     stats,
     recentCollections,
