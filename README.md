@@ -1,6 +1,6 @@
 # ARKIPAISI — Public Market Stall Rental Management System
 
-A web-based management system for public market stall rentals built with Express.js, EJS, and Mongoose. The platform serves three user roles — Admin, Collector, and Vendor — each with a dedicated portal for managing stalls, payments, and operations at the ARKIPAISI Public Market.
+A web-based management system for public market stall rentals built with Express.js, EJS, and JS. The platform serves three user roles — Admin, Collector, and Vendor — each with a dedicated portal for managing stalls, payments, and operations at the ARKIPAISI Public Market.
 
 ---
 
