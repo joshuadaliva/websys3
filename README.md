@@ -1,6 +1,6 @@
 # ARKIPAISI — Public Market Stall Rental Management System
 
-A web-based management system for public market stall rentals built with **Express.js**, **EJS**, and **Mongoose**. The platform serves three user roles — **Admin**, **Collector**, and **Vendor** — each with a dedicated portal for managing stalls, payments, and operations at the ARKIPAISI Public Market.
+A web-based management system for public market stall rentals built with Express.js, EJS, and Mongoose. The platform serves three user roles — Admin, Collector, and Vendor — each with a dedicated portal for managing stalls, payments, and operations at the ARKIPAISI Public Market.
 
 ---
 
@@ -42,10 +42,8 @@ A web-based management system for public market stall rentals built with **Expre
 | Layer          | Technology                          |
 | -------------- | ----------------------------------- |
 | Runtime        | [Node.js](https://nodejs.org/)      |
-| Framework      | [Express.js v5](https://expressjs.com/) |
+| Framework      | [Express.js](https://expressjs.com/) |
 | View Engine    | [EJS](https://ejs.co/)             |
-| Database       | [MongoDB](https://www.mongodb.com/) via [Mongoose](https://mongoosejs.com/) |
-| File Uploads   | [Multer](https://github.com/expressjs/multer) |
 | Dev Server     | [Nodemon](https://nodemon.io/)      |
 
 ---
@@ -113,22 +111,14 @@ websys3/
 
 ## Prerequisites
 
-- **Node.js** (v18 or later recommended)
-- **npm** (comes with Node.js)
-- **MongoDB** (local instance or a cloud URI such as MongoDB Atlas) — required by the Mongoose dependency, though current controllers use in-memory data
+- Node.js (v18 or later recommended)
+- npm (comes with Node.js)
 
 ---
 
 ## Installation
 
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/joshuadaliva/websys3.git
-   cd websys3
-   ```
-
-2. **Install dependencies**
+1. Install dependencies
 
    ```bash
    npm install
@@ -140,7 +130,7 @@ websys3/
    | --------- | ------------------------------------ |
    | express   | Web framework                        |
    | ejs       | Templating engine                    |
-   | mongoose  | MongoDB ODM                          |
+   | mongoose  | MongoDB ODM    for future development|                      
    | multer    | Multipart form / file upload handler |
    | nodemon   | Auto-restart dev server on changes   |
 
@@ -148,7 +138,7 @@ websys3/
 
 ## Running the Application
 
-**Development mode** (auto-restarts on file changes):
+Development mode (auto-restarts on file changes):
 
 ```bash
 npm start
@@ -156,13 +146,13 @@ npm start
 
 This runs `nodemon app.js` as defined in `package.json`.
 
-**Manual start** (without auto-restart):
+Manual start (without auto-restart):
 
 ```bash
 node app.js
 ```
 
-The server starts on **port 5000** by default. Open your browser and navigate to:
+The server starts on port 5000 by default. Open your browser and navigate to:
 
 ```
 http://localhost:5000
@@ -178,7 +168,7 @@ http://localhost:5000
 | ------ | ---- | ----------- |
 | `GET`  | `/`  | Landing page — browse available stalls, view the application process, submit a pre-screening form, track an application, and read the FAQ. |
 
-Any unmatched route returns the **custom 404 page**.
+Any unmatched route returns the custom 404 page.
 
 ---
 
@@ -239,46 +229,46 @@ All vendor routes are prefixed with `/vendor`.
 
 The Admin portal provides full control over market operations:
 
-- **Dashboard** — High-level overview of the entire market with key metrics and quick actions.
-- **Stall Management** — Visual, interactive floor-plan map of all market stalls across multiple floors and sections (Eatery, RTW, Service, Miscellaneous/Pasalubong, Vegetables, Fruits, Ukay-Ukay, Eggs). Each stall shows its payment status (`paid`, `partial`, `overdue`, `vacant`), assigned vendor, monthly rate, payment history, and contract expiry. Admins can toggle whether a stall is publicly posted for application.
-- **Vendor Management** — Complete vendor directory with profile details (contact info, stall assignment, contract dates, monthly rate, outstanding balance). Vendors are categorized by status: `active`, `suspended`, `expired`, or `terminated`. Summary statistics are computed from live data.
-- **Application Management** — Review incoming pre-screening applications submitted through the public landing page.
-- **Payment Management** — Monitor and manage all payment transactions across the market.
-- **Archiving** — Access and manage archived records.
-- **Notification Management** — Create and manage notifications sent to collectors and vendors.
-- **Reports** — Generate operational and financial reports.
-- **Settings** — Configure system-wide preferences.
+- Dashboard — High-level overview of the entire market with key metrics and quick actions.
+- Stall Management — Visual, interactive floor-plan map of all market stalls across multiple floors and sections (Eatery, RTW, Service, Miscellaneous/Pasalubong, Vegetables, Fruits, Ukay-Ukay, Eggs). Each stall shows its payment status (`paid`, `partial`, `overdue`, `vacant`), assigned vendor, monthly rate, payment history, and contract expiry. Admins can toggle whether a stall is publicly posted for application.
+- Vendor Management — Complete vendor directory with profile details (contact info, stall assignment, contract dates, monthly rate, outstanding balance). Vendors are categorized by status: `active`, `suspended`, `expired`, or `terminated`. Summary statistics are computed from live data.
+- Application Management — Review incoming pre-screening applications submitted through the public landing page.
+- Payment Management — Monitor and manage all payment transactions across the market.
+- Archiving — Access and manage archived records.
+- Notification Management — Create and manage notifications sent to collectors and vendors.
+- Reports — Generate operational and financial reports.
+- Settings — Configure system-wide preferences.
 
 ### Collector Portal
 
 The Collector portal is designed for market revenue collectors:
 
-- **Dashboard** — Real-time collection statistics for the day: total collected amount, receipts issued, overdue account count, and assigned stall count. Includes a recent collections table, overdue accounts list, collection progress by payment method (Cash, GCash, Maya), a task checklist, activity feed, and a calendar view.
-- **My Stalls** — Interactive stall map highlighting the collector's assigned stalls. Each stall shows vendor info, payment status, rate, balance, and payment history. Stalls are organized by floor and section. Summary stats (total assigned, paid, overdue, partial, vacant) are calculated dynamically.
-- **Payments** — Three-tab payment workflow:
-  - *Online Payments* — Queue of pending GCash/Maya payments awaiting confirmation, plus already-confirmed online payments.
-  - *Cash Collection* — Record walk-in cash payments with auto-generated Official Receipt (OR) numbers. Includes a cash receipts log for the day.
-  - *Payment History* — Searchable log of all posted transactions with OR numbers, amounts, methods, and timestamps.
-  - *Overdue Accounts* — List of vendors with outstanding balances, days overdue, and overdue amounts.
-- **Monthly Summary** — Month-by-month collection report with transaction tables, outstanding accounts, and totals. Supports switching between months via a dropdown.
-- **Notifications** — Notification center with overdue alerts, payment received confirmations, and system messages. Tracks read/unread status with badge counts.
-- **Profile** — Personal information, employment details (position, department, hire date, supervisor), stall assignment summary, performance metrics (collection rate, ORs issued, on-time rate), and a recent activity log.
-- **Settings** — Configurable preferences for appearance (theme, font size, compact layout), notification types and reminder time, collection defaults (auto-fill amount, OR format, proof upload), and map display options.
+- Dashboard — Real-time collection statistics for the day: total collected amount, receipts issued, overdue account count, and assigned stall count. Includes a recent collections table, overdue accounts list, collection progress by payment method (Cash, GCash, Maya), a task checklist, activity feed, and a calendar view.
+- My Stalls — Interactive stall map highlighting the collector's assigned stalls. Each stall shows vendor info, payment status, rate, balance, and payment history. Stalls are organized by floor and section. Summary stats (total assigned, paid, overdue, partial, vacant) are calculated dynamically.
+- Payments — Three-tab payment workflow:
+  - Online Payments — Queue of pending GCash/Maya payments awaiting confirmation, plus already-confirmed online payments.
+  - Cash Collection — Record walk-in cash payments with auto-generated Official Receipt (OR) numbers. Includes a cash receipts log for the day.
+  - Payment History — Searchable log of all posted transactions with OR numbers, amounts, methods, and timestamps.
+  - Overdue Accounts — List of vendors with outstanding balances, days overdue, and overdue amounts.
+- Monthly Summary — Month-by-month collection report with transaction tables, outstanding accounts, and totals. Supports switching between months via a dropdown.
+- Notifications — Notification center with overdue alerts, payment received confirmations, and system messages. Tracks read/unread status with badge counts.
+- Profile — Personal information, employment details (position, department, hire date, supervisor), stall assignment summary, performance metrics (collection rate, ORs issued, on-time rate), and a recent activity log.
+- Settings — Configurable preferences for appearance (theme, font size, compact layout), notification types and reminder time, collection defaults (auto-fill amount, OR format, proof upload), and map display options.
 
 ### Vendor Portal
 
 The Vendor portal gives stall tenants access to their account:
 
-- **Dashboard** — At-a-glance view of the vendor's stall details (stall number, location, type, size, monthly rate, contract dates, reference code, assigned collector), current balance due, total paid, recent payment table, open inquiry count, and market office notices.
-- **Payments** — Complete payment ledger for the vendor's stall. Each row shows the billing period, OR number, amount, payment method (Cash, GCash, Maya), issuer (collector name or auto-posted), date, and status (`paid` / `unpaid`). Payment stats (balance due, total paid, count of paid/unpaid periods) are computed automatically.
-- **Inquiries** — Ticket-based support system. Vendors can submit inquiries under categories like *Payment Concern*, *Stall Condition*, or *Contract Renewal*. Each ticket has a threaded message history between the vendor and the Market Office. Tickets are tracked by status: `open`, `waiting`, or `resolved`.
-- **Profile** — Vendor's personal details, stall assignment, contract information, and aggregate payment/inquiry statistics.
-- **Settings** — Appearance preferences (theme, language), notification toggles (payment reminders, inquiry replies, market announcements, contract expiry alerts), privacy options (show history to collector, two-factor auth), and application version info.
+- Dashboard — At-a-glance view of the vendor's stall details (stall number, location, type, size, monthly rate, contract dates, reference code, assigned collector), current balance due, total paid, recent payment table, open inquiry count, and market office notices.
+- Payments — Complete payment ledger for the vendor's stall. Each row shows the billing period, OR number, amount, payment method (Cash, GCash, Maya), issuer (collector name or auto-posted), date, and status (`paid` / `unpaid`). Payment stats (balance due, total paid, count of paid/unpaid periods) are computed automatically.
+- Inquiries — Ticket-based support system. Vendors can submit inquiries under categories like Payment Concern, Stall Condition, or Contract Renewal. Each ticket has a threaded message history between the vendor and the Market Office. Tickets are tracked by status: `open`, `waiting`, or `resolved`.
+- Profile — Vendor's personal details, stall assignment, contract information, and aggregate payment/inquiry statistics.
+- Settings — Appearance preferences (theme, language), notification toggles (payment reminders, inquiry replies, market announcements, contract expiry alerts), privacy options (show history to collector, two-factor auth), and application version info.
 
 ---
 
 ## Shared UI Components
 
-- **Header** (`views/partials/header.ejs`) — Top navigation bar shared across all portals. Displays the app name, breadcrumb (role-aware), search bar (admin/collector only), theme toggle, notification bell, and user avatar pill with initials.
-- **Sidebar** (`views/partials/sidebar.ejs`) — Role-based sidebar navigation. Renders different menu items depending on the user's role (`admin`, `collector`, or `vendor`). Highlights the currently active route. Includes badge counts for items like pending applications or unread notifications.
-- **404 Page** (`views/404.ejs`) — Custom "This Stall Is Empty" 404 page with an animated market stall illustration, particle effects, and navigation links back to the landing page.
+- Header (`views/partials/header.ejs`) — Top navigation bar shared across all portals. Displays the app name, breadcrumb (role-aware), search bar (admin/collector only), theme toggle, notification bell, and user avatar pill with initials.
+- Sidebar (`views/partials/sidebar.ejs`) — Role-based sidebar navigation. Renders different menu items depending on the user's role (`admin`, `collector`, or `vendor`). Highlights the currently active route. Includes badge counts for items like pending applications or unread notifications.
+- 404 Page (`views/404.ejs`) — Custom "This Stall Is Empty" 404 page with an animated market stall illustration, particle effects, and navigation links back to the landing page.
