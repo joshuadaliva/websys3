@@ -294,6 +294,7 @@ const stalls = [
 
 let currentStall = null;
 let selectedApplicantIdx = null;
+let pendingSendLinkConfirm = null;
 
 /* ──────────── SIDEBAR / THEME ──────────── */
 let SB_OPEN = window.innerWidth >= 900;
@@ -577,12 +578,9 @@ function selectApplicant(idx) {
           a.status
         }">${a.statusTxt}</span></div>
         <div class="profile-acts">
-          <div style="display:flex;gap:6px">
-            <button class="btn ghost sm" style="flex:1" onclick="openSendLinkModal(${idx})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Send Link</button>
-            <button class="btn danger-outline sm" style="flex:1" onclick="openRejectModal('${
-              a.name
-            }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Reject</button>
-          </div>
+          <button class="btn danger-outline sm" style="width:100%" onclick="openRejectModal('${
+            a.name
+          }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Reject</button>
         </div>
       </div>
     </div>`;
@@ -875,7 +873,7 @@ function initApplicationReviewCard() {
       btn.textContent = "Send Upload Link";
       btn.className = "ar-btn-primary";
       btn.disabled = false;
-      btn.onclick = unlockStep2;
+      btn.onclick = () => openSendLinkModal(selectedApplicantIdx, unlockStep2);
     } else if (anyActioned) {
       banner.className = "ar-banner ar-bpending";
       banner.textContent = "Waiting for remaining documents";
@@ -1028,6 +1026,11 @@ function openModal(id) {
 }
 function closeModal(id) {
   document.getElementById(id).classList.remove("open");
+  if (id === "sendLinkModal") {
+    pendingSendLinkConfirm = null;
+    const successEl = document.getElementById("sendLinkSuccessMsg");
+    if (successEl) successEl.style.display = "none";
+  }
 }
 document.querySelectorAll(".modal-bg").forEach((b) =>
   b.addEventListener("click", function (e) {
@@ -1035,10 +1038,43 @@ document.querySelectorAll(".modal-bg").forEach((b) =>
   })
 );
 
-function openSendLinkModal(idx) {
-  const a =
-    currentStall && idx !== undefined ? currentStall.applicants[idx] : null;
-  if (a) document.getElementById("linkName").value = a.name;
+
+const sendSecureLinkBtn = document.getElementById("sendSecureLinkBtn");
+if (sendSecureLinkBtn) {
+  sendSecureLinkBtn.addEventListener("click", () => {
+    const successEl = document.getElementById("sendLinkSuccessMsg");
+    if (successEl) successEl.style.display = "flex";
+
+    const onConfirm = pendingSendLinkConfirm;
+    pendingSendLinkConfirm = null;
+
+    if (onConfirm) {
+      setTimeout(() => {
+        closeModal("sendLinkModal");
+        onConfirm();
+      }, 850);
+      return;
+    }
+
+    setTimeout(() => {
+      closeModal("sendLinkModal");
+    }, 850);
+  });
+}
+
+function openSendLinkModal(idx, onConfirm) {
+  const hasIdx = idx !== undefined && idx !== null;
+  const a = hasIdx && currentStall ? currentStall.applicants[idx] : null;
+  if (a) {
+    document.getElementById("linkName").value = a.name;
+  } else if (selectedApplicantIdx !== null && currentStall) {
+    document.getElementById("linkName").value = currentStall.applicants[selectedApplicantIdx].name;
+  }
+
+  pendingSendLinkConfirm = typeof onConfirm === "function" ? onConfirm : null;
+  const successEl = document.getElementById("sendLinkSuccessMsg");
+  if (successEl) successEl.style.display = "none";
+
   openModal("sendLinkModal");
 }
 function openRejectModal(name) {

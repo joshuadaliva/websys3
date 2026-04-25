@@ -684,9 +684,16 @@
         <div class="form-group" style="margin-top:14px;margin-bottom:0"><label class="form-label">Additional Note
             (Optional)</label><textarea class="form-control"
             placeholder="e.g. Please submit all required documents within 10 days."></textarea></div>
+        <div class="info-chip" id="sendLinkSuccessMsg" style="display:none;margin-top:12px;border-color:var(--green-soft);background:var(--green-light);color:var(--green)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="9 12 11.5 14.5 15.5 10.5" />
+          </svg>
+          <div>Secure upload link sent successfully.</div>
+        </div>
       </div>
       <div class="modal-foot"><button class="btn ghost sm" onclick="closeModal('sendLinkModal')">Cancel</button><button
-          class="btn primary sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          class="btn primary sm" id="sendSecureLinkBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2">
             <line x1="22" y1="2" x2="11" y2="13" />
             <polygon points="22 2 15 22 11 13 2 9 22 2" />
