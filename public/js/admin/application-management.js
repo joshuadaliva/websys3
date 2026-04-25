@@ -535,10 +535,15 @@ function selectApplicant(idx) {
   document.getElementById("profileBody").innerHTML = `
     <div class="profile-card" style="border:none;border-radius:0;box-shadow:none">
       <div class="profile-body">
-        <div class="profile-name">${a.name}</div>
-        <div class="profile-sub">Applied for Stall ${currentStall.num} · ${
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="profile-av" style="background:linear-gradient(${a.grad});width:42px;height:42px;font-size:14px;">${a.init}</div>
+          <div>
+            <div class="profile-name">${a.name}</div>
+            <div class="profile-sub">Applied for Stall ${currentStall.num} · ${
     currentStall.type
   }</div>
+          </div>
+        </div>
         <div class="profile-info-grid">
           <div class="pi-row"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/></svg><span class="pi-lbl">Phone</span><span class="pi-val">${
             a.phone
