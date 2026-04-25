@@ -534,16 +534,7 @@ function selectApplicant(idx) {
   // Profile card
   document.getElementById("profileBody").innerHTML = `
     <div class="profile-card" style="border:none;border-radius:0;box-shadow:none">
-      <div class="profile-banner" style="background:linear-gradient(${
-        a.grad
-      })"></div>
       <div class="profile-body">
-        <div class="profile-av-wrap">
-          <div class="profile-av" style="background:linear-gradient(${
-            a.grad
-          })">${a.init}</div>
-          <span class="badge ${a.status}">${a.statusTxt}</span>
-        </div>
         <div class="profile-name">${a.name}</div>
         <div class="profile-sub">Applied for Stall ${currentStall.num} · ${
     currentStall.type
