@@ -294,6 +294,8 @@ const stalls = [
 
 let currentStall = null;
 let selectedApplicantIdx = null;
+let pendingSendLinkConfirm = null;
+let pendingRejectConfirm = null;
 
 /* ──────────── SIDEBAR / THEME ──────────── */
 let SB_OPEN = window.innerWidth >= 900;
@@ -475,18 +477,6 @@ function renderDetailTable() {
       <td>
         <div class="row-acts">
           <div class="act-btn tt" data-tip="View" onclick="event.stopPropagation();selectApplicant(${i})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-          <div class="act-btn g tt" data-tip="Qualify" onclick="event.stopPropagation();openStatusModal('${
-            a.name
-          }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="act-btn r tt" data-tip="Reject" onclick="event.stopPropagation();openRejectModal('${
-            a.name
-          }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
-          <div class="act-btn a tt" data-tip="Send Link" onclick="event.stopPropagation();openSendLinkModal(${i})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-          ${
-            currentStall.raffle > 0
-              ? `<div class="act-btn p tt" data-tip="Raffle" onclick="event.stopPropagation();openRaffleModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>`
-              : ""
-          }
         </div>
       </td>
     </tr>`
@@ -559,62 +549,18 @@ function selectApplicant(idx) {
           <div class="pi-row"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="pi-lbl">Address</span><span class="pi-val">${
             a.addr
           }</span></div>
-          <div class="pi-row"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="pi-lbl">Pre-screen</span><span class="pi-val" style="font-weight:700;color:${
-            a.pre === "Passed"
-              ? "var(--green)"
-              : a.pre === "Failed"
-              ? "var(--red)"
-              : "var(--amber)"
-          }">${
-    a.pre === "Passed"
-      ? "✓ Passed"
-      : a.pre === "Failed"
-      ? "✗ Failed"
-      : "⏳ Pending"
-  }</span></div>
+
         </div>
-        <div class="profile-status-row"><span style="font-size:11px;color:var(--text-muted);font-weight:700">Status</span><span class="badge ${
-          a.status
-        }">${a.statusTxt}</span></div>
-        <div class="profile-acts">
-          <button class="btn success sm" style="width:100%" onclick="openStatusModal('${
-            a.name
-          }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/></svg>Mark as Qualified</button>
-          <div style="display:flex;gap:6px">
-            <button class="btn ghost sm" style="flex:1" onclick="openSendLinkModal(${idx})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Send Link</button>
-            <button class="btn danger-outline sm" style="flex:1" onclick="openRejectModal('${
-              a.name
-            }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Reject</button>
-          </div>
-        </div>
+
       </div>
     </div>`;
 
   // Docs panel
   document.getElementById("docsPanel").style.display = "block";
-  document.getElementById("docsBadge").textContent = `${a.docs} of 5 uploaded`;
-  document.getElementById("docsBadge").className = `badge ${
-    a.docs >= 5 ? "b-qualified" : a.docs > 0 ? "b-doc-pending" : "b-rejected"
-  }`;
-  const iconMap = { pdf: "pdf", img: "img", form: "form", miss: "miss" };
-  const stMap = { ok: "db-ok", pend: "db-pend", miss: "db-miss" };
-  const lblMap = { ok: "✓ Verified", pend: "Pending", miss: "Missing" };
-  document.getElementById("docsBody").innerHTML = docList
-    .map(
-      (d) => `
-    <div class="doc-mini-item" style="${
-      d.status === "miss" ? "opacity:.55" : ""
-    }">
-      <div class="doc-icon ${
-        iconMap[d.type]
-      }"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-      <div style="flex:1;min-width:0"><div class="doc-name">${
-        d.name
-      }</div><div class="doc-meta">${d.meta}</div></div>
-      <span class="doc-badge ${stMap[d.status]}">${lblMap[d.status]}</span>
-    </div>`
-    )
-    .join("");
+  document.getElementById("docsBadge").textContent = "Identity Verification";
+  document.getElementById("docsBadge").className = "badge b-doc-pending";
+  document.getElementById("docsBody").innerHTML = renderApplicationReviewCard();
+  initApplicationReviewCard();
 
   // Timeline
   document.getElementById("timelinePanel").style.display = "block";
@@ -651,6 +597,400 @@ function selectApplicant(idx) {
     .join("");
 }
 
+function renderApplicationReviewCard() {
+  return `
+    <div class="ar-card">
+      <div class="ar-title">Application Review</div>
+      <div id="ar-statusBanner" class="ar-banner ar-bpending">Waiting for identity verification</div>
+
+      <div class="ar-section-header">
+        <span class="ar-section-title">Step 1: Identity Verification (Pre-screening)</span>
+        <span class="ar-section-badge ar-badge-pending" id="ar-step1-badge">0/2</span>
+      </div>
+      <div class="ar-progress-wrap">
+        <div class="ar-progress-track">
+          <div class="ar-progress-fill ar-fill-orange" id="ar-step1-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="ar-item">
+        <div class="ar-row">
+          <div class="ar-left ar-clickable" id="ar-item-id" data-doc="id" data-url="https://upload.wikimedia.org/wikipedia/commons/6/62/UMID_EMV_sample.png">
+            <div class="ar-icon ar-red">📄</div>
+            <div><div class="ar-text">Valid Government ID</div><div class="ar-sub" id="ar-sub-id">Click to preview</div></div>
+          </div>
+          <div id="ar-status-id" class="ar-status ar-pending">Pending</div>
+        </div>
+      </div>
+
+      <div class="ar-item">
+        <div class="ar-row">
+          <div class="ar-left ar-clickable" id="ar-item-selfie" data-doc="selfie" data-url="https://backycheck.com.au/assets/img/others/correct-image.jpg">
+            <div class="ar-icon ar-blue">📷</div>
+            <div><div class="ar-text">Selfie with ID</div><div class="ar-sub" id="ar-sub-selfie">Click to preview</div></div>
+          </div>
+          <div id="ar-status-selfie" class="ar-status ar-pending">Pending</div>
+        </div>
+      </div>
+
+      <div class="ar-divider"></div>
+      <div id="ar-step1Actions">
+        <button id="ar-mainAction" class="ar-btn-disabled" disabled>Waiting for review</button>
+      </div>
+
+      <div class="ar-section-header">
+        <span class="ar-section-title">Step 2: Qualification Documents</span>
+        <span class="ar-section-badge ar-badge-locked" id="ar-step2-badge">Locked</span>
+      </div>
+      <div class="ar-progress-wrap">
+        <div class="ar-progress-track">
+          <div class="ar-progress-fill ar-fill-gray" id="ar-step2-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      ${[
+        ["form", "Application Form"],
+        ["permit", "Business Permit"],
+        ["clearance", "Barangay Clearance"],
+      ]
+        .map(
+          ([key, label]) => `
+      <div class="ar-item">
+        <div class="ar-row">
+          <div class="ar-left ar-disabled" id="ar-item-${key}" data-doc="${key}" data-url="https://via.placeholder.com/350x200">
+            <div class="ar-icon ar-gray">📄</div>
+            <div><div class="ar-text">${label}</div><div class="ar-sub" id="ar-sub-${key}">Locked</div></div>
+          </div>
+          <div id="ar-status-${key}" class="ar-status ar-locked">Locked</div>
+        </div>
+      </div>`
+        )
+        .join("")}
+
+      <div class="ar-divider" id="ar-step2Divider" style="display:none"></div>
+      <div id="ar-step2Actions" style="display:none">
+        <button id="ar-step2Btn" class="ar-btn-disabled" disabled>Waiting for review</button>
+      </div>
+    </div>
+
+    <div id="ar-modal" class="ar-overlay">
+      <div class="ar-modal">
+        <div class="ar-modal-header">
+          <span id="ar-modalTitle">Preview</span>
+          <span class="ar-close" id="ar-closeBtn">✕</span>
+        </div>
+        <div class="ar-modal-body"><img id="ar-previewImage" src="" alt="Document preview" /></div>
+        <div class="ar-modal-actions">
+          <button class="ar-btn-verify" id="ar-verifyBtn">Verify</button>
+          <button class="ar-btn-reject" id="ar-rejectBtn">Reject</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function initApplicationReviewCard() {
+  const state = {
+    currentDoc: null,
+    step2Unlocked: false,
+    step2ActionShown: false,
+    step1Finalized: false,
+    status: {
+      id: "pending",
+      selfie: "pending",
+      form: "locked",
+      permit: "locked",
+      clearance: "locked",
+    },
+  };
+
+  const step1Docs = ["id", "selfie"];
+  const step2Docs = ["form", "permit", "clearance"];
+
+  function openPreview(doc, url) {
+    if (state.status[doc] === "verified") return;
+    if (!state.step2Unlocked && step2Docs.includes(doc)) return;
+    state.currentDoc = doc;
+    document.getElementById("ar-modal").classList.add("open");
+    document.getElementById("ar-previewImage").src = url;
+    document.getElementById("ar-modalTitle").textContent = doc.charAt(0).toUpperCase() + doc.slice(1);
+  }
+
+  function closeModal() {
+    document.getElementById("ar-modal").classList.remove("open");
+  }
+
+  function lockItem(doc) {
+    const el = document.getElementById("ar-item-" + doc);
+    el.classList.remove("ar-clickable");
+    el.classList.add("ar-disabled");
+    const sub = document.getElementById("ar-sub-" + doc);
+    if (sub) sub.textContent = "Locked";
+  }
+
+  function enableItem(doc) {
+    const el = document.getElementById("ar-item-" + doc);
+    el.classList.remove("ar-disabled");
+    el.classList.add("ar-clickable");
+    const sub = document.getElementById("ar-sub-" + doc);
+    if (sub) sub.textContent = "Click to preview";
+  }
+
+  function setStatus(doc, text, cls) {
+    const el = document.getElementById("ar-status-" + doc);
+    el.textContent = text;
+    el.className = "ar-status " + cls;
+  }
+
+  function updateStep1Progress(finalState) {
+    const verified = step1Docs.filter((d) => state.status[d] === "verified").length;
+    const rejected = step1Docs.filter((d) => state.status[d] === "rejected").length;
+    const actioned = verified + rejected;
+    const total = step1Docs.length;
+    const pct = Math.round((actioned / total) * 100);
+    const bar = document.getElementById("ar-step1-bar");
+    const badge = document.getElementById("ar-step1-badge");
+    bar.style.width = pct + "%";
+
+    if (finalState === "rejected") {
+      bar.className = "ar-progress-fill ar-fill-red";
+      badge.className = "ar-section-badge ar-badge-fail";
+      badge.textContent = actioned + "/" + total + " — failed";
+    } else if (verified === total) {
+      bar.className = "ar-progress-fill ar-fill-green";
+      badge.className = "ar-section-badge ar-badge-pass";
+      badge.textContent = verified + "/" + total + " passed";
+    } else if (rejected > 0) {
+      bar.className = "ar-progress-fill ar-fill-red";
+      badge.className = "ar-section-badge ar-badge-fail";
+      badge.textContent = actioned + "/" + total + " reviewed";
+    } else {
+      bar.className = "ar-progress-fill ar-fill-orange";
+      badge.className = "ar-section-badge ar-badge-pending";
+      badge.textContent = actioned + "/" + total + " reviewed";
+    }
+  }
+
+  function updateStep2Progress(finalState) {
+    const verified = step2Docs.filter((d) => state.status[d] === "verified").length;
+    const rejected = step2Docs.filter((d) => state.status[d] === "rejected").length;
+    const actioned = verified + rejected;
+    const total = step2Docs.length;
+    const pct = state.step2Unlocked ? Math.round((actioned / total) * 100) : 0;
+    const bar = document.getElementById("ar-step2-bar");
+    const badge = document.getElementById("ar-step2-badge");
+    bar.style.width = pct + "%";
+
+    if (!state.step2Unlocked) {
+      bar.className = "ar-progress-fill ar-fill-gray";
+      badge.className = "ar-section-badge ar-badge-locked";
+      badge.textContent = "Locked";
+      return;
+    }
+    if (finalState === "qualified") {
+      bar.className = "ar-progress-fill ar-fill-green";
+      badge.className = "ar-section-badge ar-badge-pass";
+      badge.textContent = verified + "/" + total + " qualified";
+    } else if (finalState === "rejected") {
+      bar.className = "ar-progress-fill ar-fill-red";
+      badge.className = "ar-section-badge ar-badge-fail";
+      badge.textContent = actioned + "/" + total + " — rejected";
+    } else if (rejected > 0) {
+      bar.className = "ar-progress-fill ar-fill-red";
+      badge.className = "ar-section-badge ar-badge-fail";
+      badge.textContent = actioned + "/" + total + " reviewed";
+    } else if (actioned > 0) {
+      bar.className = "ar-progress-fill ar-fill-orange";
+      badge.className = "ar-section-badge ar-badge-pending";
+      badge.textContent = actioned + "/" + total + " reviewed";
+    } else {
+      bar.className = "ar-progress-fill ar-fill-orange";
+      badge.className = "ar-section-badge ar-badge-pending";
+      badge.textContent = "0/" + total + " reviewed";
+    }
+  }
+
+  function updateStep1UI() {
+    if (state.step1Finalized) return;
+    const banner = document.getElementById("ar-statusBanner");
+    const btn = document.getElementById("ar-mainAction");
+    const hasRejected = step1Docs.some((d) => state.status[d] === "rejected");
+    const allVerified = step1Docs.every((d) => state.status[d] === "verified");
+    const anyActioned = step1Docs.some((d) => state.status[d] === "verified" || state.status[d] === "rejected");
+
+    btn.onclick = null;
+    btn.className = "ar-btn-disabled";
+    btn.disabled = true;
+    btn.textContent = "Waiting for review";
+
+    if (hasRejected) {
+      banner.className = "ar-banner ar-reject";
+      banner.textContent = "One or more documents rejected";
+      btn.textContent = "Reject Application";
+      btn.className = "ar-btn-danger";
+      btn.disabled = false;
+      btn.onclick = () => {
+        const applicantName =
+          selectedApplicantIdx !== null && currentStall
+            ? currentStall.applicants[selectedApplicantIdx].name
+            : "this applicant";
+        openRejectModal(applicantName, () => {
+          state.step1Finalized = true;
+          banner.className = "ar-banner ar-reject";
+          banner.textContent = "Application rejected";
+          btn.disabled = true;
+          btn.className = "ar-btn-disabled";
+          step1Docs.forEach(lockItem);
+          updateStep1Progress("rejected");
+        });
+      };
+    } else if (allVerified) {
+      banner.className = "ar-banner ar-ready";
+      banner.textContent = "Pre-screening passed.";
+      btn.textContent = "Send Upload Link";
+      btn.className = "ar-btn-primary";
+      btn.disabled = false;
+      btn.onclick = () => openSendLinkModal(selectedApplicantIdx, unlockStep2);
+    } else if (anyActioned) {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = "Waiting for remaining documents";
+    } else {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = "Waiting for identity verification";
+    }
+  }
+
+  function unlockStep2() {
+    state.step1Finalized = true;
+    state.step2Unlocked = true;
+    lockItem("id");
+    lockItem("selfie");
+    step2Docs.forEach(enableItem);
+    state.status.form = "pending";
+    state.status.permit = "missing";
+    state.status.clearance = "missing";
+    setStatus("form", "Pending", "ar-pending");
+    setStatus("permit", "Missing", "ar-missing");
+    setStatus("clearance", "Missing", "ar-missing");
+    const banner = document.getElementById("ar-statusBanner");
+    banner.className = "ar-banner ar-ready";
+    banner.textContent = "Pre-screening passed — waiting for qualification documents";
+    document.getElementById("ar-mainAction").style.display = "none";
+    updateStep1Progress(null);
+    updateStep2Progress(null);
+  }
+
+  function updateStep2UI() {
+    const banner = document.getElementById("ar-statusBanner");
+    const hasRejected = step2Docs.some((d) => state.status[d] === "rejected");
+    const allVerified = step2Docs.every((d) => state.status[d] === "verified");
+    const anyActioned = step2Docs.some((d) => state.status[d] === "verified" || state.status[d] === "rejected");
+
+    if (hasRejected) {
+      banner.className = "ar-banner ar-reject";
+      banner.textContent = "One or more documents rejected";
+    } else if (allVerified) {
+      banner.className = "ar-banner ar-ready";
+      banner.textContent = "All documents verified — ready to qualify";
+    } else {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = "Waiting for document verification";
+    }
+
+    if (anyActioned && !state.step2ActionShown) {
+      state.step2ActionShown = true;
+      document.getElementById("ar-step2Divider").style.display = "block";
+      document.getElementById("ar-step2Actions").style.display = "block";
+    }
+
+    if (!anyActioned) return;
+
+    const btn = document.getElementById("ar-step2Btn");
+    btn.onclick = null;
+
+    if (hasRejected) {
+      btn.textContent = "Reject Application";
+      btn.className = "ar-btn-danger";
+      btn.disabled = false;
+      btn.onclick = () => {
+        const applicantName =
+          selectedApplicantIdx !== null && currentStall
+            ? currentStall.applicants[selectedApplicantIdx].name
+            : "this applicant";
+        openRejectModal(applicantName, () => {
+          banner.className = "ar-banner ar-reject";
+          banner.textContent = "Application rejected";
+          btn.disabled = true;
+          btn.className = "ar-btn-disabled";
+          step2Docs.forEach(lockItem);
+          updateStep2Progress("rejected");
+        });
+      };
+    } else if (allVerified) {
+      btn.textContent = "Mark as Qualified";
+      btn.className = "ar-btn-success";
+      btn.disabled = false;
+      btn.onclick = () => {
+        banner.className = "ar-banner ar-ready";
+        banner.textContent = "Application approved — applicant is qualified";
+        btn.disabled = true;
+        btn.className = "ar-btn-disabled";
+        step2Docs.forEach(lockItem);
+        updateStep2Progress("qualified");
+      };
+    } else {
+      btn.textContent = "Waiting for review";
+      btn.className = "ar-btn-disabled";
+      btn.disabled = true;
+    }
+  }
+
+  function verifyDoc() {
+    if (!state.currentDoc) return;
+    state.status[state.currentDoc] = "verified";
+    setStatus(state.currentDoc, "Verified", "ar-verified");
+    lockItem(state.currentDoc);
+    closeModal();
+    if (!state.step2Unlocked) {
+      updateStep1Progress(null);
+      updateStep1UI();
+    } else {
+      updateStep2Progress(null);
+      updateStep2UI();
+    }
+  }
+
+  function rejectDoc() {
+    if (!state.currentDoc) return;
+    state.status[state.currentDoc] = "rejected";
+    setStatus(state.currentDoc, "Rejected", "ar-rejected");
+    closeModal();
+    if (!state.step2Unlocked) {
+      updateStep1Progress(null);
+      updateStep1UI();
+    } else {
+      updateStep2Progress(null);
+      updateStep2UI();
+    }
+  }
+
+  document.querySelectorAll(".ar-left").forEach((item) => {
+    item.addEventListener("click", () => {
+      const doc = item.dataset.doc;
+      openPreview(doc, item.dataset.url);
+    });
+  });
+  document.getElementById("ar-closeBtn").addEventListener("click", closeModal);
+  document.getElementById("ar-modal").addEventListener("click", (e) => {
+    if (e.target.id === "ar-modal") closeModal();
+  });
+  document.getElementById("ar-verifyBtn").addEventListener("click", verifyDoc);
+  document.getElementById("ar-rejectBtn").addEventListener("click", rejectDoc);
+
+  updateStep1Progress(null);
+  updateStep2Progress(null);
+}
+
+
 /* ──────────── BACK ──────────── */
 function goBackToStalls() {
   document.getElementById("view-stalls").style.display = "block";
@@ -668,22 +1008,84 @@ function openModal(id) {
 }
 function closeModal(id) {
   document.getElementById(id).classList.remove("open");
+  if (id === "sendLinkModal") {
+    pendingSendLinkConfirm = null;
+    const successEl = document.getElementById("sendLinkSuccessMsg");
+    if (successEl) successEl.style.display = "none";
+  }
+  if (id === "rejectModal") {
+    pendingRejectConfirm = null;
+    const rejectSuccessEl = document.getElementById("rejectSuccessMsg");
+    if (rejectSuccessEl) rejectSuccessEl.style.display = "none";
+  }
 }
 document.querySelectorAll(".modal-bg").forEach((b) =>
   b.addEventListener("click", function (e) {
-    if (e.target === this) this.classList.remove("open");
+    if (e.target === this) closeModal(this.id);
   })
 );
 
-function openSendLinkModal(idx) {
-  const a =
-    currentStall && idx !== undefined ? currentStall.applicants[idx] : null;
-  if (a) document.getElementById("linkName").value = a.name;
+
+const sendSecureLinkBtn = document.getElementById("sendSecureLinkBtn");
+if (sendSecureLinkBtn) {
+  sendSecureLinkBtn.addEventListener("click", () => {
+    const successEl = document.getElementById("sendLinkSuccessMsg");
+    if (successEl) successEl.style.display = "flex";
+
+    const onConfirm = pendingSendLinkConfirm;
+    pendingSendLinkConfirm = null;
+
+    if (onConfirm) {
+      setTimeout(() => {
+        closeModal("sendLinkModal");
+        onConfirm();
+      }, 850);
+      return;
+    }
+
+    setTimeout(() => {
+      closeModal("sendLinkModal");
+    }, 850);
+  });
+}
+
+const confirmRejectBtn = document.getElementById("confirmRejectBtn");
+if (confirmRejectBtn) {
+  confirmRejectBtn.addEventListener("click", () => {
+    const successEl = document.getElementById("rejectSuccessMsg");
+    if (successEl) successEl.style.display = "flex";
+
+    const onConfirm = pendingRejectConfirm;
+    pendingRejectConfirm = null;
+
+    setTimeout(() => {
+      closeModal("rejectModal");
+      if (onConfirm) onConfirm();
+    }, 850);
+  });
+}
+
+function openSendLinkModal(idx, onConfirm) {
+  const hasIdx = idx !== undefined && idx !== null;
+  const a = hasIdx && currentStall ? currentStall.applicants[idx] : null;
+  if (a) {
+    document.getElementById("linkName").value = a.name;
+  } else if (selectedApplicantIdx !== null && currentStall) {
+    document.getElementById("linkName").value = currentStall.applicants[selectedApplicantIdx].name;
+  }
+
+  pendingSendLinkConfirm = typeof onConfirm === "function" ? onConfirm : null;
+  const successEl = document.getElementById("sendLinkSuccessMsg");
+  if (successEl) successEl.style.display = "none";
+
   openModal("sendLinkModal");
 }
-function openRejectModal(name) {
+function openRejectModal(name, onConfirm) {
   document.getElementById("rejectApplicantName").textContent =
     name || "this applicant";
+  pendingRejectConfirm = typeof onConfirm === "function" ? onConfirm : null;
+  const successEl = document.getElementById("rejectSuccessMsg");
+  if (successEl) successEl.style.display = "none";
   openModal("rejectModal");
 }
 function openStatusModal(name) {
