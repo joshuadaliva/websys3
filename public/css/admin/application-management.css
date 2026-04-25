@@ -1591,8 +1591,8 @@ body {
 }
 
 .b-validated {
-    background: var(--accent-soft);
-    color: var(--accent)
+    background: var(--green-soft);
+    color: var(--green)
 }
 
 .b-rejected {
