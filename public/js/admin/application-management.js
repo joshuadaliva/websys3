@@ -295,6 +295,7 @@ const stalls = [
 let currentStall = null;
 let selectedApplicantIdx = null;
 let pendingSendLinkConfirm = null;
+let pendingRejectConfirm = null;
 
 /* ──────────── SIDEBAR / THEME ──────────── */
 let SB_OPEN = window.innerWidth >= 900;
@@ -577,11 +578,7 @@ function selectApplicant(idx) {
         <div class="profile-status-row"><span style="font-size:11px;color:var(--text-muted);font-weight:700">Status</span><span class="badge ${
           a.status
         }">${a.statusTxt}</span></div>
-        <div class="profile-acts">
-          <button class="btn danger-outline sm" style="width:100%" onclick="openRejectModal('${
-            a.name
-          }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Reject</button>
-        </div>
+
       </div>
     </div>`;
 
@@ -859,13 +856,19 @@ function initApplicationReviewCard() {
       btn.className = "ar-btn-danger";
       btn.disabled = false;
       btn.onclick = () => {
-        state.step1Finalized = true;
-        banner.className = "ar-banner ar-reject";
-        banner.textContent = "Application rejected";
-        btn.disabled = true;
-        btn.className = "ar-btn-disabled";
-        step1Docs.forEach(lockItem);
-        updateStep1Progress("rejected");
+        const applicantName =
+          selectedApplicantIdx !== null && currentStall
+            ? currentStall.applicants[selectedApplicantIdx].name
+            : "this applicant";
+        openRejectModal(applicantName, () => {
+          state.step1Finalized = true;
+          banner.className = "ar-banner ar-reject";
+          banner.textContent = "Application rejected";
+          btn.disabled = true;
+          btn.className = "ar-btn-disabled";
+          step1Docs.forEach(lockItem);
+          updateStep1Progress("rejected");
+        });
       };
     } else if (allVerified) {
       banner.className = "ar-banner ar-ready";
@@ -936,12 +939,18 @@ function initApplicationReviewCard() {
       btn.className = "ar-btn-danger";
       btn.disabled = false;
       btn.onclick = () => {
-        banner.className = "ar-banner ar-reject";
-        banner.textContent = "Application rejected";
-        btn.disabled = true;
-        btn.className = "ar-btn-disabled";
-        step2Docs.forEach(lockItem);
-        updateStep2Progress("rejected");
+        const applicantName =
+          selectedApplicantIdx !== null && currentStall
+            ? currentStall.applicants[selectedApplicantIdx].name
+            : "this applicant";
+        openRejectModal(applicantName, () => {
+          banner.className = "ar-banner ar-reject";
+          banner.textContent = "Application rejected";
+          btn.disabled = true;
+          btn.className = "ar-btn-disabled";
+          step2Docs.forEach(lockItem);
+          updateStep2Progress("rejected");
+        });
       };
     } else if (allVerified) {
       btn.textContent = "Mark as Qualified";
@@ -1031,10 +1040,15 @@ function closeModal(id) {
     const successEl = document.getElementById("sendLinkSuccessMsg");
     if (successEl) successEl.style.display = "none";
   }
+  if (id === "rejectModal") {
+    pendingRejectConfirm = null;
+    const rejectSuccessEl = document.getElementById("rejectSuccessMsg");
+    if (rejectSuccessEl) rejectSuccessEl.style.display = "none";
+  }
 }
 document.querySelectorAll(".modal-bg").forEach((b) =>
   b.addEventListener("click", function (e) {
-    if (e.target === this) this.classList.remove("open");
+    if (e.target === this) closeModal(this.id);
   })
 );
 
@@ -1062,6 +1076,22 @@ if (sendSecureLinkBtn) {
   });
 }
 
+const confirmRejectBtn = document.getElementById("confirmRejectBtn");
+if (confirmRejectBtn) {
+  confirmRejectBtn.addEventListener("click", () => {
+    const successEl = document.getElementById("rejectSuccessMsg");
+    if (successEl) successEl.style.display = "flex";
+
+    const onConfirm = pendingRejectConfirm;
+    pendingRejectConfirm = null;
+
+    setTimeout(() => {
+      closeModal("rejectModal");
+      if (onConfirm) onConfirm();
+    }, 850);
+  });
+}
+
 function openSendLinkModal(idx, onConfirm) {
   const hasIdx = idx !== undefined && idx !== null;
   const a = hasIdx && currentStall ? currentStall.applicants[idx] : null;
@@ -1077,9 +1107,12 @@ function openSendLinkModal(idx, onConfirm) {
 
   openModal("sendLinkModal");
 }
-function openRejectModal(name) {
+function openRejectModal(name, onConfirm) {
   document.getElementById("rejectApplicantName").textContent =
     name || "this applicant";
+  pendingRejectConfirm = typeof onConfirm === "function" ? onConfirm : null;
+  const successEl = document.getElementById("rejectSuccessMsg");
+  if (successEl) successEl.style.display = "none";
   openModal("rejectModal");
 }
 function openStatusModal(name) {
