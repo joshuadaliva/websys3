@@ -577,9 +577,6 @@ function selectApplicant(idx) {
           a.status
         }">${a.statusTxt}</span></div>
         <div class="profile-acts">
-          <button class="btn success sm" style="width:100%" onclick="openStatusModal('${
-            a.name
-          }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/></svg>Mark as Qualified</button>
           <div style="display:flex;gap:6px">
             <button class="btn ghost sm" style="flex:1" onclick="openSendLinkModal(${idx})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Send Link</button>
             <button class="btn danger-outline sm" style="flex:1" onclick="openRejectModal('${
