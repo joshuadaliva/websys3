@@ -514,23 +514,14 @@
                     <circle cx="11" cy="11" r="8" />
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                   </svg><input placeholder="Search applicant name, contact..." /></div>
-                <select class="fi">
-                  <option>All Statuses</option>
-                  <option>Submitted</option>
-                  <option>Validated</option>
-                  <option>Documents Pending</option>
-                  <option>Documents Submitted</option>
-                  <option>Qualified</option>
-                  <option>Not Qualified</option>
-                  <option>For Raffle</option>
-                  <option>Awardee</option>
-                  <option>Rejected</option>
-                </select>
-                <select class="fi">
-                  <option>All Dates</option>
-                  <option>Today</option>
-                  <option>This Week</option>
-                </select>
+                <div class="status-indicators" aria-label="Status indicators">
+                  <span class="si-item"><span class="si-dot all"></span>All</span>
+                  <span class="si-item"><span class="si-dot submitted"></span>Submitted</span>
+                  <span class="si-item"><span class="si-dot qualified"></span>Qualified</span>
+                  <span class="si-item"><span class="si-dot raffle"></span>For Raffle</span>
+                  <span class="si-item"><span class="si-dot rejected"></span>Rejected</span>
+                </div>
+                <input type="date" class="fi fi-date" id="detailDateFilter" />
               </div>
               <table class="app-table" id="detailTable"></table>
               <div class="tbl-foot">

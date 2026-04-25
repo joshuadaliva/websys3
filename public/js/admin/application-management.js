@@ -436,6 +436,15 @@ function openStallDetail(idx) {
   ).textContent = `Showing ${currentStall.applicants.length} applications`;
   renderDetailTable();
 
+  const dateFilterInput = document.getElementById("detailDateFilter");
+  if (dateFilterInput && !dateFilterInput.value) {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    dateFilterInput.value = `${yyyy}-${mm}-${dd}`;
+  }
+
   // Reset profile panel
   document.getElementById(
     "profileBody"
