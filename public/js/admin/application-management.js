@@ -477,18 +477,6 @@ function renderDetailTable() {
       <td>
         <div class="row-acts">
           <div class="act-btn tt" data-tip="View" onclick="event.stopPropagation();selectApplicant(${i})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-          <div class="act-btn g tt" data-tip="Qualify" onclick="event.stopPropagation();openStatusModal('${
-            a.name
-          }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="act-btn r tt" data-tip="Reject" onclick="event.stopPropagation();openRejectModal('${
-            a.name
-          }')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
-          <div class="act-btn a tt" data-tip="Send Link" onclick="event.stopPropagation();openSendLinkModal(${i})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-          ${
-            currentStall.raffle > 0
-              ? `<div class="act-btn p tt" data-tip="Raffle" onclick="event.stopPropagation();openRaffleModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>`
-              : ""
-          }
         </div>
       </td>
     </tr>`
@@ -561,23 +549,8 @@ function selectApplicant(idx) {
           <div class="pi-row"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="pi-lbl">Address</span><span class="pi-val">${
             a.addr
           }</span></div>
-          <div class="pi-row"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="pi-lbl">Pre-screen</span><span class="pi-val" style="font-weight:700;color:${
-            a.pre === "Passed"
-              ? "var(--green)"
-              : a.pre === "Failed"
-              ? "var(--red)"
-              : "var(--amber)"
-          }">${
-    a.pre === "Passed"
-      ? "✓ Passed"
-      : a.pre === "Failed"
-      ? "✗ Failed"
-      : "⏳ Pending"
-  }</span></div>
+
         </div>
-        <div class="profile-status-row"><span style="font-size:11px;color:var(--text-muted);font-weight:700">Status</span><span class="badge ${
-          a.status
-        }">${a.statusTxt}</span></div>
 
       </div>
     </div>`;
