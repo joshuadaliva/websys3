@@ -457,7 +457,7 @@ function openStallDetail(idx) {
 function renderDetailTable() {
   if (!currentStall) return;
   const tbody = document.getElementById("detailTable");
-  tbody.innerHTML = `<thead><tr><th style="width:32px"><div class="chk" onclick="this.classList.toggle('on')"></div></th><th>Applicant</th><th>Pre-screening</th><th>Status</th><th>Docs</th><th>Applied</th><th>Actions</th></tr></thead><tbody>${currentStall.applicants
+  tbody.innerHTML = `<thead><tr><th style="width:32px"><div class="chk" onclick="this.classList.toggle('on')"></div></th><th>Applicant</th><th>Pre-screening</th><th>Qualification</th><th>Docs</th><th>Applied</th><th>Actions</th></tr></thead><tbody>${currentStall.applicants
     .map(
       (a, i) => `
     <tr onclick="selectApplicant(${i})" class="${
