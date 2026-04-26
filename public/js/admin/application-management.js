@@ -570,30 +570,61 @@ function selectApplicant(idx) {
     lockStep1: requiresReviewStart,
     applicant: a,
     onApplicantUpdate: () => renderDetailTable(),
+    onPendingToSubmitted: () => syncDocsReviewButton(),
   });
   const reviewBtn = document.getElementById("docsReviewBtn");
-  if (reviewBtn) {
-    if (requiresReviewStart) {
+  const syncDocsReviewButton = () => {
+    if (!reviewBtn) return;
+    reviewBtn.onclick = null;
+
+    const step2Unlocked = reviewController && reviewController.isStep2Unlocked
+      ? reviewController.isStep2Unlocked()
+      : false;
+
+    if (a.pre === "Docs Submitted" && a.statusTxt === "Docs Submitted") {
       reviewBtn.textContent = "Review Application";
       reviewBtn.className = "btn primary sm";
       reviewBtn.disabled = false;
       reviewBtn.onclick = () => {
         a.pre = "Under Review";
         renderDetailTable();
-        reviewBtn.textContent = "Under Review";
-        reviewBtn.className = "btn ghost sm";
-        reviewBtn.disabled = true;
+        syncDocsReviewButton();
         if (reviewController && reviewController.startStep1Review) {
           reviewController.startStep1Review();
         }
       };
-    } else {
-      reviewBtn.textContent = a.pre === "Passed" ? "Step 1 Passed" : "Under Review";
+      return;
+    }
+
+    if (a.pre === "Passed" && a.statusTxt === "Pending") {
+      reviewBtn.textContent = "Pending Uploads";
       reviewBtn.className = "btn ghost sm";
       reviewBtn.disabled = true;
-      reviewBtn.onclick = null;
+      return;
     }
-  }
+
+    if (a.pre === "Passed" && a.statusTxt === "Docs Submitted" && !step2Unlocked) {
+      reviewBtn.textContent = "Review Submitted Documents";
+      reviewBtn.className = "btn primary sm";
+      reviewBtn.disabled = false;
+      reviewBtn.onclick = () => {
+        a.statusTxt = "Under Review";
+        a.status = "b-under-review";
+        renderDetailTable();
+        if (reviewController && reviewController.startStep2Review) {
+          reviewController.startStep2Review();
+        }
+        syncDocsReviewButton();
+      };
+      return;
+    }
+
+    reviewBtn.textContent = a.statusTxt || "Under Review";
+    reviewBtn.className = "btn ghost sm";
+    reviewBtn.disabled = true;
+  };
+
+  syncDocsReviewButton();
 
   // Timeline
   document.getElementById("timelinePanel").style.display = "block";
@@ -744,21 +775,6 @@ function initApplicationReviewCard(options = {}) {
     if (state.status[doc] === "verified") return;
     if (state.step1Locked && step1Docs.includes(doc)) return;
     if (!state.step2Unlocked && step2Docs.includes(doc)) return;
-    if (
-      step2Docs.includes(doc) &&
-      options.applicant &&
-      options.applicant.statusTxt === "Pending"
-    ) {
-      options.applicant.statusTxt = "Docs Submitted";
-      options.applicant.status = "b-doc-submitted";
-      if (options.onApplicantUpdate) options.onApplicantUpdate();
-      const reviewBtn = document.getElementById("docsReviewBtn");
-      if (reviewBtn) {
-        reviewBtn.textContent = "Review Submitted Documents";
-        reviewBtn.className = "btn primary sm";
-        reviewBtn.disabled = true;
-      }
-    }
     state.currentDoc = doc;
     document.getElementById("ar-modal").classList.add("open");
     document.getElementById("ar-previewImage").src = url;
@@ -928,9 +944,35 @@ function initApplicationReviewCard(options = {}) {
 
   function unlockStep2() {
     state.step1Finalized = true;
-    state.step2Unlocked = true;
     lockItem("id");
     lockItem("selfie");
+    const banner = document.getElementById("ar-statusBanner");
+    banner.className = "ar-banner ar-ready";
+    banner.textContent = "Pre-screening passed — waiting for qualification documents";
+    document.getElementById("ar-mainAction").style.display = "none";
+
+    if (options.applicant) {
+      options.applicant.pre = "Passed";
+      options.applicant.statusTxt = "Pending";
+      options.applicant.status = "b-doc-pending";
+      if (options.onApplicantUpdate) options.onApplicantUpdate();
+
+      setTimeout(() => {
+        if (options.applicant.statusTxt !== "Pending") return;
+        options.applicant.statusTxt = "Docs Submitted";
+        options.applicant.status = "b-doc-submitted";
+        if (options.onApplicantUpdate) options.onApplicantUpdate();
+        if (options.onPendingToSubmitted) options.onPendingToSubmitted();
+      }, 5000);
+    }
+
+    updateStep1Progress(null);
+    updateStep2Progress(null);
+  }
+
+  function startStep2Review() {
+    if (state.step2Unlocked) return;
+    state.step2Unlocked = true;
     step2Docs.forEach(enableItem);
     state.status.form = "pending";
     state.status.permit = "missing";
@@ -938,24 +980,8 @@ function initApplicationReviewCard(options = {}) {
     setStatus("form", "Pending", "ar-pending");
     setStatus("permit", "Missing", "ar-missing");
     setStatus("clearance", "Missing", "ar-missing");
-    const banner = document.getElementById("ar-statusBanner");
-    banner.className = "ar-banner ar-ready";
-    banner.textContent = "Pre-screening passed — waiting for qualification documents";
-    document.getElementById("ar-mainAction").style.display = "none";
-    if (options.applicant) {
-      options.applicant.pre = "Passed";
-      options.applicant.statusTxt = "Pending";
-      options.applicant.status = "b-doc-pending";
-      if (options.onApplicantUpdate) options.onApplicantUpdate();
-    }
-    const reviewBtn = document.getElementById("docsReviewBtn");
-    if (reviewBtn) {
-      reviewBtn.textContent = "Pending Uploads";
-      reviewBtn.className = "btn ghost sm";
-      reviewBtn.disabled = true;
-    }
-    updateStep1Progress(null);
     updateStep2Progress(null);
+    updateStep2UI();
   }
 
   function startStep1Review() {
@@ -1087,6 +1113,8 @@ function initApplicationReviewCard(options = {}) {
 
   return {
     startStep1Review,
+    startStep2Review,
+    isStep2Unlocked: () => state.step2Unlocked,
   };
 }
 
