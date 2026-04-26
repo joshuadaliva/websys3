@@ -591,14 +591,14 @@ function selectApplicant(idx) {
       : false;
 
     if (lockAllReview) {
-      reviewBtn.textContent = "Review Locked";
+      reviewBtn.textContent = a.statusTxt || "Locked";
       reviewBtn.className = "btn ghost sm";
       reviewBtn.disabled = true;
       return;
     }
 
     if (openStep2Directly) {
-      reviewBtn.textContent = "Step 2 Open";
+      reviewBtn.textContent = a.statusTxt || "Locked";
       reviewBtn.className = "btn ghost sm";
       reviewBtn.disabled = true;
       return;
@@ -922,7 +922,9 @@ function initApplicationReviewCard(options = {}) {
 
     if (state.lockAllReview) {
       banner.className = "ar-banner ar-bpending";
-      banner.textContent = "Review locked for this application state";
+      banner.textContent = options.applicant?.pre === "Failed"
+        ? "Pre-screening failed."
+        : "Pre-screening completed.";
       return;
     }
 
