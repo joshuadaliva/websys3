@@ -566,10 +566,17 @@ function selectApplicant(idx) {
 
   // Docs panel
   document.getElementById("docsPanel").style.display = "block";
-  const requiresReviewStart = a.pre === "Docs Submitted" && (a.statusTxt === "Locked" || a.statusTxt === "Docs Submitted");
+  const requiresReviewStart = a.pre === "Docs Submitted" && a.statusTxt === "Locked";
+  const openStep2Directly = a.pre === "Passed" && a.statusTxt === "Locked";
+  const lockAllReview =
+    a.pre === "Failed" ||
+    (a.pre === "Passed" && ["Failed", "Passed", "Qualified", "Rejected"].includes(a.statusTxt));
+
   document.getElementById("docsBody").innerHTML = renderApplicationReviewCard();
   const reviewController = initApplicationReviewCard({
-    lockStep1: requiresReviewStart,
+    lockStep1: requiresReviewStart || openStep2Directly,
+    autoOpenStep2: openStep2Directly,
+    lockAllReview,
     applicant: a,
     onApplicantUpdate: () => renderDetailTable(),
     onPendingToSubmitted: () => syncDocsReviewButton(),
@@ -582,6 +589,20 @@ function selectApplicant(idx) {
     const step2Unlocked = reviewController && reviewController.isStep2Unlocked
       ? reviewController.isStep2Unlocked()
       : false;
+
+    if (lockAllReview) {
+      reviewBtn.textContent = "Review Locked";
+      reviewBtn.className = "btn ghost sm";
+      reviewBtn.disabled = true;
+      return;
+    }
+
+    if (openStep2Directly) {
+      reviewBtn.textContent = "Step 2 Open";
+      reviewBtn.className = "btn ghost sm";
+      reviewBtn.disabled = true;
+      return;
+    }
 
     if (a.pre === "Docs Submitted" && (a.statusTxt === "Locked" || a.statusTxt === "Docs Submitted")) {
       reviewBtn.textContent = "Review Application";
@@ -761,6 +782,7 @@ function initApplicationReviewCard(options = {}) {
     step2ActionShown: false,
     step1Finalized: false,
     step1Locked: Boolean(options.lockStep1),
+    lockAllReview: Boolean(options.lockAllReview),
     status: {
       id: "pending",
       selfie: "pending",
@@ -774,6 +796,7 @@ function initApplicationReviewCard(options = {}) {
   const step2Docs = ["form", "permit", "clearance"];
 
   function openPreview(doc, url) {
+    if (state.lockAllReview) return;
     if (state.status[doc] === "verified") return;
     if (state.step1Locked && step1Docs.includes(doc)) return;
     if (!state.step2Unlocked && step2Docs.includes(doc)) return;
@@ -817,7 +840,7 @@ function initApplicationReviewCard(options = {}) {
     const pct = Math.round((actioned / total) * 100);
     const bar = document.getElementById("ar-step1-bar");
     const badge = document.getElementById("ar-step1-badge");
-    if (state.step1Locked) {
+    if (state.step1Locked || state.lockAllReview) {
       bar.style.width = "0%";
       bar.className = "ar-progress-fill ar-fill-gray";
       badge.className = "ar-section-badge ar-badge-locked";
@@ -896,6 +919,12 @@ function initApplicationReviewCard(options = {}) {
     btn.className = "ar-btn-disabled";
     btn.disabled = true;
     btn.textContent = "Waiting for review";
+
+    if (state.lockAllReview) {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = "Review locked for this application state";
+      return;
+    }
 
     if (state.step1Locked) {
       banner.className = "ar-banner ar-bpending";
@@ -976,7 +1005,7 @@ function initApplicationReviewCard(options = {}) {
   }
 
   function startStep2Review() {
-    if (state.step2Unlocked) return;
+    if (state.lockAllReview || state.step2Unlocked) return;
     state.step2Unlocked = true;
     step2Docs.forEach(enableItem);
     state.status.form = "pending";
@@ -1116,10 +1145,23 @@ function initApplicationReviewCard(options = {}) {
   document.getElementById("ar-verifyBtn").addEventListener("click", verifyDoc);
   document.getElementById("ar-rejectBtn").addEventListener("click", rejectDoc);
 
-  if (state.step1Locked) {
+  if (state.lockAllReview) {
     step1Docs.forEach(lockItem);
+    step2Docs.forEach(lockItem);
     setStatus("id", "Locked", "ar-locked");
     setStatus("selfie", "Locked", "ar-locked");
+    setStatus("form", "Locked", "ar-locked");
+    setStatus("permit", "Locked", "ar-locked");
+    setStatus("clearance", "Locked", "ar-locked");
+  } else {
+    if (state.step1Locked) {
+      step1Docs.forEach(lockItem);
+      setStatus("id", "Locked", "ar-locked");
+      setStatus("selfie", "Locked", "ar-locked");
+    }
+    if (options.autoOpenStep2) {
+      startStep2Review();
+    }
   }
 
   updateStep1Progress(null);
