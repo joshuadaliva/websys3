@@ -292,6 +292,23 @@ const stalls = [
   },
 ];
 
+
+// Align sample pre-screen indicators for non-#06 stalls with qualification states.
+stalls.forEach((stall, stallIdx) => {
+  if (stallIdx === 0) return;
+  stall.applicants.forEach((app) => {
+    if (app.statusTxt === "Qualified" || app.statusTxt === "For Raffle") {
+      app.pre = "Passed";
+      return;
+    }
+    if (app.statusTxt === "Rejected" || app.statusTxt === "Failed") {
+      app.pre = "Failed";
+      return;
+    }
+    app.pre = "Docs Submitted";
+  });
+});
+
 let currentStall = null;
 let selectedApplicantIdx = null;
 let pendingSendLinkConfirm = null;
