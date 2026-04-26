@@ -33,7 +33,7 @@ const stalls = [
         email: "carla.bautista@email.com",
         addr: "Brgy. Doon, Arkipaisi",
         date: "Mar 8 · 09:45 AM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-doc-submitted",
         statusTxt: "Docs Submitted",
         docs: 3,
@@ -46,7 +46,7 @@ const stalls = [
         email: "ramon.flores@email.com",
         addr: "Brgy. Silangan, Arkipaisi",
         date: "Mar 5 · 04:15 PM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-raffle",
         statusTxt: "For Raffle",
         docs: 5,
@@ -59,7 +59,7 @@ const stalls = [
         email: "juan.delacruz@email.com",
         addr: "Brgy. Norte, Arkipaisi",
         date: "Mar 3 · 10:20 AM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-raffle",
         statusTxt: "For Raffle",
         docs: 5,
@@ -72,7 +72,7 @@ const stalls = [
         email: "ana.reyes@email.com",
         addr: "Brgy. Sur, Arkipaisi",
         date: "Mar 2 · 11:00 AM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-qualified",
         statusTxt: "Qualified",
         docs: 5,
@@ -85,7 +85,7 @@ const stalls = [
         email: "diego.mercado@email.com",
         addr: "Brgy. Bayan, Arkipaisi",
         date: "Mar 4 · 01:00 PM",
-        pre: "Failed",
+        pre: "Docs Submitted",
         status: "b-rejected",
         statusTxt: "Rejected",
         docs: 0,
@@ -125,7 +125,7 @@ const stalls = [
         email: "luis.v@email.com",
         addr: "Brgy. Ibayo, Arkipaisi",
         date: "Mar 7 · 02:10 PM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-doc-pending",
         statusTxt: "Docs Pending",
         docs: 2,
@@ -138,7 +138,7 @@ const stalls = [
         email: "grace.c@email.com",
         addr: "Brgy. Tulay, Arkipaisi",
         date: "Mar 8 · 07:50 AM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-qualified",
         statusTxt: "Qualified",
         docs: 5,
@@ -151,7 +151,7 @@ const stalls = [
         email: "nena.e@email.com",
         addr: "Brgy. Centro, Arkipaisi",
         date: "Mar 6 · 11:30 AM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-qualified",
         statusTxt: "Qualified",
         docs: 5,
@@ -164,7 +164,7 @@ const stalls = [
         email: "pablo.s@email.com",
         addr: "Brgy. Kanluran, Arkipaisi",
         date: "Mar 5 · 09:00 AM",
-        pre: "Failed",
+        pre: "Docs Submitted",
         status: "b-rejected",
         statusTxt: "Rejected",
         docs: 0,
@@ -204,7 +204,7 @@ const stalls = [
         email: "rosa.m@email.com",
         addr: "Brgy. Bagong, Arkipaisi",
         date: "Feb 28 · 10:00 AM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-qualified",
         statusTxt: "Qualified",
         docs: 5,
@@ -217,7 +217,7 @@ const stalls = [
         email: "efren.b@email.com",
         addr: "Brgy. Luma, Arkipaisi",
         date: "Mar 1 · 01:30 PM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-doc-submitted",
         statusTxt: "Docs Submitted",
         docs: 4,
@@ -230,7 +230,7 @@ const stalls = [
         email: "carla.s@email.com",
         addr: "Brgy. Datag, Arkipaisi",
         date: "Mar 2 · 03:20 PM",
-        pre: "Passed",
+        pre: "Docs Submitted",
         status: "b-qualified",
         statusTxt: "Qualified",
         docs: 5,
@@ -270,7 +270,7 @@ const stalls = [
         email: "grace.c@email.com",
         addr: "Brgy. Tulay, Arkipaisi",
         date: "Mar 8 · 07:50 AM",
-        pre: "Pending",
+        pre: "Docs Submitted",
         status: "b-submitted",
         statusTxt: "Submitted",
         docs: 0,
@@ -283,7 +283,7 @@ const stalls = [
         email: "mario.l@email.com",
         addr: "Brgy. Puso, Arkipaisi",
         date: "Mar 7 · 06:00 PM",
-        pre: "Pending",
+        pre: "Docs Submitted",
         status: "b-submitted",
         statusTxt: "Submitted",
         docs: 0,
@@ -474,7 +474,9 @@ function renderDetailTable() {
           ? "b-validated"
           : a.pre === "Failed"
           ? "b-rejected"
-          : "b-submitted"
+          : a.pre === "Under Review"
+          ? "b-under-review"
+          : "b-doc-submitted"
       }">${a.pre}</span></td>
       <td><span class="badge ${a.status}">${a.statusTxt}</span></td>
       <td style="font-family:'DM Mono',monospace;font-size:12px;color:${
@@ -566,6 +568,8 @@ function selectApplicant(idx) {
   document.getElementById("docsBody").innerHTML = renderApplicationReviewCard();
   const reviewController = initApplicationReviewCard({
     lockStep1: requiresReviewStart,
+    applicant: a,
+    onApplicantUpdate: () => renderDetailTable(),
   });
   const reviewBtn = document.getElementById("docsReviewBtn");
   if (reviewBtn) {
@@ -574,8 +578,7 @@ function selectApplicant(idx) {
       reviewBtn.className = "btn primary sm";
       reviewBtn.disabled = false;
       reviewBtn.onclick = () => {
-        a.statusTxt = "Under Review";
-        a.status = "b-under-review";
+        a.pre = "Under Review";
         renderDetailTable();
         reviewBtn.textContent = "Under Review";
         reviewBtn.className = "btn ghost sm";
@@ -585,7 +588,7 @@ function selectApplicant(idx) {
         }
       };
     } else {
-      reviewBtn.textContent = "Under Review";
+      reviewBtn.textContent = a.pre === "Passed" ? "Step 1 Passed" : "Under Review";
       reviewBtn.className = "btn ghost sm";
       reviewBtn.disabled = true;
       reviewBtn.onclick = null;
@@ -741,6 +744,21 @@ function initApplicationReviewCard(options = {}) {
     if (state.status[doc] === "verified") return;
     if (state.step1Locked && step1Docs.includes(doc)) return;
     if (!state.step2Unlocked && step2Docs.includes(doc)) return;
+    if (
+      step2Docs.includes(doc) &&
+      options.applicant &&
+      options.applicant.statusTxt === "Pending"
+    ) {
+      options.applicant.statusTxt = "Docs Submitted";
+      options.applicant.status = "b-doc-submitted";
+      if (options.onApplicantUpdate) options.onApplicantUpdate();
+      const reviewBtn = document.getElementById("docsReviewBtn");
+      if (reviewBtn) {
+        reviewBtn.textContent = "Review Submitted Documents";
+        reviewBtn.className = "btn primary sm";
+        reviewBtn.disabled = true;
+      }
+    }
     state.currentDoc = doc;
     document.getElementById("ar-modal").classList.add("open");
     document.getElementById("ar-previewImage").src = url;
@@ -885,6 +903,10 @@ function initApplicationReviewCard(options = {}) {
           btn.disabled = true;
           btn.className = "ar-btn-disabled";
           step1Docs.forEach(lockItem);
+          if (options.applicant) {
+            options.applicant.pre = "Failed";
+            if (options.onApplicantUpdate) options.onApplicantUpdate();
+          }
           updateStep1Progress("rejected");
         });
       };
@@ -920,6 +942,18 @@ function initApplicationReviewCard(options = {}) {
     banner.className = "ar-banner ar-ready";
     banner.textContent = "Pre-screening passed — waiting for qualification documents";
     document.getElementById("ar-mainAction").style.display = "none";
+    if (options.applicant) {
+      options.applicant.pre = "Passed";
+      options.applicant.statusTxt = "Pending";
+      options.applicant.status = "b-doc-pending";
+      if (options.onApplicantUpdate) options.onApplicantUpdate();
+    }
+    const reviewBtn = document.getElementById("docsReviewBtn");
+    if (reviewBtn) {
+      reviewBtn.textContent = "Pending Uploads";
+      reviewBtn.className = "btn ghost sm";
+      reviewBtn.disabled = true;
+    }
     updateStep1Progress(null);
     updateStep2Progress(null);
   }
