@@ -931,6 +931,10 @@ function initApplicationReviewCard(options = {}) {
     } else if (allVerified) {
       banner.className = "ar-banner ar-ready";
       banner.textContent = "Pre-screening passed.";
+      if (options.applicant && options.applicant.pre !== "Passed") {
+        options.applicant.pre = "Passed";
+        if (options.onApplicantUpdate) options.onApplicantUpdate();
+      }
       btn.textContent = "Send Upload Link";
       btn.className = "ar-btn-primary";
       btn.disabled = false;
@@ -954,7 +958,6 @@ function initApplicationReviewCard(options = {}) {
     document.getElementById("ar-mainAction").style.display = "none";
 
     if (options.applicant) {
-      options.applicant.pre = "Passed";
       options.applicant.statusTxt = "Pending";
       options.applicant.status = "b-doc-pending";
       if (options.onApplicantUpdate) options.onApplicantUpdate();
