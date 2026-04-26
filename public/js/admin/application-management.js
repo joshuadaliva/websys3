@@ -562,10 +562,35 @@ function selectApplicant(idx) {
 
   // Docs panel
   document.getElementById("docsPanel").style.display = "block";
-  document.getElementById("docsBadge").textContent = "Identity Verification";
-  document.getElementById("docsBadge").className = "badge b-doc-pending";
+  const requiresReviewStart = a.statusTxt === "Docs Submitted";
   document.getElementById("docsBody").innerHTML = renderApplicationReviewCard();
-  initApplicationReviewCard();
+  const reviewController = initApplicationReviewCard({
+    lockStep1: requiresReviewStart,
+  });
+  const reviewBtn = document.getElementById("docsReviewBtn");
+  if (reviewBtn) {
+    if (requiresReviewStart) {
+      reviewBtn.textContent = "Review Application";
+      reviewBtn.className = "btn primary sm";
+      reviewBtn.disabled = false;
+      reviewBtn.onclick = () => {
+        a.statusTxt = "Under Review";
+        a.status = "b-under-review";
+        renderDetailTable();
+        reviewBtn.textContent = "Under Review";
+        reviewBtn.className = "btn ghost sm";
+        reviewBtn.disabled = true;
+        if (reviewController && reviewController.startStep1Review) {
+          reviewController.startStep1Review();
+        }
+      };
+    } else {
+      reviewBtn.textContent = "Under Review";
+      reviewBtn.className = "btn ghost sm";
+      reviewBtn.disabled = true;
+      reviewBtn.onclick = null;
+    }
+  }
 
   // Timeline
   document.getElementById("timelinePanel").style.display = "block";
@@ -693,12 +718,13 @@ function renderApplicationReviewCard() {
     </div>`;
 }
 
-function initApplicationReviewCard() {
+function initApplicationReviewCard(options = {}) {
   const state = {
     currentDoc: null,
     step2Unlocked: false,
     step2ActionShown: false,
     step1Finalized: false,
+    step1Locked: Boolean(options.lockStep1),
     status: {
       id: "pending",
       selfie: "pending",
@@ -713,6 +739,7 @@ function initApplicationReviewCard() {
 
   function openPreview(doc, url) {
     if (state.status[doc] === "verified") return;
+    if (state.step1Locked && step1Docs.includes(doc)) return;
     if (!state.step2Unlocked && step2Docs.includes(doc)) return;
     state.currentDoc = doc;
     document.getElementById("ar-modal").classList.add("open");
@@ -754,6 +781,13 @@ function initApplicationReviewCard() {
     const pct = Math.round((actioned / total) * 100);
     const bar = document.getElementById("ar-step1-bar");
     const badge = document.getElementById("ar-step1-badge");
+    if (state.step1Locked) {
+      bar.style.width = "0%";
+      bar.className = "ar-progress-fill ar-fill-gray";
+      badge.className = "ar-section-badge ar-badge-locked";
+      badge.textContent = "Locked";
+      return;
+    }
     bar.style.width = pct + "%";
 
     if (finalState === "rejected") {
@@ -827,6 +861,12 @@ function initApplicationReviewCard() {
     btn.disabled = true;
     btn.textContent = "Waiting for review";
 
+    if (state.step1Locked) {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = "Click Review Application to start pre-screening";
+      return;
+    }
+
     if (hasRejected) {
       banner.className = "ar-banner ar-reject";
       banner.textContent = "One or more documents rejected";
@@ -882,6 +922,16 @@ function initApplicationReviewCard() {
     document.getElementById("ar-mainAction").style.display = "none";
     updateStep1Progress(null);
     updateStep2Progress(null);
+  }
+
+  function startStep1Review() {
+    if (!state.step1Locked) return;
+    state.step1Locked = false;
+    step1Docs.forEach(enableItem);
+    setStatus("id", "Pending", "ar-pending");
+    setStatus("selfie", "Pending", "ar-pending");
+    updateStep1Progress(null);
+    updateStep1UI();
   }
 
   function updateStep2UI() {
@@ -991,8 +1041,19 @@ function initApplicationReviewCard() {
   document.getElementById("ar-verifyBtn").addEventListener("click", verifyDoc);
   document.getElementById("ar-rejectBtn").addEventListener("click", rejectDoc);
 
+  if (state.step1Locked) {
+    step1Docs.forEach(lockItem);
+    setStatus("id", "Locked", "ar-locked");
+    setStatus("selfie", "Locked", "ar-locked");
+  }
+
   updateStep1Progress(null);
+  updateStep1UI();
   updateStep2Progress(null);
+
+  return {
+    startStep1Review,
+  };
 }
 
 

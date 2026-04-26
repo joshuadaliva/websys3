@@ -1644,6 +1644,11 @@ body {
     color: var(--amber)
 }
 
+.b-under-review {
+    background: var(--accent-light);
+    color: var(--accent)
+}
+
 .b-doc-submitted {
     background: var(--orange-soft);
     color: var(--orange)
