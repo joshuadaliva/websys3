@@ -309,10 +309,63 @@ stalls.forEach((stall, stallIdx) => {
   });
 });
 
+applyStoredApplicantStatuses();
+window.addEventListener("storage", (event) => {
+  if (event.key !== REVIEW_STATUS_STORAGE_KEY) return;
+  applyStoredApplicantStatuses();
+  if (!currentStall) return;
+  renderDetailTable();
+  if (selectedApplicantIdx !== null) {
+    document.getElementById("docsBody").innerHTML = renderOverviewReviewCard(
+      currentStall.applicants[selectedApplicantIdx]
+    );
+  }
+});
+
 let currentStall = null;
 let selectedApplicantIdx = null;
 let pendingSendLinkConfirm = null;
 let pendingRejectConfirm = null;
+const REVIEW_STATUS_STORAGE_KEY = "application_review_status_map";
+
+function applicantStorageKey(stallId, applicantName) {
+  return `${stallId}::${applicantName}`;
+}
+
+function readReviewStatusMap() {
+  try {
+    return JSON.parse(localStorage.getItem(REVIEW_STATUS_STORAGE_KEY) || "{}");
+  } catch (err) {
+    return {};
+  }
+}
+
+function writeReviewStatusMap(map) {
+  localStorage.setItem(REVIEW_STATUS_STORAGE_KEY, JSON.stringify(map));
+}
+
+function persistApplicantStatus(stallId, applicant) {
+  const map = readReviewStatusMap();
+  map[applicantStorageKey(stallId, applicant.name)] = {
+    pre: applicant.pre,
+    status: applicant.status,
+    statusTxt: applicant.statusTxt,
+  };
+  writeReviewStatusMap(map);
+}
+
+function applyStoredApplicantStatuses() {
+  const map = readReviewStatusMap();
+  stalls.forEach((stall) => {
+    stall.applicants.forEach((applicant) => {
+      const saved = map[applicantStorageKey(stall.id, applicant.name)];
+      if (!saved) return;
+      applicant.pre = saved.pre;
+      applicant.status = saved.status;
+      applicant.statusTxt = saved.statusTxt;
+    });
+  });
+}
 
 /* ──────────── SIDEBAR / THEME ──────────── */
 let SB_OPEN = window.innerWidth >= 900;
@@ -506,12 +559,89 @@ function renderDetailTable() {
         .trim()}</td>
       <td>
         <div class="row-acts">
-          <div class="act-btn tt" data-tip="View" onclick="event.stopPropagation();selectApplicant(${i})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="act-btn act-view tt" data-tip="View Profile" onclick="event.stopPropagation();selectApplicant(${i})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="act-btn act-review tt" data-tip="Open Review" onclick="event.stopPropagation();startReviewFromTable(${i})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
         </div>
       </td>
     </tr>`
     )
     .join("")}</tbody>`;
+}
+
+function getNextReviewStep(applicant) {
+  if (!applicant) return null;
+  if (applicant.pre === "Docs Submitted") return "step1";
+  if (applicant.pre === "Under Review") return "step1";
+  if (applicant.pre === "Passed" && applicant.statusTxt === "Docs Submitted")
+    return "step2";
+  if (applicant.pre === "Passed" && applicant.statusTxt === "Under Review")
+    return "step2";
+  return null;
+}
+
+function renderOverviewReviewCard(applicant) {
+  const step1Status = applicant.pre;
+  const step2Status =
+    applicant.pre === "Failed"
+      ? "Locked"
+      : applicant.statusTxt === "Qualified"
+      ? "Passed"
+      : applicant.statusTxt;
+  const canStep1Review =
+    applicant.pre === "Docs Submitted" || applicant.pre === "Under Review";
+  const canStep2Review =
+    applicant.pre === "Passed" &&
+    (applicant.statusTxt === "Docs Submitted" ||
+      applicant.statusTxt === "Under Review");
+
+  return `
+    <div class="ar-card simple">
+      <div class="ar-section-header">
+        <span class="ar-section-title">Step 1: Identity Verification (Pre-screening)</span>
+        <span class="ar-section-badge ar-badge-pending">${step1Status}</span>
+      </div>
+      <div class="ar-simple-actions">
+        <button class="btn primary sm" ${canStep1Review ? "" : "disabled"} onclick="startStepReview('step1')">Review Application</button>
+      </div>
+
+      <div class="ar-divider"></div>
+
+      <div class="ar-section-header">
+        <span class="ar-section-title">Step 2: Qualification Documents</span>
+        <span class="ar-section-badge ${step2Status === "Locked" ? "ar-badge-locked" : "ar-badge-pending"}">${step2Status}</span>
+      </div>
+      <div class="ar-simple-actions">
+        <button class="btn primary sm" ${canStep2Review ? "" : "disabled"} onclick="startStepReview('step2')">Review Application</button>
+      </div>
+    </div>
+  `;
+}
+
+function startReviewFromTable(idx) {
+  selectApplicant(idx);
+  const applicant = currentStall?.applicants?.[idx];
+  const step = getNextReviewStep(applicant);
+  if (!step) return;
+  startStepReview(step);
+}
+
+function startStepReview(step) {
+  if (selectedApplicantIdx === null || !currentStall) return;
+  const applicant = currentStall.applicants[selectedApplicantIdx];
+  if (step === "step1" && applicant.pre === "Docs Submitted") {
+    applicant.pre = "Under Review";
+  }
+  if (step === "step2" && applicant.pre === "Passed" && applicant.statusTxt === "Docs Submitted") {
+    applicant.statusTxt = "Under Review";
+    applicant.status = "b-under-review";
+  }
+  persistApplicantStatus(currentStall.id, applicant);
+  renderDetailTable();
+  document.getElementById("docsBody").innerHTML = renderOverviewReviewCard(applicant);
+  const reviewUrl = `/admin/application-validation?stallId=${currentStall.id}&applicant=${encodeURIComponent(
+    applicant.name
+  )}&step=${step}`;
+  window.open(reviewUrl, "_blank");
 }
 
 /* ──────────── SELECT APPLICANT ──────────── */
@@ -581,90 +711,9 @@ function selectApplicant(idx) {
       </div>
     </div>`;
 
-  // Docs panel
+  // Application review overview card
   document.getElementById("docsPanel").style.display = "block";
-  const requiresReviewStart = a.pre === "Docs Submitted" && a.statusTxt === "Locked";
-  const openStep2Directly = a.pre === "Passed" && a.statusTxt === "Locked";
-  const lockAllReview =
-    a.pre === "Failed" ||
-    (a.pre === "Passed" && ["Failed", "Passed", "Qualified", "Rejected"].includes(a.statusTxt));
-
-  document.getElementById("docsBody").innerHTML = renderApplicationReviewCard();
-  const reviewController = initApplicationReviewCard({
-    lockStep1: requiresReviewStart || openStep2Directly,
-    autoOpenStep2: openStep2Directly,
-    lockAllReview,
-    applicant: a,
-    onApplicantUpdate: () => renderDetailTable(),
-    onPendingToSubmitted: () => syncDocsReviewButton(),
-  });
-  const reviewBtn = document.getElementById("docsReviewBtn");
-  const syncDocsReviewButton = () => {
-    if (!reviewBtn) return;
-    reviewBtn.onclick = null;
-
-    const step2Unlocked = reviewController && reviewController.isStep2Unlocked
-      ? reviewController.isStep2Unlocked()
-      : false;
-
-    if (lockAllReview) {
-      reviewBtn.textContent = a.statusTxt || "Locked";
-      reviewBtn.className = "btn ghost sm";
-      reviewBtn.disabled = true;
-      return;
-    }
-
-    if (openStep2Directly) {
-      reviewBtn.textContent = a.statusTxt || "Locked";
-      reviewBtn.className = "btn ghost sm";
-      reviewBtn.disabled = true;
-      return;
-    }
-
-    if (a.pre === "Docs Submitted" && (a.statusTxt === "Locked" || a.statusTxt === "Docs Submitted")) {
-      reviewBtn.textContent = "Review Application";
-      reviewBtn.className = "btn primary sm";
-      reviewBtn.disabled = false;
-      reviewBtn.onclick = () => {
-        a.pre = "Under Review";
-        renderDetailTable();
-        syncDocsReviewButton();
-        if (reviewController && reviewController.startStep1Review) {
-          reviewController.startStep1Review();
-        }
-      };
-      return;
-    }
-
-    if (a.pre === "Passed" && a.statusTxt === "Pending") {
-      reviewBtn.textContent = "Pending Uploads";
-      reviewBtn.className = "btn ghost sm";
-      reviewBtn.disabled = true;
-      return;
-    }
-
-    if (a.pre === "Passed" && a.statusTxt === "Docs Submitted" && !step2Unlocked) {
-      reviewBtn.textContent = "Review Submitted Documents";
-      reviewBtn.className = "btn primary sm";
-      reviewBtn.disabled = false;
-      reviewBtn.onclick = () => {
-        a.statusTxt = "Under Review";
-        a.status = "b-under-review";
-        renderDetailTable();
-        if (reviewController && reviewController.startStep2Review) {
-          reviewController.startStep2Review();
-        }
-        syncDocsReviewButton();
-      };
-      return;
-    }
-
-    reviewBtn.textContent = a.statusTxt || "Under Review";
-    reviewBtn.className = "btn ghost sm";
-    reviewBtn.disabled = true;
-  };
-
-  syncDocsReviewButton();
+  document.getElementById("docsBody").innerHTML = renderOverviewReviewCard(a);
 
   // Timeline
   document.getElementById("timelinePanel").style.display = "block";

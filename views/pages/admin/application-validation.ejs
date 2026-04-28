@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Application Validation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/admin/application-validation.css" />
+</head>
+<body>
+  <main class="wrap">
+    <div class="card">
+      <div class="top">
+        <div>
+          <h1>Document Validation</h1>
+          <p id="contextLine">Loading review context...</p>
+        </div>
+        <button class="btn ghost" onclick="window.close()">Close</button>
+      </div>
+
+      <div class="section">
+        <h2 id="stepTitle">Step Review</h2>
+        <p id="stepSub">Check each uploaded file, then mark the review result.</p>
+      </div>
+
+      <div id="docsList" class="docs"></div>
+
+      <div class="actions">
+        <button class="btn danger" id="failBtn">Mark Failed</button>
+        <button class="btn success" id="passBtn">Mark Passed</button>
+      </div>
+      <p class="note">Status will sync back to Application Management table automatically.</p>
+    </div>
+  </main>
+
+  <script src="/js/admin/application-validation.js"></script>
+</body>
+</html>
