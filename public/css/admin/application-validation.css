@@ -1,0 +1,28 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DM Sans', sans-serif; background: #f3f5fb; color: #0f172a; }
+.wrap { min-height: 100vh; display: grid; place-items: center; padding: 20px; }
+.card { width: min(760px, 100%); background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; }
+.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+h1 { font-size: 20px; margin: 0 0 4px; }
+h2 { font-size: 16px; margin: 0 0 4px; }
+p { margin: 0; color: #64748b; font-size: 13px; }
+.section { margin: 8px 0 14px; }
+.docs { display: grid; gap: 8px; margin-bottom: 14px; }
+.doc { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.doc span { font-size: 13px; font-weight: 600; color: #334155; }
+.doc select { border: 1px solid #d1d5db; border-radius: 8px; padding: 6px 8px; font-size: 12px; }
+.actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn { border: none; border-radius: 9px; padding: 9px 12px; cursor: pointer; font-weight: 700; }
+.btn.success { background: #15803d; color: #fff; }
+.btn.danger { background: #b91c1c; color: #fff; }
+.btn.ghost { background: #fff; border: 1px solid #d1d5db; color: #334155; }
+.note { margin-top: 10px; font-size: 12px; }
+
+/* Global table action color indicators */
+table td .btn { position: relative; }
+table td .btn::before { content:""; width:6px; height:6px; border-radius:50%; position:absolute; top:4px; left:4px; background: var(--text-muted, #94a3b8); }
+table td .btn.primary::before, table td .btn.pri::before, table td .btn.pr::before { background:#1d4ed8; }
+table td .btn.success::before, table td .btn.gr::before { background:#15803d; }
+table td .btn.ro::before, table td .btn.a::before { background:#b45309; }
+table td .btn.gh::before, table td .btn.ghost::before { background:#64748b; }
+table td .btn.r::before, table td .btn.danger::before { background:#b91c1c; }
