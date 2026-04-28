@@ -550,6 +550,11 @@
 
           <!-- Right -->
           <div class="profile-panel">
+            <div class="review-tabs">
+              <button class="review-tab on" id="tabBtnOverview" onclick="setRightTab('overview')">Overview</button>
+              <button class="review-tab" id="tabBtnValidation" onclick="setRightTab('validation')">Validation Page</button>
+            </div>
+            <div id="rightTabOverview">
             <!-- Applicant Profile -->
             <div class="panel" id="profilePanel">
               <div class="panel-head">
@@ -574,6 +579,24 @@
                 <div class="panel-title">Application Timeline</div>
               </div>
               <div id="timelineBody" style="padding:4px 0"></div>
+            </div>
+            </div>
+            <div id="rightTabValidation" style="display:none">
+              <div class="panel" id="validationPanel">
+                <div class="panel-head">
+                  <div class="panel-title">Document Validation</div>
+                </div>
+                <div id="validationBody">
+                  <div class="empty-profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="1.5">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                    </svg>
+                    <p>Select an applicant then click a review button from Application Review.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
