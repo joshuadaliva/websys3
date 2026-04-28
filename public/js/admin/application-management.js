@@ -309,11 +309,63 @@ stalls.forEach((stall, stallIdx) => {
   });
 });
 
+applyStoredApplicantStatuses();
+window.addEventListener("storage", (event) => {
+  if (event.key !== REVIEW_STATUS_STORAGE_KEY) return;
+  applyStoredApplicantStatuses();
+  if (!currentStall) return;
+  renderDetailTable();
+  if (selectedApplicantIdx !== null) {
+    document.getElementById("docsBody").innerHTML = renderOverviewReviewCard(
+      currentStall.applicants[selectedApplicantIdx]
+    );
+  }
+});
+
 let currentStall = null;
 let selectedApplicantIdx = null;
 let pendingSendLinkConfirm = null;
 let pendingRejectConfirm = null;
-let currentReviewController = null;
+const REVIEW_STATUS_STORAGE_KEY = "application_review_status_map";
+
+function applicantStorageKey(stallId, applicantName) {
+  return `${stallId}::${applicantName}`;
+}
+
+function readReviewStatusMap() {
+  try {
+    return JSON.parse(localStorage.getItem(REVIEW_STATUS_STORAGE_KEY) || "{}");
+  } catch (err) {
+    return {};
+  }
+}
+
+function writeReviewStatusMap(map) {
+  localStorage.setItem(REVIEW_STATUS_STORAGE_KEY, JSON.stringify(map));
+}
+
+function persistApplicantStatus(stallId, applicant) {
+  const map = readReviewStatusMap();
+  map[applicantStorageKey(stallId, applicant.name)] = {
+    pre: applicant.pre,
+    status: applicant.status,
+    statusTxt: applicant.statusTxt,
+  };
+  writeReviewStatusMap(map);
+}
+
+function applyStoredApplicantStatuses() {
+  const map = readReviewStatusMap();
+  stalls.forEach((stall) => {
+    stall.applicants.forEach((applicant) => {
+      const saved = map[applicantStorageKey(stall.id, applicant.name)];
+      if (!saved) return;
+      applicant.pre = saved.pre;
+      applicant.status = saved.status;
+      applicant.statusTxt = saved.statusTxt;
+    });
+  });
+}
 
 /* ──────────── SIDEBAR / THEME ──────────── */
 let SB_OPEN = window.innerWidth >= 900;
@@ -516,15 +568,6 @@ function renderDetailTable() {
     .join("")}</tbody>`;
 }
 
-function setRightTab(tab) {
-  document.getElementById("rightTabOverview").style.display =
-    tab === "overview" ? "block" : "none";
-  document.getElementById("rightTabValidation").style.display =
-    tab === "validation" ? "block" : "none";
-  document.getElementById("tabBtnOverview").classList.toggle("on", tab === "overview");
-  document.getElementById("tabBtnValidation").classList.toggle("on", tab === "validation");
-}
-
 function getNextReviewStep(applicant) {
   if (!applicant) return null;
   if (applicant.pre === "Docs Submitted") return "step1";
@@ -592,10 +635,13 @@ function startStepReview(step) {
     applicant.statusTxt = "Under Review";
     applicant.status = "b-under-review";
   }
+  persistApplicantStatus(currentStall.id, applicant);
   renderDetailTable();
-  renderValidationWorkspace(applicant, step);
   document.getElementById("docsBody").innerHTML = renderOverviewReviewCard(applicant);
-  setRightTab("validation");
+  const reviewUrl = `/admin/application-validation?stallId=${currentStall.id}&applicant=${encodeURIComponent(
+    applicant.name
+  )}&step=${step}`;
+  window.open(reviewUrl, "_blank");
 }
 
 /* ──────────── SELECT APPLICANT ──────────── */
@@ -668,7 +714,6 @@ function selectApplicant(idx) {
   // Application review overview card
   document.getElementById("docsPanel").style.display = "block";
   document.getElementById("docsBody").innerHTML = renderOverviewReviewCard(a);
-  setRightTab("overview");
 
   // Timeline
   document.getElementById("timelinePanel").style.display = "block";

@@ -37,6 +37,7 @@ router.get("/notification-management", notificationController.showNotificationMa
 router.get("/stall-management", stallManagementController.showStallManagement)
 router.get("/payment-management", paymentManagementController.showPaymentManagement)
 router.get("/application-management", applicationManagementController.showApplicationManagement)
+router.get("/application-validation", applicationManagementController.showApplicationValidation)
 router.get("/vendor-management", vendorManagementController.showVendorManagement)
 
 // Settings route
