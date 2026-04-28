@@ -750,6 +750,37 @@ function selectApplicant(idx) {
     .join("");
 }
 
+function renderValidationWorkspace(applicant, stepToStart) {
+  const validationBody = document.getElementById("validationBody");
+  if (!validationBody || !applicant) return;
+  const lockAllReview =
+    applicant.pre === "Failed" ||
+    ["Rejected", "Qualified"].includes(applicant.statusTxt);
+
+  validationBody.innerHTML = renderApplicationReviewCard();
+  currentReviewController = initApplicationReviewCard({
+    lockStep1: false,
+    autoOpenStep2: false,
+    lockAllReview,
+    applicant,
+    onApplicantUpdate: () => {
+      renderDetailTable();
+      document.getElementById("docsBody").innerHTML = renderOverviewReviewCard(applicant);
+    },
+    onPendingToSubmitted: () => {
+      renderDetailTable();
+      document.getElementById("docsBody").innerHTML = renderOverviewReviewCard(applicant);
+    },
+  });
+
+  if (stepToStart === "step1" && currentReviewController?.startStep1Review) {
+    currentReviewController.startStep1Review();
+  }
+  if (stepToStart === "step2" && currentReviewController?.startStep2Review) {
+    currentReviewController.startStep2Review();
+  }
+}
+
 function renderApplicationReviewCard() {
   return `
     <div class="ar-card">
@@ -1253,6 +1284,8 @@ function goBackToStalls() {
     '<span>ARKIPAISI</span><span class="sep">›</span><span>Applications</span>';
   currentStall = null;
   selectedApplicantIdx = null;
+  currentReviewController = null;
+  setRightTab("overview");
 }
 
 /* ──────────── MODALS ──────────── */
