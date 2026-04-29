@@ -1141,11 +1141,17 @@ svg {
   flex-shrink: 0
 }
 
-.ra:hover {
-  border-color: var(--ac);
-  color: var(--ac);
-  background: var(--acl)
-}
+.ra.ra-view,
+.ra.ra-edit,
+.ra.ra-status,
+.ra.ra-remind { background: var(--acl) }
+
+.ra.ra-view { border-color: var(--ac); color: var(--ac) }
+.ra.ra-edit { border-color: var(--status-active-border); color: var(--status-active); background: var(--status-active-bg) }
+.ra.ra-status { border-color: var(--status-suspended-border); color: var(--status-suspended); background: var(--status-suspended-bg) }
+.ra.ra-remind { border-color: #0ea5a4; color: #0f766e; background: #ccfbf1 }
+
+.ra:hover { filter: brightness(.97) }
 
 .ra svg {
   width: 11.5px;
