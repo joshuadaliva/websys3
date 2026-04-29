@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document Validation — Stall #06</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --border:#e8eaf0; --border-light:#f0f2f7;
+      --text-primary:#1a1d2e; --text-secondary:#6b7280; --text-muted:#9ca3af;
+      --accent:#5b5ef6; --accent-light:#ededfd; --accent-hover:#4a4de0;
+      --success:#16a34a; --success-bg:#f0fdf4; --success-border:#bbf7d0;
+      --danger:#dc2626; --danger-bg:#fef2f2; --danger-border:#fecaca;
+      --warning:#d97706; --warning-bg:#fffbeb; --warning-border:#fde68a;
+      --blue:#2563eb; --blue-bg:#eff6ff; --blue-border:#bfdbfe;
+      --gray-bg:#f5f6fa; --radius:12px; --radius-sm:8px;
+    }
+    html,body { font-family:'DM Sans',sans-serif; background:#fff; color:var(--text-primary); height:100%; }
+    .app-shell { display:flex; flex-direction:column; min-height:100vh; }
+
+    /* ── TOP BAR ── */
+    .top-bar { display:flex; align-items:center; justify-content:space-between; padding:13px 32px; border-bottom:1px solid var(--border); background:#fff; gap:12px; flex-shrink:0; }
+    .top-bar h1 { font-size:16px; font-weight:700; letter-spacing:-.2px; }
+    .top-title-row { display:flex; align-items:center; gap:10px; }
+    .breadcrumb { font-size:12px; color:var(--text-muted); }
+    .breadcrumb b { color:var(--text-secondary); font-weight:500; }
+
+    /* ── BADGES ── */
+    .badge { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; padding:2px 9px; border-radius:20px; text-transform:uppercase; letter-spacing:.3px; }
+    .badge::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; flex-shrink:0; }
+    .badge-blue   { background:var(--blue-bg);      color:var(--blue);    border:1px solid var(--blue-border); }
+    .badge-green  { background:var(--success-bg);   color:var(--success); border:1px solid var(--success-border); }
+    .badge-yellow { background:var(--warning-bg);   color:var(--warning); border:1px solid var(--warning-border); }
+    .badge-red    { background:var(--danger-bg);    color:var(--danger);  border:1px solid var(--danger-border); }
+    .badge-purple { background:var(--accent-light); color:var(--accent);  border:1px solid #d0d0fb; }
+    .badge-gray   { background:#f3f4f6; color:#6b7280; border:1px solid #e5e7eb; }
+    .badge-orange { background:#fff7ed; color:#ea580c; border:1px solid #fed7aa; }
+
+    .btn-icon { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; border:1px solid var(--border); background:#fff; cursor:pointer; color:var(--text-secondary); transition:all .14s; }
+    .btn-icon:hover { background:var(--gray-bg); color:var(--text-primary); }
+
+    /* ── APPLICANT BANNER ── */
+    .appl-banner { display:flex; align-items:center; gap:16px; padding:14px 32px; border-bottom:1px solid var(--border); background:#fafbff; flex-shrink:0; }
+    .avatar { width:40px; height:40px; border-radius:50%; background:var(--accent-light); color:var(--accent); font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:2px solid #d0d0fb; }
+    .appl-info { flex:1; min-width:0; }
+    .appl-name { font-size:14px; font-weight:700; }
+    .appl-meta { font-size:12px; color:var(--text-secondary); margin-top:1px; }
+    .appl-contacts { display:flex; gap:14px; flex-wrap:wrap; margin-top:5px; }
+    .ci { display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--text-secondary); }
+    .ci svg { opacity:.55; flex-shrink:0; }
+    .stall-pill { display:flex; align-items:center; gap:10px; background:var(--accent-light); border:1px solid #d0d0fb; border-radius:10px; padding:8px 14px; flex-shrink:0; }
+    .stall-num { font-size:20px; font-weight:800; color:var(--accent); letter-spacing:-.5px; }
+    .stall-sub { font-size:11px; color:var(--text-secondary); line-height:1.5; }
+
+    /* ── STEP TABS ── */
+    .step-tabs-bar { display:flex; align-items:stretch; padding:0 32px; border-bottom:1px solid var(--border); background:#fff; flex-shrink:0; overflow-x:auto; }
+    .step-tab-btn { display:flex; align-items:center; gap:8px; padding:13px 18px; font-family:inherit; font-size:13px; font-weight:500; background:none; border:none; border-bottom:2.5px solid transparent; cursor:pointer; color:var(--text-muted); white-space:nowrap; transition:all .16s; }
+    .step-tab-btn:disabled { opacity:.38; pointer-events:none; }
+    .step-tab-btn:not(:disabled):not(.active):hover { color:var(--text-secondary); background:var(--gray-bg); }
+    .step-tab-btn.active { color:var(--accent); font-weight:600; border-bottom-color:var(--accent); }
+    .step-tab-btn.done-pass  { color:var(--success); }
+    .step-tab-btn.done-pass.active { border-bottom-color:var(--success); }
+    .step-tab-btn.done-fail  { color:var(--danger); }
+    .step-tab-btn.done-fail.active  { border-bottom-color:var(--danger); }
+    .step-tab-btn.tab-pending { color:var(--warning); }
+    .step-tab-btn.tab-pending.active { border-bottom-color:var(--warning); }
+    .step-tab-btn.tab-review { color:var(--blue); }
+    .step-tab-btn.tab-review.active { border-bottom-color:var(--blue); }
+
+    .tab-num { width:21px; height:21px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; background:#f0f1f5; color:var(--text-muted); border:1.5px solid var(--border); transition:all .16s; }
+    .step-tab-btn.active .tab-num         { background:var(--accent);    color:#fff; border-color:var(--accent); }
+    .step-tab-btn.done-pass .tab-num      { background:var(--success-bg); color:var(--success); border-color:var(--success-border); }
+    .step-tab-btn.done-pass.active .tab-num { background:var(--success);  color:#fff; }
+    .step-tab-btn.done-fail .tab-num      { background:var(--danger-bg);  color:var(--danger);  border-color:var(--danger-border); }
+    .step-tab-btn.done-fail.active .tab-num { background:var(--danger);   color:#fff; }
+    .step-tab-btn.tab-pending .tab-num    { background:var(--warning-bg); color:var(--warning); border-color:var(--warning-border); }
+    .step-tab-btn.tab-review .tab-num     { background:var(--blue-bg);    color:var(--blue);    border-color:var(--blue-border); }
+
+    .tab-sep { display:flex; align-items:center; color:#d1d5db; font-size:16px; padding:0 2px; user-select:none; }
+
+    /* ── PANELS ── */
+    .panels-area { flex:1; overflow-y:auto; }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:flex; flex-direction:column; }
+    .panel-body { flex:1; padding:24px 32px; }
+    .section-title { font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--text-muted); margin-bottom:14px; }
+
+    /* ── DOC TABLE ── */
+    .doc-table-wrap { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+    .doc-table { width:100%; border-collapse:collapse; }
+    .doc-table thead tr { background:var(--gray-bg); border-bottom:1px solid var(--border); }
+    .doc-table th { padding:10px 16px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted); text-align:left; }
+    .doc-table td { padding:13px 16px; font-size:13px; border-bottom:1px solid var(--border-light); vertical-align:middle; }
+    .doc-table tbody tr:last-child td { border-bottom:none; }
+    .doc-table tbody tr:hover { background:#fafbff; }
+    .doc-file-row { display:flex; align-items:center; gap:10px; }
+    .doc-icon-sm { width:34px; height:34px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .doc-icon-sm.id-type  { background:var(--blue-bg);   color:var(--blue); }
+    .doc-icon-sm.img-type { background:#fff0f9;           color:#db2777; }
+    .doc-icon-sm.pdf-type { background:var(--danger-bg);  color:var(--danger); }
+    .doc-file-name { font-size:13px; font-weight:600; }
+    .doc-file-meta { font-size:11px; color:var(--text-muted); margin-top:1px; }
+
+    .doc-status-pill { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.3px; padding:3px 9px; border-radius:20px; }
+    .doc-status-pill::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; }
+    .doc-status-pill.pending  { background:var(--warning-bg); color:var(--warning); border:1px solid var(--warning-border); }
+    .doc-status-pill.approved { background:var(--success-bg); color:var(--success); border:1px solid var(--success-border); }
+    .doc-status-pill.rejected { background:var(--danger-bg);  color:var(--danger);  border:1px solid var(--danger-border); }
+
+    .btn-view { display:inline-flex; align-items:center; gap:5px; padding:6px 13px; border-radius:6px; font-family:inherit; font-size:12px; font-weight:500; cursor:pointer; border:1px solid var(--border); background:#fff; color:var(--accent); transition:all .13s; }
+    .btn-view:hover { background:var(--accent-light); border-color:#d0d0fb; }
+
+    /* ── ACTION BAR ── */
+    .action-bar { display:flex; align-items:center; justify-content:space-between; padding:14px 32px; border-top:1px solid var(--border); background:#fff; gap:12px; flex-wrap:wrap; flex-shrink:0; }
+    .action-note { font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:6px; }
+    .action-btns { display:flex; gap:8px; }
+
+    /* ── BUTTONS ── */
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 20px; border-radius:var(--radius-sm); font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; border:1.5px solid transparent; transition:all .15s; white-space:nowrap; }
+    .btn:disabled { opacity:.35; pointer-events:none; }
+    .btn-danger  { background:var(--danger-bg);  color:var(--danger);  border-color:var(--danger-border); }
+    .btn-danger:not(:disabled):hover  { background:var(--danger);  color:#fff; }
+    .btn-success { background:var(--success-bg); color:var(--success); border-color:var(--success-border); }
+    .btn-success:not(:disabled):hover { background:var(--success); color:#fff; }
+    .btn-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .btn-primary:not(:disabled):hover { background:var(--accent-hover); }
+    .btn-outline { background:#fff; color:var(--text-secondary); border-color:var(--border); }
+    .btn-outline:not(:disabled):hover { background:var(--gray-bg); }
+    .btn-blue { background:var(--blue-bg); color:var(--blue); border-color:var(--blue-border); }
+    .btn-blue:not(:disabled):hover { background:var(--blue); color:#fff; }
+    .btn-sm { padding:7px 14px; font-size:12.5px; }
+
+    /* ── PANEL 2: SEND LINK ── */
+    .slc-body  { padding:0; }
+
+    .info-banner { display:flex; align-items:flex-start; gap:10px; background:var(--blue-bg); border:1px solid var(--blue-border); border-radius:9px; padding:11px 14px; margin-bottom:18px; font-size:12.5px; color:var(--blue); line-height:1.5; }
+    .info-banner svg { flex-shrink:0; margin-top:1px; }
+    .info-banner b { font-weight:700; }
+
+    .form-field { margin-bottom:14px; }
+    .form-label { font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px; display:block; }
+    .form-input { width:100%; padding:9px 13px; border:1px solid var(--border); border-radius:var(--radius-sm); font-family:inherit; font-size:13px; color:var(--text-primary); background:var(--gray-bg); outline:none; transition:border-color .14s; }
+    .form-input:focus { border-color:var(--accent); background:#fff; }
+
+    .send-via-row { display:flex; gap:10px; margin-bottom:14px; }
+    .send-via-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; border-radius:var(--radius-sm); border:1.5px solid var(--border); background:#fff; font-family:inherit; font-size:13px; font-weight:500; cursor:pointer; color:var(--text-secondary); transition:all .14s; }
+    .send-via-btn.selected { border-color:var(--accent); background:var(--accent-light); color:var(--accent); font-weight:600; }
+    .send-via-btn:not(.selected):hover { border-color:#c4c4fb; background:#f8f8ff; }
+
+    .link-preview-box { background:var(--gray-bg); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:14px; }
+    .link-preview-label { font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted); margin-bottom:7px; }
+    .link-url-row { display:flex; align-items:center; gap:8px; }
+    .link-url-row svg { color:var(--text-muted); flex-shrink:0; }
+    .link-url { font-size:12.5px; color:var(--text-primary); font-family:monospace; word-break:break-all; }
+    .link-url b { color:var(--accent); }
+    .link-badges { display:flex; gap:6px; margin-top:7px; }
+    .link-badge-https { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; color:var(--success); background:var(--success-bg); border:1px solid var(--success-border); border-radius:5px; padding:2px 7px; }
+    .link-badge-exp   { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; color:var(--warning); background:var(--warning-bg); border:1px solid var(--warning-border); border-radius:5px; padding:2px 7px; }
+
+    .expiry-warning { display:flex; align-items:center; gap:8px; background:var(--warning-bg); border:1px solid var(--warning-border); border-radius:8px; padding:9px 13px; margin-bottom:16px; font-size:12.5px; color:var(--warning); font-weight:500; }
+
+    .req-docs-section { margin-bottom:18px; }
+    .req-docs-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--text-muted); margin-bottom:9px; }
+    .req-doc-row { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:7px; border:1px solid var(--border); margin-bottom:6px; background:#fff; font-size:13px; color:var(--text-primary); }
+    .req-doc-row:last-child { margin-bottom:0; }
+    .req-doc-row svg { color:var(--accent); flex-shrink:0; opacity:.7; }
+
+    .add-note-label { font-size:12.5px; font-weight:600; color:var(--text-primary); margin-bottom:7px; }
+    textarea.add-note { width:100%; height:72px; border:1px solid var(--border); border-radius:var(--radius-sm); padding:9px 13px; font-family:inherit; font-size:13px; color:var(--text-primary); background:var(--gray-bg); resize:vertical; outline:none; transition:border-color .14s; }
+    textarea.add-note:focus { border-color:var(--accent); background:#fff; }
+
+    .slc-footer { padding:16px 22px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:8px; }
+
+    /* ── QUALIFICATION PENDING STATE ── */
+    .qual-pending-state { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 32px; gap:16px; text-align:center; }
+    .qual-pending-icon { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:4px; }
+    .qual-pending-icon.pending-style { background:var(--warning-bg); color:var(--warning); }
+    .qual-pending-icon.review-style  { background:var(--blue-bg);    color:var(--blue); }
+    .qual-pending-title { font-size:17px; font-weight:700; }
+    .qual-pending-desc  { font-size:13px; color:var(--text-secondary); max-width:380px; line-height:1.6; }
+    .progress-bar-wrap { width:100%; max-width:320px; height:6px; background:var(--border); border-radius:10px; overflow:hidden; }
+    .progress-bar-fill { height:100%; border-radius:10px; background:var(--blue); transition:width .3s; animation:prog 5s linear forwards; }
+    @keyframes prog { from{width:0%} to{width:100%} }
+
+    /* ── FINAL PANEL ── */
+    .final-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+    .sum-item { padding:14px; border-radius:var(--radius-sm); border:1px solid var(--border); text-align:center; }
+    .sum-label { font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:600; color:var(--text-muted); margin-bottom:5px; }
+    .sum-val   { font-size:14px; font-weight:700; }
+    .remarks-label { font-size:13px; font-weight:600; margin-bottom:7px; }
+    textarea.remarks { width:100%; height:84px; border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; font-family:inherit; font-size:13px; color:var(--text-primary); background:var(--gray-bg); resize:vertical; outline:none; transition:border-color .14s; }
+    textarea.remarks:focus { border-color:var(--accent); background:#fff; }
+    .footer-note { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-muted); background:var(--blue-bg); border:1px solid var(--blue-border); border-radius:var(--radius-sm); padding:10px 14px; margin-top:16px; }
+
+    /* ── FAILED BLOCKER STATE ── */
+    .step-blocked { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 32px; gap:12px; text-align:center; }
+    .blocked-icon { width:60px; height:60px; border-radius:50%; background:var(--danger-bg); color:var(--danger); display:flex; align-items:center; justify-content:center; margin-bottom:4px; }
+    .blocked-title { font-size:16px; font-weight:700; color:var(--danger); }
+    .blocked-desc  { font-size:13px; color:var(--text-secondary); max-width:360px; line-height:1.6; }
+
+    /* ═══════════════════════════════
+       DOCUMENT VIEWER DIALOG
+    ═══════════════════════════════ */
+    .overlay { display:none; position:fixed; inset:0; background:rgba(15,17,30,.48); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; padding:24px; }
+    .overlay.open { display:flex; }
+    .dialog { background:#fff; border-radius:16px; width:100%; max-width:620px; box-shadow:0 24px 64px rgba(0,0,0,.18); overflow:hidden; display:flex; flex-direction:column; max-height:calc(100vh - 48px); animation:dlgIn .2s ease; }
+    @keyframes dlgIn { from{opacity:0;transform:translateY(14px) scale(.98)} to{opacity:1;transform:none} }
+    .dlg-header { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid var(--border); gap:12px; }
+    .dlg-header-left { display:flex; align-items:center; gap:12px; }
+    .dlg-doc-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .dlg-title { font-size:15px; font-weight:700; }
+    .dlg-sub   { font-size:12px; color:var(--text-muted); margin-top:2px; }
+    .dlg-preview { flex:1; overflow-y:auto; background:#f7f8fc; display:flex; align-items:flex-start; justify-content:center; min-height:280px; padding:28px 24px; }
+    .dlg-footer { padding:14px 22px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .dlg-status-row { display:flex; align-items:center; gap:8px; }
+    .dlg-status-label { font-size:12px; color:var(--text-muted); font-weight:500; }
+    .dlg-btns { display:flex; gap:8px; }
+
+    /* ── ID / PDF / IMG mocks ── */
+    .id-card { background:#fff; border-radius:14px; box-shadow:0 6px 28px rgba(0,0,0,.11); overflow:hidden; width:100%; max-width:460px; }
+    .id-card-hdr { background:linear-gradient(135deg,#5b5ef6 0%,#818cf8 100%); padding:16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
+    .id-hdr-title { font-size:13px; font-weight:700; letter-spacing:.3px; }
+    .id-hdr-sub   { font-size:11px; opacity:.8; margin-top:2px; }
+    .id-seal { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:20px; }
+    .id-body { padding:20px; }
+    .id-photo-row { display:flex; gap:16px; margin-bottom:16px; }
+    .id-photo { width:72px; height:86px; border-radius:8px; background:var(--gray-bg); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--text-muted); flex-shrink:0; }
+    .id-fields { flex:1; }
+    .id-field { margin-bottom:9px; }
+    .id-field-label { font-size:9.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:600; color:var(--text-muted); }
+    .id-field-val   { font-size:14px; font-weight:700; margin-top:1px; }
+    .id-field-val.sm { font-size:12.5px; font-weight:500; }
+    .id-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+    .id-divider { border:none; border-top:1px solid var(--border); margin:12px 0; }
+    .id-barcode { display:flex; gap:2px; justify-content:center; margin-top:14px; }
+    .id-bar { width:2px; border-radius:1px; background:var(--text-primary); }
+
+    .pdf-card { background:#fff; border-radius:14px; box-shadow:0 6px 28px rgba(0,0,0,.11); overflow:hidden; width:100%; max-width:460px; }
+    .pdf-card-hdr { background:var(--danger); padding:14px 20px; display:flex; align-items:center; gap:10px; }
+    .ph-name { color:#fff; font-size:13px; font-weight:700; }
+    .ph-sub  { color:rgba(255,255,255,.75); font-size:11px; margin-top:2px; }
+    .pdf-body { padding:20px; }
+    .pdf-row  { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .pdf-lbl  { font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:600; color:var(--text-muted); }
+    .pdf-val  { font-size:13px; font-weight:600; }
+    .pdf-line { height:10px; background:#f0f1f5; border-radius:4px; margin-bottom:8px; }
+    .pdf-gap  { height:16px; }
+
+    .img-card { background:#fff; border-radius:14px; box-shadow:0 6px 28px rgba(0,0,0,.11); overflow:hidden; width:100%; max-width:460px; }
+    .img-placeholder { background:linear-gradient(135deg,#f0f2fa,#e8eaf5); height:200px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px; color:var(--text-muted); }
+    .img-card-body { padding:20px; }
+
+    @media(max-width:640px){
+      .top-bar,.appl-banner,.panel-body,.action-bar { padding-left:16px; padding-right:16px; }
+      .step-tabs-bar,.send-link-panel { padding:0 16px; }
+      .final-summary { grid-template-columns:1fr 1fr; }
+      .appl-contacts { display:none; }
+      .send-via-row { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div>
+      <div class="top-title-row">
+        <h1>Document Validation</h1>
+        <span class="badge badge-blue" id="appBadge">Reviewing</span>
+      </div>
+      <div class="breadcrumb">ARKIPAISI › Applications › <b>APP-2024-0047</b> › <b>Stall #06</b></div>
+    </div>
+    <button class="btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+
+  <!-- APPLICANT BANNER -->
+  <div class="appl-banner">
+    <div class="avatar">CB</div>
+    <div class="appl-info">
+      <div class="appl-name">Carla M. Bautista</div>
+      <div class="appl-meta">Applied for Stall #06 · Dry Goods · Mar 8, 2024 · 09:45 AM</div>
+      <div class="appl-contacts">
+        <div class="ci"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.22 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>+63 912 345 6789</div>
+        <div class="ci"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>carla.bautista@email.com</div>
+        <div class="ci"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Brgy. Doon, Arkipaisi</div>
+        <div class="ci"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Age 34</div>
+      </div>
+    </div>
+    <div class="stall-pill"><div class="stall-num">#06</div><div class="stall-sub">Section B · Row 1<br>₱1,200/mo</div></div>
+  </div>
+
+  <!-- STEP TABS: 1 Pre-Screening | 2 Send Link | 3 Qualification | 4 Final Decision -->
+  <div class="step-tabs-bar">
+    <button class="step-tab-btn active" id="tab1" onclick="switchTab(1)"><div class="tab-num">1</div>Pre-Screening</button>
+    <div class="tab-sep">›</div>
+    <button class="step-tab-btn" id="tab2" disabled onclick="switchTab(2)"><div class="tab-num">2</div>Send Document Link</button>
+    <div class="tab-sep">›</div>
+    <button class="step-tab-btn" id="tab3" disabled onclick="switchTab(3)"><div class="tab-num">3</div>Qualification<span id="tab3badge" style="display:none;margin-left:6px"></span></button>
+    <div class="tab-sep">›</div>
+    <button class="step-tab-btn" id="tab4" disabled onclick="switchTab(4)"><div class="tab-num">4</div>Final Decision</button>
+  </div>
+
+  <!-- PANELS AREA -->
+  <div class="panels-area">
+
+    <!-- ═══ PANEL 1: PRE-SCREENING ═══ -->
+    <div class="tab-panel active" id="panel1">
+      <div class="panel-body">
+        <div class="section-title">Identity Documents</div>
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <thead><tr><th>Document / ID</th><th>Type</th><th>Size</th><th>Status</th><th></th></tr></thead>
+            <tbody id="tbody1"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="action-bar">
+        <div class="action-note">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Open each document to Approve or Reject it. Buttons unlock automatically.
+        </div>
+        <div class="action-btns">
+          <button class="btn btn-danger"  id="s1fail" disabled onclick="setStep(1,'fail')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>Fail Step 1
+          </button>
+          <button class="btn btn-success" id="s1pass" disabled onclick="setStep(1,'pass')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pass Step 1
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL 2: SEND DOCUMENT LINK ═══ -->
+    <div class="tab-panel" id="panel2">
+      <div class="panel-body">
+
+        <!-- Info banner -->
+        <div class="info-banner" style="margin-bottom:20px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          A unique secure link will be sent to the applicant for document upload. Link <b>expires in 10 days.</b>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start">
+
+          <!-- LEFT: Send Via + Link + Note -->
+          <div>
+            <div class="section-title">Send Via</div>
+            <div class="send-via-row" style="margin-bottom:20px">
+              <button class="send-via-btn selected" id="viaSmS" onclick="selectVia('sms')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/><path d="M1 5.92C1 4.33 2.33 3 3.92 3h2.16c.46 0 .9.19 1.22.53l2 2.18c.32.35.48.81.43 1.28l-.38 3.05c-.07.58.26 1.14.82 1.39l2.12.97c.37.17.61.52.63.92v.01"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                SMS
+              </button>
+              <button class="send-via-btn" id="viaEmail" onclick="selectVia('email')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Email
+              </button>
+            </div>
+
+            <div class="section-title">Secure Upload Link</div>
+            <div class="link-preview-box" style="margin-bottom:14px">
+              <div class="link-preview-label">Link Preview</div>
+              <div class="link-url-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                <div class="link-url">arkipaisi.gov.ph/upload/<b>cbautista-stall06-x7k9p2</b></div>
+              </div>
+              <div class="link-badges">
+                <span class="link-badge-https">🔒 HTTPS</span>
+                <span class="link-badge-exp">⏱ Expires 10 days</span>
+              </div>
+            </div>
+
+            <div class="expiry-warning" style="margin-bottom:20px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Link expires: <b style="margin-left:4px">March 18, 2026</b>
+            </div>
+
+            <div class="section-title">Additional Note <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--text-muted)">(Optional)</span></div>
+            <textarea class="add-note" style="width:100%;margin-top:0" placeholder="Add a note to include in the message sent to the applicant…"></textarea>
+          </div>
+
+          <!-- RIGHT: Required Documents table -->
+          <div>
+            <div class="section-title">Required Documents</div>
+            <div class="doc-table-wrap">
+              <table class="doc-table">
+                <thead><tr><th>Document</th><th>Type</th></tr></thead>
+                <tbody>
+                  <tr><td><div class="doc-file-row"><div class="doc-icon-sm id-type"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><div><div class="doc-file-name">Valid Government ID</div><div class="doc-file-meta">Primary identity document</div></div></div></td><td><span class="badge badge-blue">ID</span></td></tr>
+                  <tr><td><div class="doc-file-row"><div class="doc-icon-sm img-type"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div><div class="doc-file-name">Selfie with ID</div><div class="doc-file-meta">Photo verification</div></div></div></td><td><span class="badge badge-orange">Image</span></td></tr>
+                  <tr><td><div class="doc-file-row"><div class="doc-icon-sm pdf-type"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="doc-file-name">Business Permit</div><div class="doc-file-meta">Current year permit</div></div></div></td><td><span class="badge badge-red">PDF</span></td></tr>
+                  <tr><td><div class="doc-file-row"><div class="doc-icon-sm pdf-type"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="doc-file-name">Barangay Clearance</div><div class="doc-file-meta">Issued within 3 months</div></div></div></td><td><span class="badge badge-red">PDF</span></td></tr>
+                  <tr><td><div class="doc-file-row"><div class="doc-icon-sm pdf-type"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="doc-file-name">Application Form</div><div class="doc-file-meta">Signed and complete</div></div></div></td><td><span class="badge badge-red">PDF</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="action-bar">
+        <div class="action-note">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          A secure upload link will be sent to the applicant via your chosen channel.
+        </div>
+        <div class="action-btns">
+          <button class="btn btn-outline btn-sm" onclick="switchTab(1)">Back</button>
+          <button class="btn btn-primary" id="sendLinkBtn" onclick="sendLink()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send Link
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL 3: QUALIFICATION ═══ -->
+    <div class="tab-panel" id="panel3">
+      <!-- State A: Pending (link sent, waiting for upload) -->
+      <div id="qual-pending" class="qual-pending-state" style="display:none">
+        <div class="qual-pending-icon pending-style">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="qual-pending-title">Waiting for Applicant Upload</div>
+        <div class="qual-pending-desc">The secure document link has been sent. Qualification review will be available once the applicant uploads all required documents.</div>
+        <div class="progress-bar-wrap" id="pendingProgressWrap" style="display:none">
+          <div class="progress-bar-fill" id="pendingProgressBar"></div>
+        </div>
+        <span class="badge badge-yellow" style="margin-top:4px">Pending Upload</span>
+      </div>
+
+      <!-- State B: Under Review (docs uploaded, ready to review) -->
+      <div id="qual-review" style="display:none">
+        <div class="panel-body">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div class="section-title" style="margin-bottom:0">Qualification Documents</div>
+            <span class="badge badge-blue">Under Review</span>
+          </div>
+          <div class="doc-table-wrap">
+            <table class="doc-table">
+              <thead><tr><th>Document</th><th>Type</th><th>Size</th><th>Status</th><th></th></tr></thead>
+              <tbody id="tbody2"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="action-bar">
+          <div class="action-note">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Open each document to Approve or Reject it. Buttons unlock automatically.
+          </div>
+          <div class="action-btns">
+            <button class="btn btn-danger"  id="s2fail" disabled onclick="setStep(2,'fail')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>Fail Qualification
+            </button>
+            <button class="btn btn-success" id="s2pass" disabled onclick="setStep(2,'pass')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pass Qualification
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL 4: FINAL DECISION ═══ -->
+    <div class="tab-panel" id="panel4">
+      <div class="panel-body">
+        <div class="final-summary">
+          <div class="sum-item"><div class="sum-label">Pre-Screening</div><div class="sum-val" id="sum1" style="color:var(--text-muted)">—</div></div>
+          <div class="sum-item"><div class="sum-label">Qualification</div><div class="sum-val" id="sum2" style="color:var(--text-muted)">—</div></div>
+          <div class="sum-item"><div class="sum-label">Documents</div><div class="sum-val" style="color:var(--text-primary)">8 total</div></div>
+        </div>
+        <div class="remarks-label">Remarks / Notes <span style="color:var(--text-muted);font-weight:400">(optional)</span></div>
+        <textarea class="remarks" placeholder="Add remarks or notes for this decision…"></textarea>
+        <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
+          <button class="btn btn-danger"  id="finalReject"  onclick="finalDecision('reject')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>Reject Application
+          </button>
+          <button class="btn btn-primary" id="finalApprove" onclick="finalDecision('approve')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Approve Application
+          </button>
+        </div>
+        <div class="footer-note">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          All decisions sync back to Application Management automatically.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panels-area -->
+</div><!-- /app-shell -->
+
+<!-- ═══ DOCUMENT VIEWER DIALOG ═══ -->
+<div class="overlay" id="overlay">
+  <div class="dialog">
+    <div class="dlg-header">
+      <div class="dlg-header-left">
+        <div class="dlg-doc-icon" id="dlgIcon"></div>
+        <div><div class="dlg-title" id="dlgName">Document</div><div class="dlg-sub" id="dlgSub">—</div></div>
+      </div>
+      <button class="btn-icon" onclick="closeDocDialog()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="dlg-preview" id="dlgPreview"></div>
+    <div class="dlg-footer">
+      <div class="dlg-status-row">
+        <span class="dlg-status-label">Status:</span>
+        <span id="dlgStatus" class="badge badge-yellow">Pending</span>
+      </div>
+      <div class="dlg-btns">
+        <button class="btn btn-outline btn-sm" onclick="closeDocDialog()">Close</button>
+        <button class="btn btn-danger  btn-sm" onclick="dialogDecide('rejected')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>Reject
+        </button>
+        <button class="btn btn-success btn-sm" onclick="dialogDecide('approved')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Approve
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════ DATA ════ */
+const docs = {
+  1: [
+    { id:'s1d0', name:'Valid ID (Front)',    kind:'id',  type:'IMG', size:'JPG · 1.2 MB', status:'pending' },
+    { id:'s1d1', name:'Valid ID (Back)',     kind:'id',  type:'IMG', size:'JPG · 0.9 MB', status:'pending' },
+    { id:'s1d2', name:'Proof of Residency', kind:'pdf', type:'PDF', size:'PDF · 2.1 MB', status:'pending' },
+  ],
+  2: [
+    { id:'s2d0', name:'Business Permit',    kind:'pdf', type:'PDF', size:'PDF · 1.8 MB', status:'pending' },
+    { id:'s2d1', name:'BIR Certificate',    kind:'pdf', type:'PDF', size:'PDF · 0.7 MB', status:'pending' },
+    { id:'s2d2', name:'DTI Registration',   kind:'pdf', type:'PDF', size:'PDF · 1.1 MB', status:'pending' },
+    { id:'s2d3', name:'Product Photos',     kind:'img', type:'IMG', size:'JPG · 3.4 MB', status:'pending' },
+    { id:'s2d4', name:'Bank Statement',     kind:'pdf', type:'PDF', size:'PDF · 0.5 MB', status:'pending' },
+  ]
+};
+
+let activeStep = null, activeIdx = null;
+let sendVia = 'sms';
+let step1Result = null; // 'pass' | 'fail'
+let linkSent = false;
+
+/* ════ ICONS ════ */
+function svgIcon(kind) {
+  if (kind==='id')  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`;
+  if (kind==='img') return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
+  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+}
+function iconCls(kind) { return kind==='id'?'id-type':kind==='img'?'img-type':'pdf-type'; }
+function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+
+/* ════ RENDER TABLES ════ */
+function renderTable(step) {
+  const tbody = document.getElementById('tbody'+step);
+  tbody.innerHTML = docs[step].map((d,i)=>`
+    <tr id="row_${d.id}">
+      <td><div class="doc-file-row">
+        <div class="doc-icon-sm ${iconCls(d.kind)}">${svgIcon(d.kind)}</div>
+        <div><div class="doc-file-name">${d.name}</div><div class="doc-file-meta">${d.size}</div></div>
+      </div></td>
+      <td style="color:var(--text-muted);font-size:12px">${d.type}</td>
+      <td style="color:var(--text-muted);font-size:12px">${d.size.split('·')[1]?.trim()||d.size}</td>
+      <td><span class="doc-status-pill ${d.status}" id="pill_${d.id}">${cap(d.status)}</span></td>
+      <td><button class="btn-view" onclick="openDocDialog(${step},${i})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View
+      </button></td>
+    </tr>`).join('');
+}
+renderTable(1);
+renderTable(2);
+
+/* ════ SMART BUTTON REFRESH ════ */
+function refreshButtons(step) {
+  const list = docs[step];
+  const statuses = list.map(d=>d.status);
+  const allReviewed = statuses.every(s=>s!=='pending');
+  const anyRejected = statuses.some(s=>s==='rejected');
+  const allApproved = statuses.every(s=>s==='approved');
+
+  if (step === 1) {
+    // Fail enables as soon as ANY doc is rejected
+    document.getElementById('s1fail').disabled = !anyRejected;
+    // Pass enables only when ALL are approved
+    document.getElementById('s1pass').disabled = !allApproved;
+  } else {
+    document.getElementById('s2fail').disabled = !anyRejected;
+    document.getElementById('s2pass').disabled = !allApproved;
+  }
+}
+
+/* ════ TAB SWITCH ════ */
+function switchTab(n) {
+  [1,2,3,4].forEach(i=>{
+    document.getElementById('tab'+i).classList.remove('active');
+    document.getElementById('panel'+i).classList.remove('active');
+  });
+  document.getElementById('tab'+n).classList.add('active');
+  document.getElementById('panel'+n).classList.add('active');
+}
+
+/* ════ SEND VIA TOGGLE ════ */
+function selectVia(v) {
+  sendVia = v;
+  document.getElementById('viaSmS').classList.toggle('selected', v==='sms');
+  document.getElementById('viaEmail').classList.toggle('selected', v==='email');
+}
+
+/* ════ SEND LINK ════ */
+function sendLink() {
+  if (linkSent) return;
+  linkSent = true;
+
+  // Mark tab 2 done
+  const tab2 = document.getElementById('tab2');
+  tab2.classList.add('done-pass');
+
+  // Unlock tab 3, mark as pending
+  const tab3 = document.getElementById('tab3');
+  tab3.disabled = false;
+  tab3.classList.add('tab-pending');
+
+  // Show badge on tab3
+  const b3 = document.getElementById('tab3badge');
+  b3.style.display = 'inline-flex';
+  b3.className = 'badge badge-yellow';
+  b3.textContent = 'Pending';
+
+  // Switch to qualification tab showing pending state
+  switchTab(3);
+  document.getElementById('qual-pending').style.display = 'flex';
+  document.getElementById('qual-review').style.display  = 'none';
+
+  // Show progress bar and start 5s countdown
+  const wrap = document.getElementById('pendingProgressWrap');
+  wrap.style.display = 'block';
+
+  // After 5 seconds → transition to Under Review
+  setTimeout(()=>{
+    // Update tab 3 style
+    tab3.classList.remove('tab-pending');
+    tab3.classList.add('tab-review');
+    b3.className = 'badge badge-blue';
+    b3.textContent = 'Under Review';
+
+    // Show review content
+    document.getElementById('qual-pending').style.display = 'none';
+    document.getElementById('qual-review').style.display  = 'block';
+  }, 5000);
+}
+
+/* ════ OPEN DOC DIALOG ════ */
+function openDocDialog(step, i) {
+  const d = docs[step][i];
+  activeStep = step; activeIdx = i;
+  document.getElementById('dlgName').textContent = d.name;
+  document.getElementById('dlgSub').textContent  = d.size + ' · Submitted by Carla M. Bautista';
+  const icon = document.getElementById('dlgIcon');
+  icon.className = 'dlg-doc-icon ' + iconCls(d.kind);
+  icon.innerHTML = svgIcon(d.kind);
+  document.getElementById('dlgPreview').innerHTML = buildPreview(d);
+  updateDlgStatus(d.status);
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeDocDialog() {
+  document.getElementById('overlay').classList.remove('open');
+  activeStep = activeIdx = null;
+}
+document.getElementById('overlay').addEventListener('click', e=>{ if(e.target===e.currentTarget) closeDocDialog(); });
+
+function updateDlgStatus(s) {
+  const el = document.getElementById('dlgStatus');
+  el.textContent = cap(s);
+  el.className = 'badge '+(s==='approved'?'badge-green':s==='rejected'?'badge-red':'badge-yellow');
+}
+
+function dialogDecide(decision) {
+  if (activeStep===null) return;
+  const d = docs[activeStep][activeIdx];
+  d.status = decision;
+  const pill = document.getElementById('pill_'+d.id);
+  if (pill) { pill.className='doc-status-pill '+decision; pill.textContent=cap(decision); }
+  updateDlgStatus(decision);
+  refreshButtons(activeStep);
+  setTimeout(closeDocDialog, 480);
+}
+
+/* ════ STEP PASS/FAIL ════ */
+function setStep(step, result) {
+  if (step === 1) {
+    step1Result = result;
+    const tab1 = document.getElementById('tab1');
+    tab1.classList.remove('done-pass','done-fail');
+    tab1.classList.add(result==='pass'?'done-pass':'done-fail');
+
+    const sum1 = document.getElementById('sum1');
+    if (result==='pass') {
+      sum1.style.color='var(--success)'; sum1.textContent='Passed ✓';
+      // Unlock step 2 (Send Link)
+      document.getElementById('tab2').disabled = false;
+      switchTab(2);
+    } else {
+      sum1.style.color='var(--danger)'; sum1.textContent='Failed ✗';
+      // Block steps 2, 3, 4 — show fail state
+      [2,3,4].forEach(i=>{ document.getElementById('tab'+i).disabled=true; });
+      // Keep on current tab but show it's done
+    }
+  } else if (step === 2) {
+    // This is qualification
+    const tab3 = document.getElementById('tab3');
+    tab3.classList.remove('tab-review','tab-pending','done-pass','done-fail');
+
+    const sum2 = document.getElementById('sum2');
+    if (result==='pass') {
+      tab3.classList.add('done-pass');
+      sum2.style.color='var(--success)'; sum2.textContent='Passed ✓';
+      // Unlock Final Decision
+      document.getElementById('tab4').disabled = false;
+      switchTab(4);
+    } else {
+      tab3.classList.add('done-fail');
+      sum2.style.color='var(--danger)'; sum2.textContent='Failed ✗';
+    }
+    // Hide badge
+    document.getElementById('tab3badge').style.display='none';
+  }
+}
+
+/* ════ FINAL DECISION ════ */
+function finalDecision(decision) {
+  const tab4    = document.getElementById('tab4');
+  const badge   = document.getElementById('appBadge');
+  const approve = document.getElementById('finalApprove');
+  const reject  = document.getElementById('finalReject');
+  tab4.classList.remove('done-pass','done-fail');
+
+  if (decision==='approve') {
+    tab4.classList.add('done-pass');
+    badge.className='badge badge-green'; badge.textContent='Approved';
+    approve.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Approved`;
+    approve.style.cssText='background:var(--success);color:#fff;border-color:var(--success);';
+    reject.disabled=true;
+  } else {
+    tab4.classList.add('done-fail');
+    badge.className='badge badge-red'; badge.textContent='Rejected';
+    reject.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>Rejected`;
+    reject.style.cssText='background:var(--danger);color:#fff;border-color:var(--danger);';
+    approve.disabled=true;
+  }
+}
+
+/* ════ MOCK PREVIEWS ════ */
+function buildPreview(d) {
+  if (d.kind==='id') {
+    const bars = Array.from({length:30},()=>
+      `<div class="id-bar" style="height:${18+Math.random()*18}px;opacity:${.5+Math.random()*.5}"></div>`).join('');
+    return `<div class="id-card">
+      <div class="id-card-hdr">
+        <div><div class="id-hdr-title">REPUBLIC OF THE PHILIPPINES</div><div class="id-hdr-sub">Philippine Identification System</div></div>
+        <div class="id-seal">🇵🇭</div>
+      </div>
+      <div class="id-body">
+        <div class="id-photo-row">
+          <div class="id-photo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="id-fields">
+            <div class="id-field"><div class="id-field-label">Full Name</div><div class="id-field-val">BAUTISTA, CARLA M.</div></div>
+            <div class="id-field"><div class="id-field-label">Date of Birth</div><div class="id-field-val sm">January 15, 1990</div></div>
+            <div class="id-field"><div class="id-field-label">Sex</div><div class="id-field-val sm">FEMALE</div></div>
+          </div>
+        </div>
+        <hr class="id-divider">
+        <div class="id-grid">
+          <div class="id-field"><div class="id-field-label">Address</div><div class="id-field-val sm">Brgy. Doon, Arkipaisi</div></div>
+          <div class="id-field"><div class="id-field-label">ID Number</div><div class="id-field-val sm">PH-2024-087654</div></div>
+        </div>
+        <div class="id-barcode">${bars}</div>
+      </div>
+    </div>`;
+  }
+  if (d.kind==='img') {
+    return `<div class="img-card">
+      <div class="img-placeholder">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <div style="font-size:13px;font-weight:500">${d.name}</div>
+        <div style="font-size:11px">${d.size}</div>
+      </div>
+      <div class="img-card-body">
+        <div class="id-field"><div class="id-field-label">Document</div><div class="id-field-val sm">${d.name}</div></div>
+        <div class="id-field" style="margin-top:8px"><div class="id-field-label">Applicant</div><div class="id-field-val sm">Carla M. Bautista</div></div>
+      </div>
+    </div>`;
+  }
+  return `<div class="pdf-card">
+    <div class="pdf-card-hdr">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <div><div class="ph-name">${d.name}</div><div class="ph-sub">${d.size}</div></div>
+    </div>
+    <div class="pdf-body">
+      <div class="pdf-row"><span class="pdf-lbl">Issued To</span><span class="pdf-val">Carla M. Bautista</span></div>
+      <div class="pdf-row"><span class="pdf-lbl">Address</span><span class="pdf-val">Brgy. Doon, Arkipaisi</span></div>
+      <div class="pdf-row"><span class="pdf-lbl">Date Issued</span><span class="pdf-val">February 12, 2024</span></div>
+      <div class="pdf-row"><span class="pdf-lbl">Valid Until</span><span class="pdf-val">February 12, 2025</span></div>
+      <div class="pdf-gap"></div>
+      <div class="pdf-line" style="width:100%"></div>
+      <div class="pdf-line" style="width:75%"></div>
+      <div class="pdf-line" style="width:100%"></div>
+      <div class="pdf-line" style="width:55%"></div>
+      <div class="pdf-gap"></div>
+      <div class="pdf-line" style="width:90%"></div>
+      <div class="pdf-line" style="width:70%"></div>
+    </div>
+  </div>`;
+}
+</script>
+</body>
+</html>
