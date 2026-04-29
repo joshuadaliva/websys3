@@ -62,7 +62,7 @@ html.dark {
 html,
 body {
     height: 100%;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     color: var(--t1);
     overflow: hidden
 }
@@ -163,7 +163,7 @@ body {
 }
 
 .brand-text .brand-name {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 18px;
     font-weight: 800;
     color: #fff;
@@ -186,7 +186,7 @@ body {
 }
 
 .left-headline {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: clamp(28px, 3.2vw, 42px);
     font-weight: 800;
     color: #fff;
@@ -320,7 +320,7 @@ body {
     transition: all .18s;
     border: none;
     background: transparent;
-    font-family: 'DM Sans', sans-serif
+    font-family: 'Poppins', sans-serif
 }
 
 .mode-tab.on {
@@ -340,7 +340,7 @@ body {
 }
 
 .form-title {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 28px;
     font-weight: 800;
     color: var(--t1);
@@ -399,7 +399,7 @@ body {
     padding: 11px 14px;
     font-size: 13.5px;
     color: var(--t1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     transition: all .18s;
 }
@@ -546,7 +546,7 @@ body {
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -622,7 +622,7 @@ body {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
