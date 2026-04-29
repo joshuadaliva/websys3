@@ -24,7 +24,7 @@
             <div class="pghdr">
                 <div>
                     <h1>Record Archiving</h1>
-                    <p>Archived vendors, payments &amp; documents · Records older than 5 years are archived
+                    <p>Archived vendors &amp; documents · Records older than 5 years are archived
                         automatically</p>
                 </div>
                 <div class="pghdr-btns">
@@ -175,14 +175,6 @@
                     </svg>
                     Archived Vendors<span class="tab-cnt">38</span>
                 </button>
-                <button class="tab" onclick="setTab('payments',this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23" />
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                    </svg>
-                    Archived Payments<span class="tab-cnt">174</span>
-                </button>
                 <button class="tab" onclick="setTab('documents',this)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2">
@@ -190,14 +182,6 @@
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
                     Archived Documents<span class="tab-cnt">35</span>
-                </button>
-                <button class="tab" onclick="setTab('log',this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    Archive Log
                 </button>
             </div>
 
@@ -250,52 +234,6 @@
                 </div>
             </div>
 
-            <!-- ══ PAYMENTS TAB ══ -->
-            <div id="tab-payments" style="display:none">
-                <div class="panel">
-                    <div class="ph">
-                        <div class="ph-t"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="1" x2="12" y2="23" />
-                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                            </svg>Archived Payments</div>
-                        <div style="font-size:11.5px;color:var(--t3)">Payment records older than 5 years</div>
-                    </div>
-                    <div class="fbar">
-                        <div class="fsrch"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8" />
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg><input id="pay-srch" placeholder="Search vendor or OR number…"
-                                oninput="renderPayments()" /></div>
-                        <select class="fsel" id="pay-year" onchange="renderPayments()">
-                            <option value="">All Years</option>
-                            <option value="2021">2021</option>
-                            <option value="2020">2020</option>
-                            <option value="2019">2019</option>
-                            <option value="2018">2018</option>
-                        </select>
-                    </div>
-                    <div class="tbl-wrap">
-                        <table class="tbl">
-                            <thead>
-                                <tr>
-                                    <th>OR No.</th>
-                                    <th>Vendor</th>
-                                    <th>Stall</th>
-                                    <th>Period</th>
-                                    <th style="text-align:right">Amount</th>
-                                    <th>Archived On</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pay-tbody"></tbody>
-                        </table>
-                    </div>
-                    <div class="card-list" id="pay-cards"></div>
-                    <div class="tbl-foot" id="pay-foot"></div>
-                </div>
-            </div>
 
             <!-- ══ DOCUMENTS TAB ══ -->
             <div id="tab-documents" style="display:none">
@@ -344,40 +282,6 @@
                 </div>
             </div>
 
-            <!-- ══ LOG TAB ══ -->
-            <div id="tab-log" style="display:none">
-                <div class="log-grid">
-                    <div class="panel">
-                        <div class="ph">
-                            <div class="ph-t"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <polyline points="12 6 12 12 16 14" />
-                                </svg>Archive Activity Log</div>
-                            <button class="btn gh sm" onclick="showToast('Log exported','g')"><svg
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                    <polyline points="7 10 12 15 17 10" />
-                                    <line x1="12" y1="15" x2="12" y2="3" />
-                                </svg>Export</button>
-                        </div>
-                        <div class="timeline" id="arch-timeline"></div>
-                    </div>
-                    <div class="panel" style="animation-delay:.1s">
-                        <div class="ph">
-                            <div class="ph-t"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2">
-                                    <line x1="18" y1="20" x2="18" y2="10" />
-                                    <line x1="12" y1="20" x2="12" y2="4" />
-                                    <line x1="6" y1="20" x2="6" y2="14" />
-                                </svg>Archive Breakdown</div>
-                        </div>
-                        <div style="padding:14px 16px">
-                            <div
-                                style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">
-                                By Record Type</div>
-                            <div class="prog-wrap" style="margin-bottom:16px">
                                 <div class="prog-row">
                                     <div class="prog-lbl">Vendors</div>
                                     <div class="prog-bar">
@@ -418,27 +322,6 @@
                                     </div>
                                     <div class="prog-val" style="color:var(--vi)">78</div>
                                 </div>
-                                <div class="prog-row">
-                                    <div class="prog-lbl">2019</div>
-                                    <div class="prog-bar">
-                                        <div class="prog-fill" style="width:13%;background:var(--vi)"></div>
-                                    </div>
-                                    <div class="prog-val" style="color:var(--vi)">33</div>
-                                </div>
-                            </div>
-                            <div
-                                style="margin-top:16px;padding:13px;background:var(--vil);border:1px solid var(--vis);border-radius:8px;text-align:center">
-                                <div style="font-size:11px;color:var(--vi);font-weight:700;margin-bottom:4px">Total
-                                    Storage</div>
-                                <div style="font-size:24px;font-weight:800;font-family:'DM Mono',monospace;color:var(--vi)"
-                                    id="stat-total-b">247</div>
-                                <div style="font-size:11px;color:var(--t3)">records · ~4.2 MB</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -463,33 +346,6 @@
             <div class="mft">
                 <button class="btn gh sm" onclick="closeM('viewVendorModal')">Close</button>
                 <button class="btn su sm" id="restore-vendor-btn"><svg xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="1 4 1 10 7 10" />
-                        <path d="M3.51 15a9 9 0 1 0 .49-3.5" />
-                    </svg>Restore Record</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- VIEW PAYMENT -->
-    <div class="mbg" id="viewPaymentModal">
-        <div class="modal sm">
-            <div class="mhd">
-                <div class="mtit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="var(--gr)" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23" />
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                    </svg>Archived Payment</div>
-                <div class="mx" onclick="closeM('viewPaymentModal')"><svg xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg></div>
-            </div>
-            <div class="mbdy" id="view-pay-body"></div>
-            <div class="mft">
-                <button class="btn gh sm" onclick="closeM('viewPaymentModal')">Close</button>
-                <button class="btn su sm" id="restore-pay-btn"><svg xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="1 4 1 10 7 10" />
                         <path d="M3.51 15a9 9 0 1 0 .49-3.5" />

@@ -498,8 +498,8 @@ function setView(mode) {
   applyViewMode();
 }
 function applyViewMode() {
-  // Apply to ALL three data tabs at once so it's truly global
-  ["vendors", "payments", "documents"].forEach(function (tabId) {
+  // Apply to active data tabs
+  ["vendors", "documents"].forEach(function (tabId) {
     const tblWrap = document.querySelector("#tab-" + tabId + " .tbl-wrap");
     const cardList = document.querySelector("#tab-" + tabId + " .card-list");
     if (!tblWrap || !cardList) return;
@@ -519,15 +519,13 @@ function setTab(id, btn) {
   ACTIVE_TAB = id;
   document.querySelectorAll(".tab").forEach((t) => t.classList.remove("on"));
   btn.classList.add("on");
-  ["vendors", "payments", "documents", "log"].forEach(
+  ["vendors", "documents"].forEach(
     (t) =>
       (document.getElementById("tab-" + t).style.display =
         t === id ? "block" : "none")
   );
   if (id === "vendors") renderVendors();
-  else if (id === "payments") renderPayments();
   else if (id === "documents") renderDocs();
-  else if (id === "log") renderLog();
   applyViewMode(id);
 }
 
@@ -1052,6 +1050,5 @@ function showToast(msg, type = "g") {
 
 /* ══ INIT ══ */
 renderVendors();
-renderPayments();
 renderDocs();
 applyViewMode();
