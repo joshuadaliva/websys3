@@ -443,8 +443,8 @@ function renderRecords() {
   const tbl = document.getElementById("prec-tbl");
   tbl.innerHTML = `
       <thead><tr>
-        <th>OR #</th><th>Vendor</th><th>Stall</th><th>Amount</th>
-        <th>Date</th><th>Method</th><th>Status</th><th>Actions</th>
+        <th>OR #</th><th>Vendor</th><th>Stall</th><th>Amount Paid</th>
+        <th>Payment Date</th><th>Method</th><th>Status</th><th>Actions</th>
       </tr></thead>
       <tbody>${list
         .map((p) => {
