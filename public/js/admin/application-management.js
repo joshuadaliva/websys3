@@ -654,6 +654,8 @@ function goBackToStalls() {
     '<span>ARKIPAISI</span><span class="sep">›</span><span>Applications</span>';
   currentStall = null;
   selectedApplicantIdx = null;
+  currentReviewController = null;
+  setRightTab("overview");
 }
 
 /* ──────────── MODALS ──────────── */
