@@ -614,6 +614,32 @@ body {
     color: var(--t2)
 }
 
+.map-legend-item {
+    position: relative;
+    cursor: help
+}
+
+.map-legend-item::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+    background: #111827;
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 5px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .14s ease;
+    z-index: 20
+}
+
+.map-legend-item:hover::after { opacity: 1 }
+
 .map-legend-swatch {
     width: 11px;
     height: 11px;
