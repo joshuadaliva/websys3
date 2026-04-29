@@ -625,18 +625,23 @@ body {
     left: 50%;
     bottom: calc(100% + 8px);
     transform: translateX(-50%);
-    background: #111827;
-    color: #fff;
     font-size: 10.5px;
-    font-weight: 600;
+    font-weight: 700;
     padding: 5px 8px;
     border-radius: 6px;
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
     transition: opacity .14s ease;
-    z-index: 20
+    z-index: 20;
+    border: 1px solid transparent
 }
+
+.map-legend-item.lg-paid::after { background: var(--grl); border-color: var(--grs); color: var(--gr) }
+.map-legend-item.lg-overdue::after { background: var(--rdl); border-color: var(--rds); color: var(--rd) }
+.map-legend-item.lg-partial::after { background: var(--aml); border-color: var(--ams); color: #8a6100 }
+.map-legend-item.lg-vacant::after { background: var(--s2); border-color: var(--brd); color: var(--t2) }
+.map-legend-item.lg-posted::after { background: var(--acl); border-color: var(--acs); color: var(--ac) }
 
 .map-legend-item:hover::after { opacity: 1 }
 
