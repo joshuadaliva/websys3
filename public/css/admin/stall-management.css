@@ -69,7 +69,7 @@ html.dark {
 }
 
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--t1);
     display: flex;
@@ -614,6 +614,37 @@ body {
     color: var(--t2)
 }
 
+.map-legend-item {
+    position: relative;
+    cursor: help
+}
+
+.map-legend-item::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 5px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .14s ease;
+    z-index: 20;
+    border: 1px solid transparent
+}
+
+.map-legend-item.lg-paid::after { background: var(--grl); border-color: var(--grs); color: var(--gr) }
+.map-legend-item.lg-overdue::after { background: var(--rdl); border-color: var(--rds); color: var(--rd) }
+.map-legend-item.lg-partial::after { background: var(--aml); border-color: var(--ams); color: #8a6100 }
+.map-legend-item.lg-vacant::after { background: var(--s2); border-color: var(--brd); color: var(--t2) }
+.map-legend-item.lg-posted::after { background: var(--acl); border-color: var(--acs); color: var(--ac) }
+
+.map-legend-item:hover::after { opacity: 1 }
+
 .map-legend-swatch {
     width: 11px;
     height: 11px;
@@ -819,7 +850,7 @@ body {
     opacity: 0;
     transition: opacity .14s;
     z-index: 200;
-    font-family: 'DM Sans', sans-serif
+    font-family: 'Poppins', sans-serif
 }
 
 .tt::after {
@@ -1121,7 +1152,7 @@ body {
     padding: 9px 12px;
     font-size: 13px;
     color: var(--t1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     transition: border .14s;
     width: 100%
@@ -1446,7 +1477,7 @@ textarea.finp {
     font-weight: 600;
     cursor: pointer;
     border: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: inline-flex;
     align-items: center;
     gap: 6px;
