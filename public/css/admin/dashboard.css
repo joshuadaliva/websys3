@@ -133,7 +133,7 @@
     }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: var(--bg);
       color: var(--text-primary);
       min-height: 100vh;
@@ -1129,7 +1129,7 @@
       cursor: pointer;
       border: none;
       transition: all .15s;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
 
     .btn-sm.approve {
@@ -1505,7 +1505,7 @@
       cursor: pointer;
       border: none;
       transition: all .15s;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Poppins', sans-serif;
       display: inline-flex;
       align-items: center;
       gap: 6px;
