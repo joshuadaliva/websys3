@@ -162,7 +162,7 @@ body {
 }
 
 .brand-text .brand-name {
-    font-family: 'Playfair Display', serif;
+    font-family: 'DM Sans', sans-serif;
     font-size: 18px;
     font-weight: 800;
     color: #fff;
@@ -185,7 +185,7 @@ body {
 }
 
 .left-headline {
-    font-family: 'Playfair Display', serif;
+    font-family: 'DM Sans', sans-serif;
     font-size: clamp(28px, 3.2vw, 42px);
     font-weight: 800;
     color: #fff;
@@ -339,7 +339,7 @@ body {
 }
 
 .form-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'DM Sans', sans-serif;
     font-size: 28px;
     font-weight: 800;
     color: var(--t1);

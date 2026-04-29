@@ -542,7 +542,7 @@ function submitApplication() {
       <div style="width:64px;height:64px;border-radius:50%;background:var(--grl);display:grid;place-items:center;margin:0 auto 16px">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--gr)" stroke-width="2.5" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:8px">Application Submitted!</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px">Application Submitted!</div>
       <div style="font-size:13.5px;color:var(--t2);margin-bottom:18px;line-height:1.6">Your application has been received. Check your mobile for your Application Number.</div>
       <div style="background:var(--cream);border:1.5px solid var(--brd2);border-radius:10px;padding:14px 20px;display:inline-block">
         <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Your Application Number</div>
