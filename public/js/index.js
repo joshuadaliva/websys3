@@ -379,7 +379,7 @@ function openStall(no) {
       </div>
       <div class="sdh-rate">${fmt(
         s.rate
-      )}<span style="font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;color:rgba(255,255,255,.5)">/mo</span></div>
+      )}<span style="font-size:14px;font-family:'Poppins',sans-serif;font-weight:500;color:rgba(255,255,255,.5)">/mo</span></div>
     </div>
     <div style="margin-bottom:16px">
       <div style="font-size:11.5px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Description</div>
@@ -542,7 +542,7 @@ function submitApplication() {
       <div style="width:64px;height:64px;border-radius:50%;background:var(--grl);display:grid;place-items:center;margin:0 auto 16px">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--gr)" stroke-width="2.5" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:8px">Application Submitted!</div>
+      <div style="font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px">Application Submitted!</div>
       <div style="font-size:13.5px;color:var(--t2);margin-bottom:18px;line-height:1.6">Your application has been received. Check your mobile for your Application Number.</div>
       <div style="background:var(--cream);border:1.5px solid var(--brd2);border-radius:10px;padding:14px 20px;display:inline-block">
         <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Your Application Number</div>
@@ -679,7 +679,7 @@ function showToast(msg, type = "g") {
     t = document.createElement("div");
     t.id = "_toast";
     t.style.cssText =
-      'position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.2);transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px;max-width:320px;font-family:"DM Sans",sans-serif';
+      'position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.2);transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px;max-width:320px;font-family:"Poppins",sans-serif';
     document.body.appendChild(t);
   }
   const C = {
