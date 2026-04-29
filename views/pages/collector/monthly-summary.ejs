@@ -7,7 +7,7 @@
   <title>ARKIPAISI &mdash; Monthly Summary</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="/css/collector/monthly-summary.css">
 </head>
@@ -60,7 +60,7 @@
             </div>
             <div class="month-bar-right">
               <select id="monthPicker"
-                style="background:var(--s2);border:1px solid var(--brd);border-radius:var(--rs);padding:6px 10px;font-size:12.5px;font-family:'DM Sans',sans-serif;color:var(--t1);cursor:pointer;outline:none"
+                style="background:var(--s2);border:1px solid var(--brd);border-radius:var(--rs);padding:6px 10px;font-size:12.5px;font-family:'Poppins',sans-serif;color:var(--t1);cursor:pointer;outline:none"
                 onchange="jumpMonth(this.value)">
                 <% monthOptions.forEach(opt=> { %>
                   <option value="<%= opt.value %>" <%=opt.value===currentMonth.key ? 'selected' : '' %>><%= opt.label %>

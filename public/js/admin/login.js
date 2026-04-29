@@ -162,7 +162,7 @@ function showToast(msg) {
     t = document.createElement("div");
     t.id = "_toast";
     t.style.cssText =
-      'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.18);transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px;background:#1a0d00;color:#fff;font-family:"DM Sans",sans-serif;white-space:nowrap';
+      'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.18);transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px;background:#1a0d00;color:#fff;font-family:"Poppins",sans-serif;white-space:nowrap';
     document.body.appendChild(t);
   }
   t.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>${msg}`;

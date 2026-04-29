@@ -98,7 +98,7 @@ html.dark {
    BASE
    ══════════════════════════════════════════ */
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--t1);
     min-height: 100vh;
@@ -526,7 +526,7 @@ body.sb-closed .main {
     font-size: 12.5px; font-weight: 600;
     cursor: pointer; border: none;
     transition: all .14s;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: inline-flex; align-items: center; gap: 6px;
     line-height: 1; white-space: nowrap
 }
@@ -674,7 +674,7 @@ body.sb-closed .main {
 .filter-search input {
     border: none; background: transparent; outline: none;
     color: var(--t1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 12.5px; flex: 1; width: 0
 }
 .filter-search input::placeholder { color: var(--t3) }
@@ -686,7 +686,7 @@ body.sb-closed .main {
     border-radius: var(--rs);
     padding: 7px 10px;
     font-size: 12.5px; color: var(--t2);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none; cursor: pointer
 }
 .filter-select:focus { border-color: var(--ac) }
@@ -704,7 +704,7 @@ body.sb-closed .main {
     display: flex; align-items: center; gap: 4px;
     white-space: nowrap;
     transition: all .14s;
-    font-family: 'DM Sans', sans-serif
+    font-family: 'Poppins', sans-serif
 }
 .pill::before {
     content: '';
@@ -742,7 +742,7 @@ body.sb-closed .main {
     background: transparent; color: var(--t2);
     transition: all .14s;
     display: flex; align-items: center; gap: 5px;
-    font-family: 'DM Sans', sans-serif
+    font-family: 'Poppins', sans-serif
 }
 .view-btn svg { width: 12px; height: 12px; flex-shrink: 0 }
 .view-btn.active { background: var(--surf); color: var(--t1); box-shadow: var(--sh) }
@@ -833,8 +833,17 @@ body.sb-closed .main {
     cursor: pointer; color: var(--t3);
     transition: all .14s; flex-shrink: 0
 }
-.action-btn:hover { border-color: var(--ac); color: var(--ac); background: var(--acl) }
-.action-btn.action-btn-warn:hover { border-color: var(--status-suspended-border); color: var(--status-suspended); background: var(--status-suspended-bg) }
+.action-btn.action-btn-view,
+.action-btn.action-btn-edit,
+.action-btn.action-btn-cred,
+.action-btn.action-btn-status { background: var(--acl) }
+
+.action-btn.action-btn-view { border-color: var(--ac); color: var(--ac) }
+.action-btn.action-btn-edit { border-color: var(--status-active-border); color: var(--status-active); background: var(--status-active-bg) }
+.action-btn.action-btn-cred { border-color: #0ea5a4; color: #0f766e; background: #ccfbf1 }
+.action-btn.action-btn-status { border-color: var(--status-suspended-border); color: var(--status-suspended); background: var(--status-suspended-bg) }
+
+.action-btn:hover { filter: brightness(.97) }
 .action-btn svg { width: 11.5px; height: 11.5px }
 
 /* ══════════════════════════════════════════
@@ -1147,7 +1156,7 @@ body.sb-closed .main {
     border: 1px solid var(--brd);
     border-radius: var(--rs);
     background: var(--surf);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 12.5px; color: var(--t1);
     outline: none; transition: border .14s; width: 100%
 }

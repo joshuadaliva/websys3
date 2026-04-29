@@ -66,7 +66,7 @@ html.dark {
 }
 
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--t1);
     display: flex;
@@ -728,7 +728,7 @@ body {
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     transition: all .14s
 }
 
@@ -1010,7 +1010,7 @@ body {
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     color: var(--t2);
     transition: all .14s
 }
@@ -1041,7 +1041,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     border: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: inline-flex;
     align-items: center;
     gap: 6px;
