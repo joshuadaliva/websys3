@@ -833,8 +833,17 @@ body.sb-closed .main {
     cursor: pointer; color: var(--t3);
     transition: all .14s; flex-shrink: 0
 }
-.action-btn:hover { border-color: var(--ac); color: var(--ac); background: var(--acl) }
-.action-btn.action-btn-warn:hover { border-color: var(--status-suspended-border); color: var(--status-suspended); background: var(--status-suspended-bg) }
+.action-btn.action-btn-view,
+.action-btn.action-btn-edit,
+.action-btn.action-btn-cred,
+.action-btn.action-btn-status { background: var(--acl) }
+
+.action-btn.action-btn-view { border-color: var(--ac); color: var(--ac) }
+.action-btn.action-btn-edit { border-color: var(--status-active-border); color: var(--status-active); background: var(--status-active-bg) }
+.action-btn.action-btn-cred { border-color: #0ea5a4; color: #0f766e; background: #ccfbf1 }
+.action-btn.action-btn-status { border-color: var(--status-suspended-border); color: var(--status-suspended); background: var(--status-suspended-bg) }
+
+.action-btn:hover { filter: brightness(.97) }
 .action-btn svg { width: 11.5px; height: 11.5px }
 
 /* ══════════════════════════════════════════
