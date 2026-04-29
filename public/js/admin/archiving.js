@@ -601,10 +601,6 @@ function renderVendors() {
       <td style="white-space:nowrap"></td>`;
     const act = tr.querySelector("td:last-child");
     act.appendChild(makeViewBtn(() => openVendor(v.id)));
-    act.appendChild(
-      Object.assign(document.createElement("span"), { innerHTML: " " })
-    );
-    act.appendChild(makeRestoreBtn("vendor", v.id, v.name, tr));
     tbody.appendChild(tr);
   });
 
@@ -638,7 +634,6 @@ function renderVendors() {
       <div class="rc-actions"></div>`;
     const act = div.querySelector(".rc-actions");
     act.appendChild(makeViewBtn(() => openVendor(v.id)));
-    act.appendChild(makeRestoreBtn("vendor", v.id, v.name, div));
     cards.appendChild(div);
   });
 
@@ -761,10 +756,6 @@ function renderDocs() {
       <td style="white-space:nowrap"></td>`;
     const act = tr.querySelector("td:last-child");
     act.appendChild(makeViewBtn(() => openDoc(d.id)));
-    act.appendChild(
-      Object.assign(document.createElement("span"), { innerHTML: " " })
-    );
-    act.appendChild(makeRestoreBtn("document", d.id, d.name, tr));
     tbody.appendChild(tr);
   });
 
@@ -804,7 +795,6 @@ function renderDocs() {
       <div class="rc-actions"></div>`;
     const act = div.querySelector(".rc-actions");
     act.appendChild(makeViewBtn(() => openDoc(d.id)));
-    act.appendChild(makeRestoreBtn("document", d.id, d.name, div));
     cards.appendChild(div);
   });
 
