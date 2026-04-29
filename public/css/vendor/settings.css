@@ -58,7 +58,7 @@ html.dark {
 }
 
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--t1);
     display: flex;
@@ -547,7 +547,7 @@ body {
     border-radius: var(--rs);
     padding: 6px 10px;
     font-size: 12.5px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     color: var(--t1);
     cursor: pointer;
     outline: none;
@@ -601,7 +601,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     border: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: inline-flex;
     align-items: center;
     gap: 6px;

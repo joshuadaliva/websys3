@@ -76,7 +76,7 @@ html.dark {
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: var(--bg);
   color: var(--t1);
   min-height: 100vh;
@@ -510,7 +510,7 @@ svg {
   cursor: pointer;
   border: none;
   transition: all .14s;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -757,7 +757,7 @@ svg {
   background: transparent;
   color: var(--t2);
   transition: all .14s;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -858,7 +858,7 @@ svg {
   background: transparent;
   outline: none;
   color: var(--t1);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 12.5px;
   flex: 1;
   width: 0
@@ -882,7 +882,7 @@ svg {
   padding: 7px 10px;
   font-size: 12.5px;
   color: var(--t2);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   cursor: pointer;
   transition: border .14s
@@ -899,7 +899,7 @@ svg {
   padding: 7px 10px;
   font-size: 12.5px;
   color: var(--t2);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   transition: border .14s
 }
@@ -1141,11 +1141,17 @@ svg {
   flex-shrink: 0
 }
 
-.ra:hover {
-  border-color: var(--ac);
-  color: var(--ac);
-  background: var(--acl)
-}
+.ra.ra-view,
+.ra.ra-edit,
+.ra.ra-status,
+.ra.ra-remind { background: var(--acl) }
+
+.ra.ra-view { border-color: var(--ac); color: var(--ac) }
+.ra.ra-edit { border-color: var(--status-active-border); color: var(--status-active); background: var(--status-active-bg) }
+.ra.ra-status { border-color: var(--status-suspended-border); color: var(--status-suspended); background: var(--status-suspended-bg) }
+.ra.ra-remind { border-color: #0ea5a4; color: #0f766e; background: #ccfbf1 }
+
+.ra:hover { filter: brightness(.97) }
 
 .ra svg {
   width: 11.5px;
@@ -1576,14 +1582,14 @@ svg {
   padding: 8px 11px;
   font-size: 13px;
   color: var(--t1);
-  font-family: 'DM Sans', monospace;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   transition: border .14s;
   width: 100%
 }
 
 .fc {
-  font-family: 'DM Sans', sans-serif
+  font-family: 'Poppins', sans-serif
 }
 
 .fc:focus {
