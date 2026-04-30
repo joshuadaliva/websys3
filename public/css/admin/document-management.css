@@ -1,5 +1,8 @@
 .dm-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
 .dm-card{background:var(--surf);border:1px solid var(--brd);border-radius:var(--rs);padding:14px}
+.dm-card.app{border-left:4px solid #3b82f6}
+.dm-card.vendor{border-left:4px solid #8b5cf6}
+.dm-card.or{border-left:4px solid #14b8a6}
 .dm-label{font-size:12px;color:var(--t3);text-transform:uppercase}
 .dm-val{font-size:22px;font-weight:700;color:var(--t1)}
 .dm-panel{padding:0}

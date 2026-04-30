@@ -1,8 +1,39 @@
 let selectedDocument = null;
+let SB_OPEN = window.innerWidth >= 768;
+let DARK = false;
+
+function openSB() {
+  SB_OPEN = true;
+  const sb = document.getElementById("sb");
+  const veil = document.getElementById("veil");
+  const main = document.getElementById("main");
+  if (sb) sb.style.transform = "translateX(0)";
+  if (window.innerWidth < 768) {
+    if (veil) veil.style.display = "block";
+    if (main) main.style.marginLeft = "0";
+  } else {
+    if (veil) veil.style.display = "none";
+    if (main) main.style.marginLeft = "var(--sidebar-w)";
+  }
+}
 
 function closeSB() {
   const veil = document.getElementById("veil");
+  const sb = document.getElementById("sb");
+  const main = document.getElementById("main");
+  SB_OPEN = false;
   if (veil) veil.style.display = "none";
+  if (sb) sb.style.transform = "translateX(calc(-1 * var(--sidebar-w)))";
+  if (main && window.innerWidth < 768) main.style.marginLeft = "0";
+}
+
+function toggleSB() {
+  SB_OPEN ? closeSB() : openSB();
+}
+
+function toggleTheme() {
+  DARK = !DARK;
+  document.documentElement.classList.toggle("dark", DARK);
 }
 
 function renderStats(list) {
@@ -67,3 +98,15 @@ function renderDocuments() {
 }
 
 renderDocuments();
+
+(function initLayout() {
+  if (window.innerWidth < 768) closeSB();
+  else openSB();
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 768) {
+      if (SB_OPEN) openSB();
+    } else if (!SB_OPEN) {
+      closeSB();
+    }
+  });
+})();
