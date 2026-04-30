@@ -14,6 +14,10 @@ const raffleState = {
   updatedAt: null,
 };
 
+exports.showPublicRaffle = (req, res) => {
+  res.render('pages/public/raffle', {raffleState})
+} 
+
 exports.scheduleRaffle = (req, res) => {
   const { stallId, stallName, drawDate, drawTime } = req.body || {};
   raffleState.stallId = stallId || raffleState.stallId;
