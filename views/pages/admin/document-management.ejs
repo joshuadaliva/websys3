@@ -49,8 +49,8 @@
     </div>
   </div>
 
-  <div class="modal-bg" id="docModal">
-    <div class="modal" style="max-width:560px">
+  <div class="modal-bg" id="docModal" onclick="closeDocModal()">
+    <div class="modal" style="max-width:560px" onclick="event.stopPropagation()">
       <div class="modal-head">
         <div class="modal-title" id="modalTitle">Document Preview</div>
         <div class="modal-x" onclick="closeDocModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"

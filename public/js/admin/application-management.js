@@ -845,13 +845,20 @@ function conductRaffle() {
   }, 100);
 }
 
-function saveRaffleSchedule() {
+async function saveRaffleSchedule() {
+  const stallId = document.getElementById('rfStallId').value.trim();
+  const stallName = document.getElementById('rfStallName').value.trim();
   const drawDate = document.getElementById('rfDate').value;
   const drawTime = document.getElementById('rfTime').value;
   if (!drawDate || !drawTime) {
     alert('Please set draw date and time');
     return;
   }
+  await fetch('/admin/raffle/schedule', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ stallId, stallName, drawDate, drawTime }),
+  });
   alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
 }

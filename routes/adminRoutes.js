@@ -13,6 +13,7 @@ const vendorManagementController = require("../controllers/admin/vendorManagemen
 const applicationManagementController = require("../controllers/admin/applicationManagementController")
 const settingsController = require("../controllers/admin/settingsController")
 const documentManagementController = require("../controllers/admin/documentManagementController")
+const raffleController = require("../controllers/admin/raffleController")
 
 // Global logging middleware
 router.use((req, res, next) => {
