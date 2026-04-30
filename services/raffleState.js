@@ -6,6 +6,7 @@ const raffleState = {
   lockedApplicants: [],
   winner: null,
   drawTimestamp: null,
+  hasStarted: false,
   logs: [],
 };
 

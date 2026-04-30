@@ -18,6 +18,7 @@ exports.scheduleRaffle = (req, res) => {
   raffleState.stallName = stallName;
   raffleState.scheduleISO = scheduleISO;
   raffleState.status = "waiting";
+  raffleState.hasStarted = false;
   raffleState.winner = null;
   raffleState.drawTimestamp = null;
   raffleState.logs = [`Scheduled ${scheduleISO}`];
@@ -30,6 +31,7 @@ exports.startRaffle = (req, res) => {
   const io = req.app.get("io");
   raffleState.lockedApplicants = qualifiedApplicants.map((a, i) => ({ ...a, raffleNumber: i + 1, masked: maskName(a.name) }));
   raffleState.status = "live";
+  raffleState.hasStarted = true;
   raffleState.logs.push(`Draw started ${new Date().toISOString()}`);
   io.emit("raffle:update", raffleState);
 
@@ -46,7 +48,13 @@ exports.startRaffle = (req, res) => {
 };
 
 exports.getRaffleState = (req, res) => {
-  res.json({ raffleState, qualifiedApplicants: qualifiedApplicants.map((a, i) => ({ ...a, raffleNumber: i + 1, masked: maskName(a.name) })) });
+  const viewState = { ...raffleState };
+  if (!viewState.hasStarted) {
+    viewState.status = "waiting";
+    viewState.winner = null;
+    viewState.drawTimestamp = null;
+  }
+  res.json({ raffleState: viewState, qualifiedApplicants: qualifiedApplicants.map((a, i) => ({ ...a, raffleNumber: i + 1, masked: maskName(a.name) })) });
 };
 
 exports.showPublicRaffle = (req, res) => {

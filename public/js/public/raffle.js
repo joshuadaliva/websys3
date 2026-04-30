@@ -2,11 +2,13 @@ const socket = io();
 let current = null;
 function render(state){
   current=state;
-  document.getElementById('status').textContent = state.status;
-  document.getElementById('status').className = state.status;
+  const statusText = state.hasStarted ? state.status : 'waiting';
+  document.getElementById('status').textContent = statusText;
+  document.getElementById('status').className = statusText;
   document.getElementById('schedTxt').textContent = state.scheduleISO ? `Schedule: ${new Date(state.scheduleISO).toLocaleString()}` : 'Schedule: Not set';
-  document.getElementById('winner').textContent = state.winner ? `🏆 Winner: ${state.winner.name}` : '';
-  document.getElementById('drawAt').textContent = state.drawTimestamp ? `Draw Time: ${new Date(state.drawTimestamp).toLocaleString()}` : '';
+  const canShowResult = statusText === 'completed' && state.winner;
+  document.getElementById('winner').textContent = canShowResult ? `🏆 Winner: ${state.winner.name}` : '';
+  document.getElementById('drawAt').textContent = canShowResult && state.drawTimestamp ? `Draw Time: ${new Date(state.drawTimestamp).toLocaleString()}` : '';
   document.getElementById('logs').innerHTML = (state.logs||[]).map(l=>`<li>${l}</li>`).join('');
 }
 function tick(){
