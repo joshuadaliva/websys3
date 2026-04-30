@@ -1,39 +1,37 @@
 let selectedDocument = null;
-let SB_OPEN = window.innerWidth >= 768;
+let SB_IS_OPEN = window.innerWidth >= 768;
 let DARK = false;
 
 function openSB() {
-  SB_OPEN = true;
-  const sb = document.getElementById("sb");
-  const veil = document.getElementById("veil");
-  const main = document.getElementById("main");
-  if (sb) sb.style.transform = "translateX(0)";
+  SB_IS_OPEN = true;
+  document.getElementById("sb").style.transform = "translateX(0)";
   if (window.innerWidth < 768) {
-    if (veil) veil.style.display = "block";
-    if (main) main.style.marginLeft = "0";
+    document.getElementById("veil").style.display = "block";
+    document.getElementById("main").style.marginLeft = "0";
   } else {
-    if (veil) veil.style.display = "none";
-    if (main) main.style.marginLeft = "var(--sidebar-w)";
+    document.getElementById("veil").style.display = "none";
+    document.getElementById("main").style.marginLeft = "var(--sidebar-w)";
   }
 }
 
 function closeSB() {
-  const veil = document.getElementById("veil");
-  const sb = document.getElementById("sb");
-  const main = document.getElementById("main");
-  SB_OPEN = false;
-  if (veil) veil.style.display = "none";
-  if (sb) sb.style.transform = "translateX(calc(-1 * var(--sidebar-w)))";
-  if (main && window.innerWidth < 768) main.style.marginLeft = "0";
+  SB_IS_OPEN = false;
+  document.getElementById("sb").style.transform = "translateX(calc(-1 * var(--sidebar-w)))";
+  document.getElementById("veil").style.display = "none";
+  document.getElementById("main").style.marginLeft = "0";
 }
 
 function toggleSB() {
-  SB_OPEN ? closeSB() : openSB();
+  if (SB_IS_OPEN) closeSB();
+  else openSB();
 }
 
 function toggleTheme() {
   DARK = !DARK;
   document.documentElement.classList.toggle("dark", DARK);
+  document.getElementById("themeIco").innerHTML = DARK
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
 }
 
 function renderStats(list) {
@@ -98,15 +96,16 @@ function renderDocuments() {
 }
 
 renderDocuments();
-
-(function initLayout() {
+(function () {
   if (window.innerWidth < 768) closeSB();
   else openSB();
   window.addEventListener("resize", () => {
     if (window.innerWidth >= 768) {
-      if (SB_OPEN) openSB();
-    } else if (!SB_OPEN) {
-      closeSB();
+      document.getElementById("veil").style.display = "none";
+      if (SB_IS_OPEN) document.getElementById("main").style.marginLeft = "var(--sidebar-w)";
+    } else {
+      document.getElementById("main").style.marginLeft = "0";
+      if (SB_IS_OPEN) document.getElementById("veil").style.display = "block";
     }
   });
 })();
