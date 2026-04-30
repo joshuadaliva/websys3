@@ -35,6 +35,7 @@
         </div>
       </div>
       <div class="nb-right">
+        <button class="btn sm" onclick="openModal('raffleScheduleModal')">Schedule Raffle Draw</button>
         <div class="nb-search"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8" />
@@ -891,6 +892,20 @@
   </div>
 
   <script src="/js/admin/application-management.js"></script>
+
+  <div class="modal-bg" id="raffleScheduleModal">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-head"><div class="modal-title">Schedule Raffle Draw</div><div class="modal-x" onclick="closeModal('raffleScheduleModal')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg></div></div>
+      <div class="modal-body" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label class="form-label">Stall ID</label><input class="form-control" id="rfStallId" value="#06"></div>
+        <div class="form-group"><label class="form-label">Stall Name</label><input class="form-control" id="rfStallName" value="Dry Goods"></div>
+        <div class="form-group"><label class="form-label">Draw Date</label><input class="form-control" id="rfDate" type="date"></div>
+        <div class="form-group"><label class="form-label">Draw Time</label><input class="form-control" id="rfTime" type="time"></div>
+      </div>
+      <div class="modal-foot"><button class="btn ghost sm" onclick="closeModal('raffleScheduleModal')">Cancel</button><button class="btn success sm" onclick="scheduleRaffleDraw()">Save Schedule</button><button class="btn sm" onclick="startScheduledRaffle()">Start Raffle</button></div>
+    </div>
+  </div>
+
 </body>
 
 </html>
