@@ -246,9 +246,13 @@
                 </div>
                 <div class="fgrid" style="margin-bottom:14px">
                   <div class="fg full">
-                    <label>Supporting Document <span class="hint">(optional)</span></label>
-                    <input class="finp" id="f-support-doc" type="file"
-                      accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" />
+                    <label>OR Image <span class="hint">(optional)</span></label>
+                    <input id="f-support-doc" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" hidden />
+                    <label for="f-support-doc" class="file-dropzone" id="supportDocDropzone" tabindex="0">
+                      <strong>Drag file here</strong>
+                      <span>or tap to browse</span>
+                      <small id="supportDocName">No file selected</small>
+                    </label>
                   </div>
                 </div>
                 <div style="display:flex;gap:8px;justify-content:flex-end">
