@@ -41,6 +41,9 @@ router.get("/payment-management", paymentManagementController.showPaymentManagem
 router.get("/application-management", applicationManagementController.showApplicationManagement)
 router.get("/application-validation", applicationManagementController.showApplicationValidation)
 router.get("/vendor-management", vendorManagementController.showVendorManagement)
+router.post("/raffle/schedule", raffleController.scheduleRaffle)
+router.post("/raffle/start", raffleController.startRaffle)
+router.get("/raffle/state", raffleController.getRaffleState)
 
 // Settings route
 router.get("/settings", settingsController.showSettings)
