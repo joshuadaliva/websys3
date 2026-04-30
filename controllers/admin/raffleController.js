@@ -15,8 +15,13 @@ const raffleState = {
 };
 
 exports.showPublicRaffle = (req, res) => {
-  res.render('pages/public/raffle', {raffleState})
-} 
+  const qualifiedApplicants = raffleState.participants.map((participant) => ({
+    raffleNumber: participant.raffleNumber,
+    masked: participant.name,
+  }));
+
+  res.render('pages/public/raffle', { raffleState, qualifiedApplicants });
+};
 
 exports.scheduleRaffle = (req, res) => {
   const { stallId, stallName, drawDate, drawTime } = req.body || {};
