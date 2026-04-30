@@ -792,7 +792,7 @@ function openRaffleModal() {
   openModal("raffleModal");
 }
 
-function conductRaffle() {
+async function conductRaffle() {
   const qualified = currentStall.applicants.filter(
     (a) => a.statusTxt === "For Raffle" || a.statusTxt === "Qualified"
   );
@@ -803,7 +803,7 @@ function conductRaffle() {
   btn.innerHTML = `<svg class="spinning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Drawing winner...`;
   let count = 0;
   const total = 22;
-  const interval = setInterval(() => {
+  const interval = setInterval(async () => {
     count++;
     const r = Math.floor(Math.random() * drawApplicants.length);
     drawApplicants.forEach((_, i) => {
@@ -812,7 +812,17 @@ function conductRaffle() {
     });
     if (count >= total) {
       clearInterval(interval);
-      const winIdx = Math.floor(Math.random() * drawApplicants.length);
+      let winIdx = Math.floor(Math.random() * drawApplicants.length);
+      try {
+        const resp = await fetch('/admin/raffle/start', { method: 'POST' });
+        const data = await resp.json();
+        if (data?.raffleState?.winner?.name) {
+          const idx = drawApplicants.findIndex((a) => a.name === data.raffleState.winner.name);
+          if (idx >= 0) winIdx = idx;
+        }
+      } catch (e) {
+        console.warn('Raffle API unavailable, using local draw simulation.', e);
+      }
       drawApplicants.forEach((_, i) => {
         const el = document.getElementById("raf-" + i);
         const numEl = document.getElementById("rnum-" + i);
@@ -844,3 +854,33 @@ function conductRaffle() {
     }
   }, 100);
 }
+
+async function saveRaffleSchedule() {
+  const stallId = document.getElementById('rfStallId').value.trim();
+  const stallName = document.getElementById('rfStallName').value.trim();
+  const drawDate = document.getElementById('rfDate').value;
+  const drawTime = document.getElementById('rfTime').value;
+  if (!drawDate || !drawTime) {
+    alert('Please set draw date and time');
+    return;
+  }
+  await fetch('/admin/raffle/schedule', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ stallId, stallName, drawDate, drawTime }),
+  });
+  alert('Raffle schedule saved');
+  closeModal('raffleScheduleModal');
+}
+
+(function seedRaffleSchedule(){
+  const now = new Date();
+  const dateEl = document.getElementById('rfDate');
+  const timeEl = document.getElementById('rfTime');
+  if (dateEl && !dateEl.value) {
+    dateEl.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  }
+  if (timeEl && !timeEl.value) {
+    timeEl.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  }
+})();
