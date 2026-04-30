@@ -77,17 +77,19 @@
         applyTheme(savedTheme === "dark");
       }
 
-      const originalToggleTheme = window.toggleTheme;
-      window.toggleTheme = function () {
-        if (typeof originalToggleTheme === "function") {
-          originalToggleTheme();
-        } else {
-          document.documentElement.classList.toggle("dark");
-        }
+      const persistCurrentTheme = () => {
         const isDark = document.documentElement.classList.contains("dark");
         localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
         applyTheme(isDark);
       };
+
+      document.addEventListener("click", (event) => {
+        const toggleEl = event.target.closest("[onclick*='toggleTheme']");
+        if (!toggleEl) return;
+        setTimeout(persistCurrentTheme, 0);
+      });
+
+      window.addEventListener("DOMContentLoaded", persistCurrentTheme);
     })();
   </script>
   
