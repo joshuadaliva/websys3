@@ -844,3 +844,33 @@ function conductRaffle() {
     }
   }, 100);
 }
+
+async function saveRaffleSchedule() {
+  const stallId = document.getElementById('rfStallId').value.trim();
+  const stallName = document.getElementById('rfStallName').value.trim();
+  const drawDate = document.getElementById('rfDate').value;
+  const drawTime = document.getElementById('rfTime').value;
+  if (!drawDate || !drawTime) {
+    alert('Please set draw date and time');
+    return;
+  }
+  await fetch('/admin/raffle/schedule', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ stallId, stallName, drawDate, drawTime }),
+  });
+  alert('Raffle schedule saved');
+  closeModal('raffleScheduleModal');
+}
+
+(function seedRaffleSchedule(){
+  const now = new Date();
+  const dateEl = document.getElementById('rfDate');
+  const timeEl = document.getElementById('rfTime');
+  if (dateEl && !dateEl.value) {
+    dateEl.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  }
+  if (timeEl && !timeEl.value) {
+    timeEl.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  }
+})();
