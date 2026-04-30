@@ -1979,3 +1979,5 @@ select.fc {
         justify-content: space-between
     }
 }
+.raffle-ann{display:block;text-align:center;background:#1d4ed8;color:#fff;padding:8px 12px;font-size:13px;text-decoration:none;font-weight:600}
+.raffle-ann:hover{background:#1e40af}
