@@ -803,7 +803,7 @@ async function conductRaffle() {
   btn.innerHTML = `<svg class="spinning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Drawing winner...`;
   let count = 0;
   const total = 22;
-  const interval = setInterval(() => {
+  const interval = setInterval(async () => {
     count++;
     const r = Math.floor(Math.random() * drawApplicants.length);
     drawApplicants.forEach((_, i) => {
