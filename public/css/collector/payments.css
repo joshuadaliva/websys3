@@ -1109,6 +1109,45 @@ select.finp {
     cursor: pointer
 }
 
+.file-dropzone {
+    border: 1px dashed var(--brd);
+    border-radius: var(--rs);
+    background: var(--s2);
+    min-height: 84px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--t2);
+    cursor: pointer;
+    transition: border-color .14s, background .14s
+}
+
+.file-dropzone strong {
+    font-size: 13px;
+    color: var(--t1)
+}
+
+.file-dropzone span {
+    font-size: 12px;
+    color: var(--t3)
+}
+
+.file-dropzone small {
+    font-size: 11px;
+    color: var(--t3)
+}
+
+.file-dropzone.drag-over,
+.file-dropzone:focus-visible {
+    border-color: var(--ac);
+    background: var(--surf)
+}
+
 .pfx {
     display: flex;
     border: 1px solid var(--brd);
