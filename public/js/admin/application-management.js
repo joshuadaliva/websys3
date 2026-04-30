@@ -792,7 +792,7 @@ function openRaffleModal() {
   openModal("raffleModal");
 }
 
-function conductRaffle() {
+async function conductRaffle() {
   const qualified = currentStall.applicants.filter(
     (a) => a.statusTxt === "For Raffle" || a.statusTxt === "Qualified"
   );
@@ -812,7 +812,17 @@ function conductRaffle() {
     });
     if (count >= total) {
       clearInterval(interval);
-      const winIdx = Math.floor(Math.random() * drawApplicants.length);
+      let winIdx = Math.floor(Math.random() * drawApplicants.length);
+      try {
+        const resp = await fetch('/admin/raffle/start', { method: 'POST' });
+        const data = await resp.json();
+        if (data?.raffleState?.winner?.name) {
+          const idx = drawApplicants.findIndex((a) => a.name === data.raffleState.winner.name);
+          if (idx >= 0) winIdx = idx;
+        }
+      } catch (e) {
+        console.warn('Raffle API unavailable, using local draw simulation.', e);
+      }
       drawApplicants.forEach((_, i) => {
         const el = document.getElementById("raf-" + i);
         const numEl = document.getElementById("rnum-" + i);
