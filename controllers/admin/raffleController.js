@@ -8,6 +8,11 @@ const qualifiedApplicants = [
 
 exports.scheduleRaffle = (req, res) => {
   const { stallId, stallName, drawDate, drawTime } = req.body;
+  const today = new Date();
+  const inputDate = new Date(`${drawDate}T00:00:00`);
+  if (inputDate < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+    return res.status(400).json({ ok: false, message: "Draw date must be today or later." });
+  }
   const scheduleISO = new Date(`${drawDate}T${drawTime}:00`).toISOString();
   raffleState.stallId = stallId;
   raffleState.stallName = stallName;

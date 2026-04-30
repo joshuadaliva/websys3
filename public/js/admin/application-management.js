@@ -853,11 +853,20 @@ async function scheduleRaffleDraw() {
   if (!drawDate || !drawTime) return alert('Please set draw date/time');
   await fetch('/admin/raffle/schedule', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ stallId, stallName, drawDate, drawTime }) });
   showToast('Raffle draw scheduled');
+  closeModal('raffleScheduleModal');
 }
 
 async function startScheduledRaffle() {
+  const drawDate = document.getElementById('rfDate').value;
+  const drawTime = document.getElementById('rfTime').value;
+  const scheduled = new Date(`${drawDate}T${drawTime}:00`);
+  if (new Date() < scheduled) {
+    showToast('Cannot start before schedule time');
+    return;
+  }
   await fetch('/admin/raffle/start', { method:'POST' });
   showToast('Raffle started. Applicant list locked.');
+  closeModal('raffleScheduleModal');
 }
 
 (function seedRaffleDate(){
