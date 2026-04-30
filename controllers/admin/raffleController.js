@@ -10,9 +10,11 @@ const raffleState = {
     { raffleNumber: 3, name: "Ana M. Reyes" },
   ],
   winner: null,
+  winnerId: null,
   drawnAt: null,
   updatedAt: null,
   logs: [],
+  lockedApplicants: null,
 };
 
 function toPublicRaffleState() {
@@ -40,17 +42,33 @@ exports.showPublicRaffle = (req, res) => {
 };
 
 exports.scheduleRaffle = (req, res) => {
-  const { stallId, stallName, drawDate, drawTime } = req.body || {};
+  const { stallId, stallName, drawDate, drawTime, applicationDeadline, qualifiedApplicants } = req.body || {};
+  if (!drawDate || !drawTime) {
+    return res.status(400).json({ ok: false, message: "Draw date and time are required." });
+  }
+  if (applicationDeadline && new Date(drawDate) <= new Date(applicationDeadline)) {
+    return res.status(400).json({ ok: false, message: "Raffle can only be scheduled after application deadline." });
+  }
+
   raffleState.stallId = stallId || raffleState.stallId;
   raffleState.stallName = stallName || raffleState.stallName;
   raffleState.drawDate = drawDate;
   raffleState.drawTime = drawTime;
   raffleState.status = 'scheduled';
   raffleState.winner = null;
+  raffleState.winnerId = null;
   raffleState.drawnAt = null;
   raffleState.updatedAt = new Date().toISOString();
+  if (Array.isArray(qualifiedApplicants) && qualifiedApplicants.length) {
+    raffleState.participants = qualifiedApplicants.map((name, idx) => ({
+      raffleNumber: idx + 1,
+      name,
+    }));
+  }
+  raffleState.lockedApplicants = raffleState.participants.map((p) => ({ ...p }));
   raffleState.logs = [
     `Raffle scheduled for ${raffleState.drawDate} ${raffleState.drawTime}.`,
+    `Qualified applicants locked: ${raffleState.lockedApplicants.length} participant(s).`,
   ];
 
   const payload = toPublicRaffleState();
@@ -60,9 +78,24 @@ exports.scheduleRaffle = (req, res) => {
 };
 
 exports.startRaffle = (req, res) => {
+  if (raffleState.status === "completed" && raffleState.winner) {
+    return res.status(409).json({ ok: false, message: "Raffle already completed. Redraw is not allowed.", raffleState: toPublicRaffleState() });
+  }
+  if (!raffleState.drawDate || !raffleState.drawTime) {
+    return res.status(400).json({ ok: false, message: "Raffle must be scheduled before it can start." });
+  }
+  const scheduledAt = new Date(`${raffleState.drawDate}T${raffleState.drawTime}`).getTime();
+  if (Date.now() < scheduledAt) {
+    return res.status(400).json({ ok: false, message: "Raffle can only start at or after the scheduled time." });
+  }
+
   raffleState.status = 'live';
-  const winner = raffleState.participants[Math.floor(Math.random() * raffleState.participants.length)];
+  const lockedList = raffleState.lockedApplicants && raffleState.lockedApplicants.length
+    ? raffleState.lockedApplicants
+    : raffleState.participants;
+  const winner = lockedList[Math.floor(Math.random() * lockedList.length)];
   raffleState.winner = winner;
+  raffleState.winnerId = winner.raffleNumber;
   raffleState.status = 'completed';
   raffleState.drawnAt = new Date().toISOString();
   raffleState.updatedAt = new Date().toISOString();

@@ -878,15 +878,24 @@ async function saveRaffleSchedule() {
   const stallName = document.getElementById('rfStallName').value.trim();
   const drawDate = document.getElementById('rfDate').value;
   const drawTime = document.getElementById('rfTime').value;
+  const applicationDeadline = currentStall?.deadlineISO || null;
+  const qualifiedApplicants = (currentStall?.applicants || [])
+    .filter((a) => a.statusTxt === "For Raffle" || a.statusTxt === "Qualified")
+    .map((a) => a.name);
   if (!drawDate || !drawTime) {
     alert('Please set draw date and time');
     return;
   }
-  await fetch('/admin/raffle/schedule', {
+  const resp = await fetch('/admin/raffle/schedule', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ stallId, stallName, drawDate, drawTime }),
+    body: JSON.stringify({ stallId, stallName, drawDate, drawTime, applicationDeadline, qualifiedApplicants }),
   });
+  const data = await resp.json();
+  if (!resp.ok) {
+    alert(data?.message || 'Unable to save raffle schedule');
+    return;
+  }
   alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
 }
