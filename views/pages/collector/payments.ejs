@@ -236,12 +236,23 @@
                 </div>
                 <div class="fgrid" style="margin-bottom:14px">
                   <div class="fg">
-                    <label>Official Receipt Number <span class="hint">(optional)</span></label>
+                    <label>Official Receipt Number</label>
                     <input class="finp" id="f-or-manual" placeholder="e.g. OR-2026-0849" />
                   </div>
                   <div class="fg">
                     <label>Date Collected</label>
                     <input class="finp" id="f-date" type="date" />
+                  </div>
+                </div>
+                <div class="fgrid" style="margin-bottom:14px">
+                  <div class="fg full">
+                    <label>OR Image <span class="hint">(optional)</span></label>
+                    <input id="f-support-doc" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" hidden />
+                    <label for="f-support-doc" class="file-dropzone" id="supportDocDropzone" tabindex="0">
+                      <strong>Drag file here</strong>
+                      <span>or tap to browse</span>
+                      <small id="supportDocName">No file selected</small>
+                    </label>
                   </div>
                 </div>
                 <div style="display:flex;gap:8px;justify-content:flex-end">
