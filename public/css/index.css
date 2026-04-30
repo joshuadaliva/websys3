@@ -1979,3 +1979,7 @@ select.fc {
         justify-content: space-between
     }
 }
+.raffle-ann{display:flex;align-items:center;justify-content:center;gap:10px;background:#1d4ed8;color:#fff;padding:8px 12px;font-size:13px;font-weight:600}
+.raffle-ann a{color:#fff;text-decoration:none}
+.raffle-ann a:hover{text-decoration:underline}
+.raffle-ann-close{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:6px;width:24px;height:24px;line-height:22px;cursor:pointer}
