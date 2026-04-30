@@ -213,8 +213,48 @@ function clearForm() {
     (opt) => (opt.hidden = false)
   );
   document.getElementById("f-or-manual").value = "";
+  const supportDocInput = document.getElementById("f-support-doc");
+  if (supportDocInput) supportDocInput.value = "";
+  updateSupportDocName();
   document.getElementById("cashSummary").style.display = "none";
   refreshORDisplay();
+}
+
+function updateSupportDocName() {
+  const supportDocInput = document.getElementById("f-support-doc");
+  const supportDocName = document.getElementById("supportDocName");
+  if (!supportDocInput || !supportDocName) return;
+  const selectedFile = supportDocInput.files && supportDocInput.files[0];
+  supportDocName.textContent = selectedFile ? selectedFile.name : "No file selected";
+}
+
+function initSupportDocDropzone() {
+  const supportDocInput = document.getElementById("f-support-doc");
+  const supportDocDropzone = document.getElementById("supportDocDropzone");
+  if (!supportDocInput || !supportDocDropzone) return;
+
+  supportDocInput.addEventListener("change", updateSupportDocName);
+  supportDocDropzone.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    supportDocDropzone.classList.add("drag-over");
+  });
+  ["dragleave", "dragend"].forEach((eventName) => {
+    supportDocDropzone.addEventListener(eventName, () => {
+      supportDocDropzone.classList.remove("drag-over");
+    });
+  });
+  supportDocDropzone.addEventListener("drop", (event) => {
+    event.preventDefault();
+    supportDocDropzone.classList.remove("drag-over");
+    if (!event.dataTransfer || !event.dataTransfer.files.length) return;
+    supportDocInput.files = event.dataTransfer.files;
+    updateSupportDocName();
+  });
+  supportDocDropzone.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    supportDocInput.click();
+  });
 }
 
 function submitCash() {
@@ -376,6 +416,8 @@ function showToast(msg) {
     String(today.getDate()).padStart(2, "0");
   const fd = document.getElementById("f-date");
   if (fd) fd.value = d;
+  initSupportDocDropzone();
+  updateSupportDocName();
   refreshORDisplay();
   renderOnlineQueue();
   renderConfirmedOnline();

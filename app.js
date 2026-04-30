@@ -8,6 +8,8 @@ const vendorRoutes = require("./routes/vendorRoutes");
 // View engine and static files configuration
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // global logging
 app.use((req, res, next) => {
