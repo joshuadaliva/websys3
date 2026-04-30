@@ -77,9 +77,12 @@ exports.scheduleRaffle = (req, res) => {
   return res.json({ ok: true, raffleState: payload });
 };
 
-exports.startRaffle = (req, res) => {
+exports.startRaffle = async (req, res) => {
   if (raffleState.status === "completed" && raffleState.winner) {
     return res.status(409).json({ ok: false, message: "Raffle already completed. Redraw is not allowed.", raffleState: toPublicRaffleState() });
+  }
+  if (raffleState.status === "live") {
+    return res.status(409).json({ ok: false, message: "Raffle draw is already in progress.", raffleState: toPublicRaffleState() });
   }
   if (!raffleState.drawDate || !raffleState.drawTime) {
     return res.status(400).json({ ok: false, message: "Raffle must be scheduled before it can start." });
@@ -90,6 +93,18 @@ exports.startRaffle = (req, res) => {
   }
 
   raffleState.status = 'live';
+  raffleState.winner = null;
+  raffleState.winnerId = null;
+  raffleState.drawnAt = null;
+  raffleState.logs = [
+    ...(raffleState.logs || []),
+    `Live drawing started at ${new Date().toLocaleTimeString()}.`,
+  ];
+  const io = req.app.get("io");
+  io.emit("raffle:update", toPublicRaffleState());
+
+  await new Promise((resolve) => setTimeout(resolve, 2500));
+
   const lockedList = raffleState.lockedApplicants && raffleState.lockedApplicants.length
     ? raffleState.lockedApplicants
     : raffleState.participants;
@@ -106,7 +121,6 @@ exports.startRaffle = (req, res) => {
   ];
 
   const payload = toPublicRaffleState();
-  const io = req.app.get("io");
   io.emit("raffle:update", payload);
   return res.json({ ok: true, raffleState: payload });
 };
