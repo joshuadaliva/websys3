@@ -2,11 +2,13 @@ const socket = io();
 let current = null;
 function render(state){
   current=state;
-  const statusText = state.hasStarted ? state.status : 'waiting';
+  const statusKey = (state.status || 'waiting').toLowerCase();
+  const statusLabelMap = { waiting: 'WAITING', scheduled: 'WAITING', live: 'LIVE DRAWING', completed: 'COMPLETED' };
+  const statusText = statusLabelMap[statusKey] || statusKey.toUpperCase();
   document.getElementById('status').textContent = statusText;
-  document.getElementById('status').className = statusText;
+  document.getElementById('status').className = statusKey;
   document.getElementById('schedTxt').textContent = state.scheduleISO ? `Schedule: ${new Date(state.scheduleISO).toLocaleString()}` : 'Schedule: Not set';
-  const canShowResult = statusText === 'completed' && state.winner;
+  const canShowResult = statusKey === 'completed' && state.winner;
   document.getElementById('winner').textContent = canShowResult ? `🏆 Winner: ${state.winner.name}` : '';
   document.getElementById('drawAt').textContent = canShowResult && state.drawTimestamp ? `Draw Time: ${new Date(state.drawTimestamp).toLocaleString()}` : '';
   document.getElementById('logs').innerHTML = (state.logs||[]).map(l=>`<li>${l}</li>`).join('');

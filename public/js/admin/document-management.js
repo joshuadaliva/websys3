@@ -51,11 +51,11 @@ function viewDocument(id) {
   if (!selectedDocument) return;
   document.getElementById("modalTitle").textContent = selectedDocument.fileName;
   document.getElementById("modalMeta").textContent = `${selectedDocument.category} • ${selectedDocument.owner} • ${selectedDocument.size}`;
-  document.getElementById("docModal").classList.add("show");
+  document.getElementById("docModal").classList.add("open");
 }
 
 function closeDocModal() {
-  document.getElementById("docModal").classList.remove("show");
+  document.getElementById("docModal").classList.remove("open");
 }
 
 function downloadSelected() {
