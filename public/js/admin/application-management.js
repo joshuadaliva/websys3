@@ -845,36 +845,25 @@ function conductRaffle() {
   }, 100);
 }
 
-async function scheduleRaffleDraw() {
-  const stallId = document.getElementById('rfStallId').value.trim();
-  const stallName = document.getElementById('rfStallName').value.trim();
+function saveRaffleSchedule() {
   const drawDate = document.getElementById('rfDate').value;
   const drawTime = document.getElementById('rfTime').value;
-  if (!drawDate || !drawTime) return alert('Please set draw date/time');
-  await fetch('/admin/raffle/schedule', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ stallId, stallName, drawDate, drawTime }) });
-  showToast('Raffle draw scheduled');
-  closeModal('raffleScheduleModal');
-}
-
-async function startScheduledRaffle() {
-  const drawDate = document.getElementById('rfDate').value;
-  const drawTime = document.getElementById('rfTime').value;
-  const scheduled = new Date(`${drawDate}T${drawTime}:00`);
-  if (new Date() < scheduled) {
-    showToast('Cannot start before schedule time');
+  if (!drawDate || !drawTime) {
+    alert('Please set draw date and time');
     return;
   }
-  await fetch('/admin/raffle/start', { method:'POST' });
-  showToast('Raffle started. Applicant list locked.');
+  alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
 }
 
-(function seedRaffleDate(){
-  const d = new Date();
-  const dd = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  const tt = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-  const dateEl=document.getElementById('rfDate');
-  const timeEl=document.getElementById('rfTime');
-  if(dateEl) dateEl.value=dd;
-  if(timeEl) timeEl.value=tt;
+(function seedRaffleSchedule(){
+  const now = new Date();
+  const dateEl = document.getElementById('rfDate');
+  const timeEl = document.getElementById('rfTime');
+  if (dateEl && !dateEl.value) {
+    dateEl.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  }
+  if (timeEl && !timeEl.value) {
+    timeEl.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  }
 })();

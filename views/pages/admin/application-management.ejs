@@ -499,7 +499,7 @@
               <div class="panel-head">
                 <div class="panel-title" id="detailTableTitle">Applications — Stall #06</div>
                 <div class="panel-actions">
-                  <button class="btn purple-outline sm" onclick="openModal('raffleScheduleModal')"><svg
+                  <button class="btn primary sm" onclick="openModal('raffleScheduleModal')"><svg
                       xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2">
                       <circle cx="12" cy="12" r="10" />
@@ -863,6 +863,31 @@
       </div>
       <div class="modal-foot" id="raffleFoot"><button class="btn ghost sm"
           onclick="closeModal('raffleModal')">Cancel</button></div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="raffleScheduleModal">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-head">
+        <div class="modal-title">Schedule Raffle Draw</div>
+        <div class="modal-x" onclick="closeModal('raffleScheduleModal')"><svg xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></div>
+      </div>
+      <div class="modal-body" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label class="form-label">Stall ID</label><input class="form-control" id="rfStallId"
+            value="#06"></div>
+        <div class="form-group"><label class="form-label">Stall Name</label><input class="form-control" id="rfStallName"
+            value="Dry Goods"></div>
+        <div class="form-group"><label class="form-label">Draw Date</label><input class="form-control" id="rfDate"
+            type="date"></div>
+        <div class="form-group"><label class="form-label">Draw Time</label><input class="form-control" id="rfTime"
+            type="time"></div>
+      </div>
+      <div class="modal-foot"><button class="btn ghost sm" onclick="closeModal('raffleScheduleModal')">Cancel</button><button
+          class="btn primary sm" onclick="saveRaffleSchedule()">Save Schedule</button></div>
     </div>
   </div>
 

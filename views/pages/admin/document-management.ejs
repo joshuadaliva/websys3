@@ -49,12 +49,22 @@
     </div>
   </div>
 
-  <div class="modal" id="docModal" aria-hidden="true">
-    <div class="modal-card">
-      <h3 id="modalTitle">Document Preview</h3>
-      <p id="modalMeta"></p>
-      <div class="preview">Preview placeholder for selected document.</div>
-      <div class="dm-actions"><button onclick="closeDocModal()">Close</button><button class="primary" onclick="downloadSelected()">Download</button></div>
+  <div class="modal-bg" id="docModal">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Document Preview</div>
+        <div class="modal-x" onclick="closeDocModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></div>
+      </div>
+      <div class="modal-body">
+        <p id="modalMeta"></p>
+        <div class="preview">Preview placeholder for selected document.</div>
+      </div>
+      <div class="modal-foot dm-actions"><button class="btn ghost sm" onclick="closeDocModal()">Close</button><button class="btn primary sm"
+          onclick="downloadSelected()">Download</button></div>
     </div>
   </div>
 
