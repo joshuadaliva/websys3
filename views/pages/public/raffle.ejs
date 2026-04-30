@@ -1,0 +1,13 @@
+<!DOCTYPE html><html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>AMRC Raffle Draw</title><link rel='stylesheet' href='/css/public/raffle.css'></head>
+<body>
+<div class='wrap'>
+  <h1>AMRC Live Raffle Draw</h1>
+  <div class='card'><div><strong id='stallTxt'><%= raffleState.stallId %> · <%= raffleState.stallName %></strong></div><div id='schedTxt'></div><div id='countdown'></div></div>
+  <div class='card'><h3>Qualified Applicants</h3><div id='list'>
+    <% qualifiedApplicants.forEach(function(a){ %><div class='row'><span>#<%= a.raffleNumber %></span><span><%= a.masked %></span></div><% }) %>
+  </div><div>Total Participants: <span id='total'><%= qualifiedApplicants.length %></span></div></div>
+  <div class='card'><div>Status: <span id='status'><%= raffleState.status %></span></div><div id='winner'></div><div id='drawAt'></div><ul id='logs'></ul></div>
+</div>
+<script src='/socket.io/socket.io.js'></script><script src='/js/public/raffle.js'></script>
+</body></html>

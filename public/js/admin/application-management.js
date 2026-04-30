@@ -844,3 +844,28 @@ function conductRaffle() {
     }
   }, 100);
 }
+
+async function scheduleRaffleDraw() {
+  const stallId = document.getElementById('rfStallId').value.trim();
+  const stallName = document.getElementById('rfStallName').value.trim();
+  const drawDate = document.getElementById('rfDate').value;
+  const drawTime = document.getElementById('rfTime').value;
+  if (!drawDate || !drawTime) return alert('Please set draw date/time');
+  await fetch('/admin/raffle/schedule', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ stallId, stallName, drawDate, drawTime }) });
+  showToast('Raffle draw scheduled');
+}
+
+async function startScheduledRaffle() {
+  await fetch('/admin/raffle/start', { method:'POST' });
+  showToast('Raffle started. Applicant list locked.');
+}
+
+(function seedRaffleDate(){
+  const d = new Date();
+  const dd = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const tt = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  const dateEl=document.getElementById('rfDate');
+  const timeEl=document.getElementById('rfTime');
+  if(dateEl) dateEl.value=dd;
+  if(timeEl) timeEl.value=tt;
+})();
