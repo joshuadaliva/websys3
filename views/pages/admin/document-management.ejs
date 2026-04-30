@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>ARKIPAISI — Document Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/admin/payment-management.css" />
+  <link rel="stylesheet" href="/css/admin/document-management.css" />
+</head>
+<body>
+  <div class="veil" id="veil" onclick="closeSB()"></div>
+  <%- include("../../partials/sidebar.ejs", { currentRoute, role: "admin", initials: "admin", fullName: "joshua daliva"}) %>
+  <div class="main" id="main">
+    <%- include("../../partials/header.ejs", {role: "admin", initials: "admin", lastName: "daliva", }) %>
+    <div class="content">
+      <div class="pghdr"><div><h1>Document Management</h1><p>Manage uploaded files for applications, vendors, contracts, and official receipts.</p></div></div>
+
+      <div class="dm-stats">
+        <div class="dm-card app"><div class="dm-label">Application Documents</div><div class="dm-val" id="appCount">0</div></div>
+        <div class="dm-card vendor"><div class="dm-label">Vendor Documents</div><div class="dm-val" id="vendorCount">0</div></div>
+        <div class="dm-card or"><div class="dm-label">OR Documentation</div><div class="dm-val" id="orCount">0</div></div>
+      </div>
+
+      <div class="panel dm-panel">
+        <div class="dm-toolbar">
+          <input id="docSearch" placeholder="Search file, owner, or related item" oninput="renderDocuments()" />
+          <select id="docCategory" onchange="renderDocuments()">
+            <option value="">All Categories</option>
+            <option>Application Documents</option>
+            <option>Vendor Documents</option>
+            <option>OR Documentation Storage</option>
+          </select>
+          <select id="docStatus" onchange="renderDocuments()">
+            <option value="">All Status</option>
+            <option>Verified</option>
+            <option>Pending</option>
+          </select>
+        </div>
+
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Document</th><th>Category</th><th>Owner</th><th>Related To</th><th>Uploaded</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="docBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="docModal">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Document Preview</div>
+        <div class="modal-x" onclick="closeDocModal()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></div>
+      </div>
+      <div class="modal-body">
+        <p id="modalMeta"></p>
+        <div class="preview">Preview placeholder for selected document.</div>
+      </div>
+      <div class="modal-foot dm-actions"><button class="btn ghost sm" onclick="closeDocModal()">Close</button><button class="btn primary sm"
+          onclick="downloadSelected()">Download</button></div>
+    </div>
+  </div>
+
+  <script>
+    const DOCUMENTS = <%- JSON.stringify(documents) %>;
+  </script>
+  <script src="/js/admin/document-management.js"></script>
+</body>
+</html>
