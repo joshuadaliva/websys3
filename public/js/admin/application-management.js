@@ -500,6 +500,7 @@ function openStallDetail(idx) {
   document.getElementById(
     "detailTableInfo"
   ).textContent = `Showing ${currentStall.applicants.length} applications`;
+  ensureDetailActionButtons();
   renderDetailTable();
 
   const dateFilterInput = document.getElementById("detailDateFilter");
@@ -656,6 +657,23 @@ function goBackToStalls() {
   selectedApplicantIdx = null;
   currentReviewController = null;
   setRightTab("overview");
+}
+
+function ensureDetailActionButtons() {
+  const panelActions = document.querySelector(".panel-head .panel-actions");
+  if (!panelActions) return;
+
+  const hasScheduleBtn = panelActions.querySelector(
+    "button[onclick=\"openModal('raffleScheduleModal')\"]"
+  );
+  if (!hasScheduleBtn) {
+    const scheduleBtn = document.createElement("button");
+    scheduleBtn.className = "btn primary sm";
+    scheduleBtn.setAttribute("onclick", "openModal('raffleScheduleModal')");
+    scheduleBtn.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="6" x2="12" y2="12" /><line x1="12" y1="12" x2="16" y2="14" /></svg>Schedule Raffle Draw';
+    panelActions.prepend(scheduleBtn);
+  }
 }
 
 /* ──────────── MODALS ──────────── */
@@ -860,15 +878,24 @@ async function saveRaffleSchedule() {
   const stallName = document.getElementById('rfStallName').value.trim();
   const drawDate = document.getElementById('rfDate').value;
   const drawTime = document.getElementById('rfTime').value;
+  const applicationDeadline = currentStall?.deadlineISO || null;
+  const qualifiedApplicants = (currentStall?.applicants || [])
+    .filter((a) => a.statusTxt === "For Raffle" || a.statusTxt === "Qualified")
+    .map((a) => a.name);
   if (!drawDate || !drawTime) {
     alert('Please set draw date and time');
     return;
   }
-  await fetch('/admin/raffle/schedule', {
+  const resp = await fetch('/admin/raffle/schedule', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ stallId, stallName, drawDate, drawTime }),
+    body: JSON.stringify({ stallId, stallName, drawDate, drawTime, applicationDeadline, qualifiedApplicants }),
   });
+  const data = await resp.json();
+  if (!resp.ok) {
+    alert(data?.message || 'Unable to save raffle schedule');
+    return;
+  }
   alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
 }
