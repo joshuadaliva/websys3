@@ -908,6 +908,10 @@ body {
     animation: pulse-green 1.5s ease-in-out infinite
 }
 
+.sc-open-badge.no-pulse::before {
+    animation: none;
+}
+
 @keyframes pulse-green {
 
     0%,
