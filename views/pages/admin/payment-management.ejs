@@ -736,6 +736,26 @@
     </div>
   </div>
 
+  <div class="mbg" id="editPaymentModal">
+    <div class="modal sm">
+      <div class="mhd">
+        <div class="mtit">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>Edit Payment Details
+        </div>
+        <div class="mx" onclick="closeM('editPaymentModal')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+      <div class="mbd">
+        <div class="fg"><label class="fl">Amount</label><input id="editPayAmount" class="fc" type="number" /></div>
+        <div class="fg"><label class="fl">Payment Date</label><input id="editPayDate" class="fc" type="text" /></div>
+        <div class="fg"><label class="fl">OR Number</label><input id="editPayOR" class="fc" type="text" /></div>
+        <div class="fg"><label class="fl">Method</label><select id="editPayMethod" class="fc"><option value="portal">Online Portal</option><option value="collector">Collector</option><option value="office">Office Counter</option></select></div>
+      </div>
+      <div class="mft"><button class="btn gh sm" onclick="closeM('editPaymentModal')">Cancel</button><button class="btn ao sm" onclick="saveEditPayment()">Save Changes</button></div>
+    </div>
+  </div>
+
   <!-- EXPORT MODAL -->
   <div class="mbg" id="exportModal">
     <div class="modal sm">
