@@ -51,11 +51,11 @@ function viewDocument(id) {
   if (!selectedDocument) return;
   document.getElementById("modalTitle").textContent = selectedDocument.fileName;
   document.getElementById("modalMeta").textContent = `${selectedDocument.category} • ${selectedDocument.owner} • ${selectedDocument.size}`;
-  document.getElementById("docModal").classList.add("show");
+  document.getElementById("docModal").classList.add("open");
 }
 
 function closeDocModal() {
-  document.getElementById("docModal").classList.remove("show");
+  document.getElementById("docModal").classList.remove("open");
 }
 
 function downloadSelected() {
@@ -83,13 +83,12 @@ function renderDocuments() {
       <td>${d.owner}</td>
       <td>${d.relatedTo}</td>
       <td>${d.uploadedAt}</td>
-      <td><span class="badge ${d.status === "Verified" ? "ok" : "pending"}">${d.status}</span></td>
       <td><button class="btn" onclick="viewDocument('${d.id}')">View</button></td>
     </tr>`)
     .join("");
 
   if (!list.length) {
-    body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--t3)">No documents found.</td></tr>';
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--t3)">No documents found.</td></tr>';
   }
 
   renderStats(list);
