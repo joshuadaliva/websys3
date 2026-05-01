@@ -8,7 +8,25 @@ function render(state){
   document.getElementById('status').textContent = statusText;
   document.getElementById('status').className = statusKey;
   const drawViz = document.getElementById('liveDrawViz');
-  if (drawViz) drawViz.style.display = statusKey === 'live' ? 'flex' : 'none';
+  if (drawViz) {
+    const drawCopy = drawViz.querySelector('.draw-copy');
+    const drawRing = drawViz.querySelector('.draw-ring');
+    const drawCenter = drawViz.querySelector('.draw-center');
+    const showDrawBox = statusKey === 'live' || statusKey === 'waiting' || statusKey === 'scheduled';
+    drawViz.style.display = showDrawBox ? 'flex' : 'none';
+    drawViz.classList.remove('is-waiting', 'is-live');
+    if (statusKey === 'live') {
+      drawViz.classList.add('is-live');
+      if (drawCopy) drawCopy.textContent = 'Drawing winner...';
+      if (drawRing) drawRing.style.display = '';
+      if (drawCenter) drawCenter.style.display = '';
+    } else {
+      drawViz.classList.add('is-waiting');
+      if (drawCopy) drawCopy.textContent = 'Waiting for draw';
+      if (drawRing) drawRing.style.display = 'none';
+      if (drawCenter) drawCenter.style.display = 'none';
+    }
+  }
   document.getElementById('schedTxt').textContent = state.scheduleISO ? `Schedule: ${new Date(state.scheduleISO).toLocaleString()}` : 'Schedule: Not set';
   const canShowResult = statusKey === 'completed' && state.winner;
   document.getElementById('winner').textContent = canShowResult ? `🏆 Winner: ${state.winner.name}` : '';
