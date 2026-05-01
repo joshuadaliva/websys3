@@ -61,7 +61,7 @@
   <% if (hasSchedule) { %>
   <div class="raffle-ann" id="raffleAnnouncement" data-schedule-key="<%= raffleState.scheduleISO %>">
     <span class="raffle-ann-dot"></span>
-    <p class="raffle-ann-msg">
+    <p class="raffle-ann-msg" id="raffleAnnouncementMessage">
       🎟 Raffle at <strong><%= raffleState.stallId %> — <%= raffleState.stallName %></strong>
       · <%= new Date(raffleState.scheduleISO).toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }) %>
       · <%= new Date(raffleState.scheduleISO).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) %>
@@ -69,6 +69,24 @@
     <a href="/raffle/live" class="raffle-ann-cta">Join the Raffle</a>
     <button type="button" class="raffle-ann-close" onclick="closeRaffleAnnouncement()" aria-label="Close announcement">×</button>
   </div>
+  <script>
+    (function () {
+      var bar = document.getElementById('raffleAnnouncement');
+      if (!bar) return;
+      var key = bar.dataset.scheduleKey || '';
+      var closedFor = localStorage.getItem('raffleAnnouncementClosedFor') || '';
+      var lastSeen = localStorage.getItem('raffleAnnouncementLastSeen') || '';
+      if (closedFor && closedFor === key) {
+        bar.style.display = 'none';
+        return;
+      }
+      if (lastSeen && lastSeen !== key) {
+        var msg = document.getElementById('raffleAnnouncementMessage');
+        if (msg) msg.insertAdjacentText('afterbegin', '🔁 Raffle rescheduled · ');
+      }
+      localStorage.setItem('raffleAnnouncementLastSeen', key);
+    })();
+  </script>
   <% } %>
 
   <!-- Mobile menu -->

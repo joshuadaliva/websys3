@@ -705,13 +705,13 @@ function closeRaffleAnnouncement() {
   const el = document.getElementById('raffleAnnouncement');
   if (!el) return;
   el.style.display = 'none';
-  localStorage.setItem('raffleAnnouncementClosed', el.dataset.scheduleKey || '1');
+  localStorage.setItem('raffleAnnouncementClosedFor', el.dataset.scheduleKey || '');
 }
 
 (function initRaffleAnnouncement(){
   const el = document.getElementById('raffleAnnouncement');
   if (!el) return;
-  const closedFor = localStorage.getItem('raffleAnnouncementClosed');
+  const closedFor = localStorage.getItem('raffleAnnouncementClosedFor');
   const scheduleKey = el.dataset.scheduleKey || '';
   if (closedFor && closedFor === scheduleKey) el.style.display = 'none';
 })();
