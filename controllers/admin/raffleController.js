@@ -31,6 +31,7 @@ function toPublicRaffleState() {
     logs: raffleState.logs || [],
   };
 }
+exports.toPublicRaffleState = toPublicRaffleState;
 
 exports.showPublicRaffle = (req, res) => {
   const qualifiedApplicants = raffleState.participants.map((participant) => ({
