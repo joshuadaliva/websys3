@@ -73,7 +73,7 @@ const stalls = [
         addr: "Brgy. Sur, Arkipaisi",
         date: "Mar 2 · 11:00 AM",
         pre: "Passed",
-        status: "b-submitted",
+        status: "b-locked",
         statusTxt: "Locked",
         docs: 5,
       },
