@@ -60,7 +60,7 @@ const stalls = [
         addr: "Brgy. Norte, Arkipaisi",
         date: "Mar 3 · 10:20 AM",
         pre: "Failed",
-        status: "b-submitted",
+        status: "b-locked",
         statusTxt: "Locked",
         docs: 2,
       },
@@ -73,7 +73,7 @@ const stalls = [
         addr: "Brgy. Sur, Arkipaisi",
         date: "Mar 2 · 11:00 AM",
         pre: "Passed",
-        status: "b-submitted",
+        status: "b-locked",
         statusTxt: "Locked",
         docs: 5,
       },
@@ -515,6 +515,7 @@ function openStallDetail(idx) {
     "detailTableInfo"
   ).textContent = `Showing ${currentStall.applicants.length} applications`;
   ensureDetailActionButtons();
+  updateRaffleActionVisibility();
   renderDetailTable();
 
   const dateFilterInput = document.getElementById("detailDateFilter");
@@ -570,13 +571,21 @@ function renderDetailTable() {
       <td>
         <div class="row-acts">
           <button class="btn primary xs" ${
-            ["Qualified", "Rejected"].includes(a.statusTxt) ? "disabled" : ""
+            ["Qualified", "Rejected"].includes(a.statusTxt) || currentStall?.raffleScheduled || currentStall?.raffleCompleted ? "disabled" : ""
           } onclick="event.stopPropagation();openReviewPage(${i})">Review Application</button>
         </div>
       </td>
     </tr>`
     )
     .join("")}</tbody>`;
+}
+
+function updateRaffleActionVisibility() {
+  if (!currentStall) return;
+  const panelActions = document.querySelector(".panel-head .panel-actions");
+  if (!panelActions) return;
+  panelActions.style.display =
+    currentStall.raffleScheduled || currentStall.raffleCompleted ? "none" : "flex";
 }
 
 function openReviewPage(idx) {
@@ -883,6 +892,11 @@ async function conductRaffle() {
       document.getElementById(
         "raffleFoot"
       ).innerHTML = `<button class="btn ghost sm" onclick="closeModal('raffleModal')">Close</button><button class="btn success sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Award Stall to Winner</button>`;
+      if (currentStall) {
+        currentStall.raffleCompleted = true;
+        updateRaffleActionVisibility();
+        renderDetailTable();
+      }
     }
   }, 100);
 }
@@ -909,6 +923,17 @@ async function saveRaffleSchedule() {
   if (!resp.ok) {
     alert(data?.message || 'Unable to save raffle schedule');
     return;
+  }
+  if (currentStall) {
+    currentStall.raffleScheduled = true;
+    currentStall.applicants.forEach((app) => {
+      if (app.statusTxt === "Qualified" || app.statusTxt === "For Raffle") {
+        app.statusTxt = "Locked";
+        app.status = "b-locked";
+      }
+    });
+    updateRaffleActionVisibility();
+    renderDetailTable();
   }
   alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
