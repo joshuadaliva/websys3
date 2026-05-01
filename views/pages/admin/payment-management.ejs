@@ -746,13 +746,14 @@
         </div>
         <div class="mx" onclick="closeM('editPaymentModal')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
       </div>
-      <div class="mbd">
+      <div class="mbdy edit-pay-body">
+        <div class="edit-pay-vendor" id="editPayVendorInfo">Vendor: —</div>
         <div class="fg"><label class="fl">Amount</label><input id="editPayAmount" class="fc" type="number" /></div>
-        <div class="fg"><label class="fl">Payment Date</label><input id="editPayDate" class="fc" type="text" /></div>
+        <div class="fg"><label class="fl">Payment Date</label><input id="editPayDate" class="fc" type="date" /></div>
         <div class="fg"><label class="fl">OR Number</label><input id="editPayOR" class="fc" type="text" /></div>
-        <div class="fg"><label class="fl">Method</label><select id="editPayMethod" class="fc"><option value="portal">Online Portal</option><option value="collector">Collector</option><option value="office">Office Counter</option></select></div>
+        <div class="fg"><label class="fl">Method</label><input id="editPayMethod" class="fc" type="text" value="Online Portal" readonly /></div>
       </div>
-      <div class="mft"><button class="btn gh sm" onclick="closeM('editPaymentModal')">Cancel</button><button class="btn ao sm" onclick="saveEditPayment()">Save Changes</button></div>
+      <div class="mft"><button class="btn gh sm" onclick="closeM('editPaymentModal')">Cancel</button><button class="btn pr sm" onclick="saveEditPayment()">Save Changes</button></div>
     </div>
   </div>
 
