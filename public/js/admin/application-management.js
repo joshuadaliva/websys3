@@ -59,9 +59,9 @@ const stalls = [
         email: "juan.delacruz@email.com",
         addr: "Brgy. Norte, Arkipaisi",
         date: "Mar 3 · 10:20 AM",
-        pre: "Failed",
-        status: "b-locked",
-        statusTxt: "Locked",
+        pre: "Passed",
+        status: "b-qualified",
+        statusTxt: "Qualified",
         docs: 2,
       },
       {
@@ -515,6 +515,7 @@ function openStallDetail(idx) {
     "detailTableInfo"
   ).textContent = `Showing ${currentStall.applicants.length} applications`;
   ensureDetailActionButtons();
+  updateRaffleActionVisibility();
   renderDetailTable();
 
   const dateFilterInput = document.getElementById("detailDateFilter");
@@ -583,8 +584,7 @@ function updateRaffleActionVisibility() {
   if (!currentStall) return;
   const panelActions = document.querySelector(".panel-head .panel-actions");
   if (!panelActions) return;
-  panelActions.style.display =
-    currentStall.raffleScheduled || currentStall.raffleCompleted ? "none" : "flex";
+  panelActions.style.display = currentStall.raffleCompleted ? "none" : "flex";
 }
 
 function openReviewPage(idx) {
@@ -922,6 +922,10 @@ async function saveRaffleSchedule() {
   if (!resp.ok) {
     alert(data?.message || 'Unable to save raffle schedule');
     return;
+  }
+  if (currentStall) {
+    currentStall.raffleScheduled = true;
+    renderDetailTable();
   }
   alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
