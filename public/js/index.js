@@ -705,12 +705,4 @@ function closeRaffleAnnouncement() {
   const el = document.getElementById('raffleAnnouncement');
   if (!el) return;
   el.style.display = 'none';
-  localStorage.setItem('raffleAnnouncementClosed', '1');
 }
-
-(function initRaffleAnnouncement(){
-  if (localStorage.getItem('raffleAnnouncementClosed') === '1') {
-    const el = document.getElementById('raffleAnnouncement');
-    if (el) el.style.display = 'none';
-  }
-})();
