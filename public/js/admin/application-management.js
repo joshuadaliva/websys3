@@ -480,11 +480,12 @@ function openStallDetail(idx) {
   const scheduleDateText = hasRaffleSchedule
     ? `${currentStall.drawDate} • ${currentStall.drawTime}`
     : currentStall.deadline;
+  const scheduleStamp = hasRaffleSchedule ? `${currentStall.drawDate} • ${currentStall.drawTime}` : "";
   const daysText = hasRaffleSchedule
     ? (() => {
         const diffMs = new Date(`${currentStall.drawDate}T${currentStall.drawTime}`) - new Date();
         const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-        return diffDays >= 0 ? `Draw in ${diffDays} day${diffDays === 1 ? "" : "s"}` : "Draw completed";
+        return diffDays >= 0 ? `Draw in ${diffDays} day${diffDays === 1 ? "" : "s"}` : `Raffle ended on ${scheduleStamp}`;
       })()
     : `${currentStall.daysLeft} days remaining`;
   const deadlineLabel = hasRaffleSchedule ? "Raffle Draw Scheduled" : "Application Deadline";
@@ -505,7 +506,7 @@ function openStallDetail(idx) {
           <div class="dh-meta-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${currentStall.section}</div>
           <div class="dh-meta-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>${currentStall.size}</div>
           <div class="dh-meta-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>${currentStall.rate}/mo</div>
-          <span class="sc-open-badge" style="font-size:10.5px">${statusBadgeText}</span>
+          <span class="sc-open-badge no-pulse" style="font-size:10.5px">${statusBadgeText}</span>
         </div>
       </div>
     </div>
@@ -603,10 +604,16 @@ function updateRaffleActionVisibility() {
   if (!panelActions) return;
   panelActions.style.display = currentStall.raffleCompleted ? "none" : "flex";
   const scheduleBtn = panelActions.querySelector("button[onclick=\"openModal('raffleScheduleModal')\"]");
+  const raffleBtn = panelActions.querySelector("button[onclick=\"openRaffleModal()\"]");
   if (scheduleBtn) {
     scheduleBtn.innerHTML = currentStall.raffleScheduled
       ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="6" x2="12" y2="12" /><line x1="12" y1="12" x2="16" y2="14" /></svg>Reschedule Draw'
       : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="6" x2="12" y2="12" /><line x1="12" y1="12" x2="16" y2="14" /></svg>Schedule Raffle Draw';
+  }
+  if (raffleBtn) {
+    raffleBtn.disabled = !currentStall.raffleScheduled || currentStall.raffleCompleted;
+    raffleBtn.style.opacity = raffleBtn.disabled ? ".5" : "1";
+    raffleBtn.style.pointerEvents = raffleBtn.disabled ? "none" : "auto";
   }
 }
 
