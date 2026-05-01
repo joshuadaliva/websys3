@@ -29,7 +29,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => res.render("index"));
+app.get("/", (req, res) => {
+  const raffleState = raffleController.toPublicRaffleState();
+  const hasSchedule = Boolean(raffleState.scheduleISO);
+  res.render("index", { raffleState, hasSchedule });
+});
 app.get("/raffle/live", raffleController.showPublicRaffle);
 app.get("/api/raffle/state", raffleController.getRaffleState);
 

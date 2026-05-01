@@ -480,7 +480,7 @@ function renderRecords() {
             <button class="pm-act-btn b-view tt" data-tip="View" onclick="event.stopPropagation();viewPayment('${p.id}')" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
             <button class="pm-act-btn b-edit tt" data-tip="Edit" onclick="event.stopPropagation();openEditM('${p.id}')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
             <button class="pm-act-btn b-remind tt" data-tip="Remind" onclick="event.stopPropagation();openReminder('${p.vid}')" title="Remind"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
-            <button class="pm-act-btn b-lock tt ${p.status === "paid" ? "" : "is-muted"}" data-tip="${p.status === "paid" ? "Paid — locked" : "Lock"}" onclick="event.stopPropagation()" title="Lock"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>
+            
           </div></td>
         </tr>`;
         })
@@ -769,14 +769,39 @@ function openStatusM(pid) {
 }
 
 let editPaymentId = null;
+function toDateInputValue(dateText) {
+  if (!dateText) return "";
+  const dt = new Date(dateText);
+  if (Number.isNaN(dt.getTime())) return "";
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, "0");
+  const d = String(dt.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function toDisplayDate(dateValue) {
+  if (!dateValue) return "";
+  const dt = new Date(dateValue);
+  if (Number.isNaN(dt.getTime())) return "";
+  return dt.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 function openEditM(pid) {
   const p = PAYMENTS.find((x) => x.id === pid);
   if (!p) return;
+  const v = VENDORS.find((x) => x.id === p.vid);
   editPaymentId = pid;
   document.getElementById("editPayAmount").value = p.amount || "";
-  document.getElementById("editPayDate").value = p.date || "";
+  document.getElementById("editPayDate").value = toDateInputValue(p.date);
   document.getElementById("editPayOR").value = p.or || "";
-  document.getElementById("editPayMethod").value = p.method || "";
+  document.getElementById("editPayMethod").value = MT[p.method] || "Online Portal";
+  document.getElementById("editPayVendorInfo").textContent = v
+    ? `Vendor: ${v.fn} ${v.ln} • ${v.id} • Stall ${v.stall || "N/A"}`
+    : `Vendor: ${p.vid || "—"}`;
   openM("editPaymentModal");
 }
 
@@ -784,11 +809,11 @@ function saveEditPayment() {
   const p = PAYMENTS.find((x) => x.id === editPaymentId);
   if (!p) return;
   p.amount = Number(document.getElementById("editPayAmount").value || p.amount);
-  p.date = document.getElementById("editPayDate").value || p.date;
+  const nextDate = document.getElementById("editPayDate").value;
+  p.date = nextDate ? toDisplayDate(nextDate) : p.date;
   p.or = document.getElementById("editPayOR").value || p.or;
-  p.method = document.getElementById("editPayMethod").value || p.method;
   closeM("editPaymentModal");
-  renderPayments();
+  renderRecords();
   if (SEL_VID) renderVendorLedger(SEL_VID);
   showToast("Payment information updated.", "g");
 }
