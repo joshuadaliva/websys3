@@ -1573,6 +1573,17 @@ svg {
   flex-wrap: wrap
 }
 
+.edit-pay-vendor {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--brd);
+  border-radius: var(--rs);
+  background: var(--s2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t2);
+}
+
 /* form */
 .fg {
   display: flex;

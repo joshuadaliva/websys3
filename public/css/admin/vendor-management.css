@@ -823,28 +823,24 @@ body.sb-closed .main {
 /* ══════════════════════════════════════════
    ACTION BUTTONS
    ══════════════════════════════════════════ */
-.action-btns { display: flex; gap: 4px }
+.action-btns { display: flex; gap: 5px }
 .action-btn {
-    width: 26px; height: 26px;
-    border-radius: 6px;
-    border: 1px solid var(--brd);
-    background: var(--surf);
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 0;
     display: grid; place-items: center;
-    cursor: pointer; color: var(--t3);
-    transition: all .14s; flex-shrink: 0
+    cursor: pointer; color: #fff;
+    transition: transform .14s, opacity .14s;
+    flex-shrink: 0
 }
-.action-btn.action-btn-view,
-.action-btn.action-btn-edit,
-.action-btn.action-btn-cred,
-.action-btn.action-btn-status { background: var(--acl) }
+.action-btn.action-btn-view { background: #f59e0b }
+.action-btn.action-btn-edit { background: #3b82f6 }
+.action-btn.action-btn-status { background: #8b5cf6 }
+.action-btn.action-btn-cred { background: #0ea5a4 }
 
-.action-btn.action-btn-view { border-color: var(--ac); color: var(--ac) }
-.action-btn.action-btn-edit { border-color: var(--status-active-border); color: var(--status-active); background: var(--status-active-bg) }
-.action-btn.action-btn-cred { border-color: #0ea5a4; color: #0f766e; background: #ccfbf1 }
-.action-btn.action-btn-status { border-color: var(--status-suspended-border); color: var(--status-suspended); background: var(--status-suspended-bg) }
-
-.action-btn:hover { filter: brightness(.97) }
-.action-btn svg { width: 11.5px; height: 11.5px }
+.action-btn:hover { opacity: .86; transform: scale(1.05) }
+.action-btn:active { transform: scale(.95) }
+.action-btn svg { width: 14px; height: 14px }
 
 /* ══════════════════════════════════════════
    STATUS BADGES
