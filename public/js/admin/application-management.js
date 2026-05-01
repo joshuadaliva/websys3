@@ -407,11 +407,25 @@ let dark = false;
 function toggleTheme() {
   dark = !dark;
   document.documentElement.classList.toggle("dark", dark);
+  localStorage.setItem("arkipaisi-theme", dark ? "dark" : "light");
   const i = document.getElementById("themeIcon");
   i.innerHTML = dark
     ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
     : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
 }
+
+(function syncThemeFromStorage() {
+  const savedTheme = localStorage.getItem("arkipaisi-theme");
+  if (!savedTheme) return;
+  dark = savedTheme === "dark";
+  document.documentElement.classList.toggle("dark", dark);
+  const i = document.getElementById("themeIcon");
+  if (i) {
+    i.innerHTML = dark
+      ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+      : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  }
+})();
 
 /* ──────────── STALL VIEW TOGGLE ──────────── */
 function switchStallView(v) {
@@ -500,6 +514,7 @@ function openStallDetail(idx) {
   document.getElementById(
     "detailTableInfo"
   ).textContent = `Showing ${currentStall.applicants.length} applications`;
+  ensureDetailActionButtons();
   renderDetailTable();
 
   const dateFilterInput = document.getElementById("detailDateFilter");
@@ -656,6 +671,23 @@ function goBackToStalls() {
   selectedApplicantIdx = null;
   currentReviewController = null;
   setRightTab("overview");
+}
+
+function ensureDetailActionButtons() {
+  const panelActions = document.querySelector(".panel-head .panel-actions");
+  if (!panelActions) return;
+
+  const hasScheduleBtn = panelActions.querySelector(
+    "button[onclick=\"openModal('raffleScheduleModal')\"]"
+  );
+  if (!hasScheduleBtn) {
+    const scheduleBtn = document.createElement("button");
+    scheduleBtn.className = "btn primary sm";
+    scheduleBtn.setAttribute("onclick", "openModal('raffleScheduleModal')");
+    scheduleBtn.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="6" x2="12" y2="12" /><line x1="12" y1="12" x2="16" y2="14" /></svg>Schedule Raffle Draw';
+    panelActions.prepend(scheduleBtn);
+  }
 }
 
 /* ──────────── MODALS ──────────── */
@@ -860,15 +892,24 @@ async function saveRaffleSchedule() {
   const stallName = document.getElementById('rfStallName').value.trim();
   const drawDate = document.getElementById('rfDate').value;
   const drawTime = document.getElementById('rfTime').value;
+  const applicationDeadline = currentStall?.deadlineISO || null;
+  const qualifiedApplicants = (currentStall?.applicants || [])
+    .filter((a) => a.statusTxt === "For Raffle" || a.statusTxt === "Qualified")
+    .map((a) => a.name);
   if (!drawDate || !drawTime) {
     alert('Please set draw date and time');
     return;
   }
-  await fetch('/admin/raffle/schedule', {
+  const resp = await fetch('/admin/raffle/schedule', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ stallId, stallName, drawDate, drawTime }),
+    body: JSON.stringify({ stallId, stallName, drawDate, drawTime, applicationDeadline, qualifiedApplicants }),
   });
+  const data = await resp.json();
+  if (!resp.ok) {
+    alert(data?.message || 'Unable to save raffle schedule');
+    return;
+  }
   alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
 }
