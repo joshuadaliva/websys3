@@ -490,10 +490,10 @@ function openStallDetail(idx) {
     : `${currentStall.daysLeft} days remaining`;
   const deadlineLabel = hasRaffleSchedule ? "Raffle Draw Scheduled" : "Application Deadline";
   const statusBadgeText = currentStall.raffleCompleted
-    ? "Raffle Completed"
+    ? "🟢 Raffle Completed"
     : hasRaffleSchedule
-    ? "Raffle Scheduled"
-    : "Open for Applications";
+    ? "🔵 Raffle Scheduled"
+    : "🟡 Open for Applications";
   document.getElementById("detailHeader").innerHTML = `
     <div class="dh-left">
       <div class="dh-stall-icon">
