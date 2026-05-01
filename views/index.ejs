@@ -25,19 +25,6 @@
     })();
   </script>
 
-  <% if (hasSchedule) { %>
-  <div class="raffle-ann" id="raffleAnnouncement">
-    <span class="raffle-ann-dot"></span>
-    <p class="raffle-ann-msg">
-      🎟 Raffle at <strong><%= raffleState.stallId %> — <%= raffleState.stallName %></strong>
-      · <%= new Date(raffleState.scheduleISO).toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }) %>
-      · <%= new Date(raffleState.scheduleISO).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) %>
-    </p>
-    <a href="/raffle/live" class="raffle-ann-cta">Join the Raffle</a>
-    <button type="button" class="raffle-ann-close" onclick="closeRaffleAnnouncement()" aria-label="Close announcement">×</button>
-  </div>
-  <% } %>
-
   <!-- ═══ TOP NAV ═══ -->
   <nav class="topnav">
     <div class="topnav-inner">
@@ -70,6 +57,19 @@
       </button>
     </div>
   </nav>
+
+  <% if (hasSchedule) { %>
+  <div class="raffle-ann" id="raffleAnnouncement" data-schedule-key="<%= raffleState.scheduleISO %>">
+    <span class="raffle-ann-dot"></span>
+    <p class="raffle-ann-msg">
+      🎟 Raffle at <strong><%= raffleState.stallId %> — <%= raffleState.stallName %></strong>
+      · <%= new Date(raffleState.scheduleISO).toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }) %>
+      · <%= new Date(raffleState.scheduleISO).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) %>
+    </p>
+    <a href="/raffle/live" class="raffle-ann-cta">Join the Raffle</a>
+    <button type="button" class="raffle-ann-close" onclick="closeRaffleAnnouncement()" aria-label="Close announcement">×</button>
+  </div>
+  <% } %>
 
   <!-- Mobile menu -->
   <div class="mob-menu" id="mob-menu">
