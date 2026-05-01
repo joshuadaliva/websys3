@@ -788,7 +788,7 @@ function saveEditPayment() {
   p.or = document.getElementById("editPayOR").value || p.or;
   p.method = document.getElementById("editPayMethod").value || p.method;
   closeM("editPaymentModal");
-  renderPayments();
+  renderRecords();
   if (SEL_VID) renderVendorLedger(SEL_VID);
   showToast("Payment information updated.", "g");
 }
