@@ -59,9 +59,9 @@ const stalls = [
         email: "juan.delacruz@email.com",
         addr: "Brgy. Norte, Arkipaisi",
         date: "Mar 3 · 10:20 AM",
-        pre: "Failed",
-        status: "b-submitted",
-        statusTxt: "Locked",
+        pre: "Passed",
+        status: "b-qualified",
+        statusTxt: "Qualified",
         docs: 2,
       },
       {
@@ -73,8 +73,8 @@ const stalls = [
         addr: "Brgy. Sur, Arkipaisi",
         date: "Mar 2 · 11:00 AM",
         pre: "Passed",
-        status: "b-submitted",
-        statusTxt: "Locked",
+        status: "b-qualified",
+        statusTxt: "Qualified",
         docs: 5,
       },
       {
@@ -407,11 +407,25 @@ let dark = false;
 function toggleTheme() {
   dark = !dark;
   document.documentElement.classList.toggle("dark", dark);
+  localStorage.setItem("arkipaisi-theme", dark ? "dark" : "light");
   const i = document.getElementById("themeIcon");
   i.innerHTML = dark
     ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
     : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
 }
+
+(function syncThemeFromStorage() {
+  const savedTheme = localStorage.getItem("arkipaisi-theme");
+  if (!savedTheme) return;
+  dark = savedTheme === "dark";
+  document.documentElement.classList.toggle("dark", dark);
+  const i = document.getElementById("themeIcon");
+  if (i) {
+    i.innerHTML = dark
+      ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+      : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  }
+})();
 
 /* ──────────── STALL VIEW TOGGLE ──────────── */
 function switchStallView(v) {
@@ -462,6 +476,23 @@ function openStallDetail(idx) {
     general: "purple",
   };
   const tc = typeColors[currentStall.typeClass] || "blue";
+  const hasRaffleSchedule = Boolean(currentStall.raffleScheduled && currentStall.drawDate && currentStall.drawTime);
+  const scheduleDateText = hasRaffleSchedule
+    ? `${currentStall.drawDate} • ${currentStall.drawTime}`
+    : currentStall.deadline;
+  const daysText = hasRaffleSchedule
+    ? (() => {
+        const diffMs = new Date(`${currentStall.drawDate}T${currentStall.drawTime}`) - new Date();
+        const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        return diffDays >= 0 ? `Draw in ${diffDays} day${diffDays === 1 ? "" : "s"}` : "Draw completed";
+      })()
+    : `${currentStall.daysLeft} days remaining`;
+  const deadlineLabel = hasRaffleSchedule ? "Raffle Draw Scheduled" : "Application Deadline";
+  const statusBadgeText = currentStall.raffleCompleted
+    ? "🟢 Raffle Completed"
+    : hasRaffleSchedule
+    ? "🔵 Raffle Scheduled"
+    : "🟡 Open for Applications";
   document.getElementById("detailHeader").innerHTML = `
     <div class="dh-left">
       <div class="dh-stall-icon">
@@ -474,15 +505,15 @@ function openStallDetail(idx) {
           <div class="dh-meta-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${currentStall.section}</div>
           <div class="dh-meta-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>${currentStall.size}</div>
           <div class="dh-meta-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>${currentStall.rate}/mo</div>
-          <span class="sc-open-badge" style="font-size:10.5px">Open for Applications</span>
+          <span class="sc-open-badge" style="font-size:10.5px">${statusBadgeText}</span>
         </div>
       </div>
     </div>
     <div class="dh-right">
       <div class="dh-deadline-card">
-        <div class="dh-deadline-label">Application Deadline</div>
-        <div class="dh-deadline-date">${currentStall.deadline}</div>
-        <div class="dh-deadline-days">${currentStall.daysLeft} days remaining</div>
+        <div class="dh-deadline-label">${deadlineLabel}</div>
+        <div class="dh-deadline-date">${scheduleDateText}</div>
+        <div class="dh-deadline-days">${daysText}</div>
       </div>
       <div class="dh-stats-row">
         <div class="dh-stat applied"><div class="dh-stat-val">${currentStall.applied}</div><div class="dh-stat-lbl">Applied</div></div>
@@ -500,6 +531,8 @@ function openStallDetail(idx) {
   document.getElementById(
     "detailTableInfo"
   ).textContent = `Showing ${currentStall.applicants.length} applications`;
+  ensureDetailActionButtons();
+  updateRaffleActionVisibility();
   renderDetailTable();
 
   const dateFilterInput = document.getElementById("detailDateFilter");
@@ -555,13 +588,26 @@ function renderDetailTable() {
       <td>
         <div class="row-acts">
           <button class="btn primary xs" ${
-            ["Qualified", "Rejected"].includes(a.statusTxt) ? "disabled" : ""
+            ["Qualified", "Rejected"].includes(a.statusTxt) || currentStall?.raffleScheduled || currentStall?.raffleCompleted ? "disabled" : ""
           } onclick="event.stopPropagation();openReviewPage(${i})">Review Application</button>
         </div>
       </td>
     </tr>`
     )
     .join("")}</tbody>`;
+}
+
+function updateRaffleActionVisibility() {
+  if (!currentStall) return;
+  const panelActions = document.querySelector(".panel-head .panel-actions");
+  if (!panelActions) return;
+  panelActions.style.display = currentStall.raffleCompleted ? "none" : "flex";
+  const scheduleBtn = panelActions.querySelector("button[onclick=\"openModal('raffleScheduleModal')\"]");
+  if (scheduleBtn) {
+    scheduleBtn.innerHTML = currentStall.raffleScheduled
+      ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="6" x2="12" y2="12" /><line x1="12" y1="12" x2="16" y2="14" /></svg>Reschedule Draw'
+      : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="6" x2="12" y2="12" /><line x1="12" y1="12" x2="16" y2="14" /></svg>Schedule Raffle Draw';
+  }
 }
 
 function openReviewPage(idx) {
@@ -656,6 +702,23 @@ function goBackToStalls() {
   selectedApplicantIdx = null;
   currentReviewController = null;
   setRightTab("overview");
+}
+
+function ensureDetailActionButtons() {
+  const panelActions = document.querySelector(".panel-head .panel-actions");
+  if (!panelActions) return;
+
+  const hasScheduleBtn = panelActions.querySelector(
+    "button[onclick=\"openModal('raffleScheduleModal')\"]"
+  );
+  if (!hasScheduleBtn) {
+    const scheduleBtn = document.createElement("button");
+    scheduleBtn.className = "btn primary sm";
+    scheduleBtn.setAttribute("onclick", "openModal('raffleScheduleModal')");
+    scheduleBtn.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="6" x2="12" y2="12" /><line x1="12" y1="12" x2="16" y2="14" /></svg>Schedule Raffle Draw';
+    panelActions.prepend(scheduleBtn);
+  }
 }
 
 /* ──────────── MODALS ──────────── */
@@ -851,6 +914,11 @@ async function conductRaffle() {
       document.getElementById(
         "raffleFoot"
       ).innerHTML = `<button class="btn ghost sm" onclick="closeModal('raffleModal')">Close</button><button class="btn success sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Award Stall to Winner</button>`;
+      if (currentStall) {
+        currentStall.raffleCompleted = true;
+        updateRaffleActionVisibility();
+        renderDetailTable();
+      }
     }
   }, 100);
 }
@@ -860,15 +928,31 @@ async function saveRaffleSchedule() {
   const stallName = document.getElementById('rfStallName').value.trim();
   const drawDate = document.getElementById('rfDate').value;
   const drawTime = document.getElementById('rfTime').value;
+  const applicationDeadline = currentStall?.deadlineISO || null;
+  const qualifiedApplicants = (currentStall?.applicants || [])
+    .filter((a) => a.statusTxt === "For Raffle" || a.statusTxt === "Qualified")
+    .map((a) => a.name);
   if (!drawDate || !drawTime) {
     alert('Please set draw date and time');
     return;
   }
-  await fetch('/admin/raffle/schedule', {
+  const resp = await fetch('/admin/raffle/schedule', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ stallId, stallName, drawDate, drawTime }),
+    body: JSON.stringify({ stallId, stallName, drawDate, drawTime, applicationDeadline, qualifiedApplicants }),
   });
+  const data = await resp.json();
+  if (!resp.ok) {
+    alert(data?.message || 'Unable to save raffle schedule');
+    return;
+  }
+  if (currentStall) {
+    currentStall.raffleScheduled = true;
+    currentStall.drawDate = drawDate;
+    currentStall.drawTime = drawTime;
+    renderDetailTable();
+    openStallDetail(currentStall.id);
+  }
   alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
 }

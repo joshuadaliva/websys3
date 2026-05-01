@@ -15,8 +15,14 @@
       <div id='schedTxt'></div><div id='countdown'></div>
     </div>
     <div class='card'>
-      <div class='label'>Live Status</div>
-      <div>Status: <span id='status'><%= raffleState.status %></span></div><div id='winner'></div><div id='drawAt'></div>
+      <div class='label'>Live Draw</div>
+      <div>Status: <span id='status'><%= raffleState.status %></span></div>
+      <div class="draw-visual" id="liveDrawViz" style="display:none">
+        <div class="draw-ring"></div>
+        <div class="draw-center"></div>
+        <div class="draw-copy">Drawing winner...</div>
+      </div>
+      <div id='winner'></div><div id='drawAt'></div>
     </div>
   </div>
   <div class='card'>

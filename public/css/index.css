@@ -41,6 +41,20 @@
     --rs: 8px;
 }
 
+html.dark {
+    --offwhite: #0f172a;
+    --white: #111827;
+    --cream: #0b1220;
+    --cream2: #111827;
+    --cream3: #1f2937;
+    --t1: #f8fafc;
+    --t2: #cbd5e1;
+    --t3: #94a3b8;
+    --t4: #64748b;
+    --brd: #334155;
+    --brd2: #1e293b;
+}
+
 html {
     scroll-behavior: smooth
 }

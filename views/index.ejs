@@ -14,6 +14,16 @@
 </head>
 
 <body>
+  <script>
+    (function () {
+      var savedTheme = localStorage.getItem("arkipaisi-theme");
+      if (savedTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else if (savedTheme === "light") {
+        document.documentElement.classList.remove("dark");
+      }
+    })();
+  </script>
 
   <div class="raffle-ann" id="raffleAnnouncement">
     <a href="/raffle/live">🎥 Live Raffle Draw for Stall #06 on March 22, 2026 – Click to Watch</a>
