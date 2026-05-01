@@ -15,6 +15,7 @@ const raffleState = {
   updatedAt: null,
   logs: [],
   lockedApplicants: null,
+  wasRescheduled: false,
 };
 
 function toPublicRaffleState() {
@@ -51,6 +52,8 @@ exports.scheduleRaffle = (req, res) => {
     return res.status(400).json({ ok: false, message: "Raffle can only be scheduled after application deadline." });
   }
 
+  const hadExistingSchedule = Boolean(raffleState.drawDate && raffleState.drawTime);
+
   raffleState.stallId = stallId || raffleState.stallId;
   raffleState.stallName = stallName || raffleState.stallName;
   raffleState.drawDate = drawDate;
@@ -60,6 +63,7 @@ exports.scheduleRaffle = (req, res) => {
   raffleState.winnerId = null;
   raffleState.drawnAt = null;
   raffleState.updatedAt = new Date().toISOString();
+  raffleState.wasRescheduled = hadExistingSchedule;
   if (Array.isArray(qualifiedApplicants) && qualifiedApplicants.length) {
     raffleState.participants = qualifiedApplicants.map((name, idx) => ({
       raffleNumber: idx + 1,

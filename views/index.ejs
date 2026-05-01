@@ -59,10 +59,10 @@
   </nav>
 
   <% if (hasSchedule) { %>
-  <div class="raffle-ann" id="raffleAnnouncement" data-schedule-key="<%= raffleState.scheduleISO %>">
+  <div class="raffle-ann" id="raffleAnnouncement" data-schedule-key="<%= `${raffleState.scheduleISO || ""}|${raffleState.updatedAt || ""}|${raffleState.stallId || ""}` %>">
     <span class="raffle-ann-dot"></span>
     <p class="raffle-ann-msg" id="raffleAnnouncementMessage">
-      🎟 Raffle at <strong><%= raffleState.stallId %> — <%= raffleState.stallName %></strong>
+      <% if (raffleState.wasRescheduled) { %>🔁 Raffle rescheduled · <% } %>🎟 Raffle at <strong><%= raffleState.stallId %> — <%= raffleState.stallName %></strong>
       · <%= new Date(raffleState.scheduleISO).toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }) %>
       · <%= new Date(raffleState.scheduleISO).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) %>
     </p>
@@ -74,11 +74,6 @@
       var bar = document.getElementById('raffleAnnouncement');
       if (!bar) return;
       var key = bar.dataset.scheduleKey || '';
-      var lastSeen = localStorage.getItem('raffleAnnouncementLastSeen') || '';
-      if (lastSeen && lastSeen !== key) {
-        var msg = document.getElementById('raffleAnnouncementMessage');
-        if (msg) msg.insertAdjacentText('afterbegin', '🔁 Raffle rescheduled · ');
-      }
       localStorage.setItem('raffleAnnouncementLastSeen', key);
     })();
   </script>
