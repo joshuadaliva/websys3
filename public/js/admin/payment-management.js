@@ -769,14 +769,39 @@ function openStatusM(pid) {
 }
 
 let editPaymentId = null;
+function toDateInputValue(dateText) {
+  if (!dateText) return "";
+  const dt = new Date(dateText);
+  if (Number.isNaN(dt.getTime())) return "";
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, "0");
+  const d = String(dt.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function toDisplayDate(dateValue) {
+  if (!dateValue) return "";
+  const dt = new Date(dateValue);
+  if (Number.isNaN(dt.getTime())) return "";
+  return dt.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 function openEditM(pid) {
   const p = PAYMENTS.find((x) => x.id === pid);
   if (!p) return;
+  const v = VENDORS.find((x) => x.id === p.vid);
   editPaymentId = pid;
   document.getElementById("editPayAmount").value = p.amount || "";
-  document.getElementById("editPayDate").value = p.date || "";
+  document.getElementById("editPayDate").value = toDateInputValue(p.date);
   document.getElementById("editPayOR").value = p.or || "";
-  document.getElementById("editPayMethod").value = p.method || "";
+  document.getElementById("editPayMethod").value = MT[p.method] || "Online Portal";
+  document.getElementById("editPayVendorInfo").textContent = v
+    ? `Vendor: ${v.fn} ${v.ln} • ${v.id} • Stall ${v.stall || "N/A"}`
+    : `Vendor: ${p.vid || "—"}`;
   openM("editPaymentModal");
 }
 
@@ -784,9 +809,9 @@ function saveEditPayment() {
   const p = PAYMENTS.find((x) => x.id === editPaymentId);
   if (!p) return;
   p.amount = Number(document.getElementById("editPayAmount").value || p.amount);
-  p.date = document.getElementById("editPayDate").value || p.date;
+  const nextDate = document.getElementById("editPayDate").value;
+  p.date = nextDate ? toDisplayDate(nextDate) : p.date;
   p.or = document.getElementById("editPayOR").value || p.or;
-  p.method = document.getElementById("editPayMethod").value || p.method;
   closeM("editPaymentModal");
   renderRecords();
   if (SEL_VID) renderVendorLedger(SEL_VID);
