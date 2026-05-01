@@ -25,11 +25,6 @@
     })();
   </script>
 
-  <div class="raffle-ann" id="raffleAnnouncement">
-    <a href="/raffle/live">🎥 Live Raffle Draw for Stall #06 on March 22, 2026 – Click to Watch</a>
-    <button type="button" class="raffle-ann-close" onclick="closeRaffleAnnouncement()">×</button>
-  </div>
-
   <!-- ═══ TOP NAV ═══ -->
   <nav class="topnav">
     <div class="topnav-inner">
@@ -62,6 +57,27 @@
       </button>
     </div>
   </nav>
+
+  <% if (hasSchedule) { %>
+  <div class="raffle-ann" id="raffleAnnouncement" data-schedule-key="<%= `${raffleState.scheduleISO || ""}|${raffleState.updatedAt || ""}|${raffleState.stallId || ""}` %>">
+    <span class="raffle-ann-dot"></span>
+    <p class="raffle-ann-msg" id="raffleAnnouncementMessage">
+      <% if (raffleState.wasRescheduled) { %>🔁 Raffle rescheduled · <% } %>🎟 Raffle at <strong><%= raffleState.stallId %> — <%= raffleState.stallName %></strong>
+      · <%= new Date(raffleState.scheduleISO).toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }) %>
+      · <%= new Date(raffleState.scheduleISO).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) %>
+    </p>
+    <a href="/raffle/live" class="raffle-ann-cta">Join the Raffle</a>
+    <button type="button" class="raffle-ann-close" onclick="closeRaffleAnnouncement()" aria-label="Close announcement">×</button>
+  </div>
+  <script>
+    (function () {
+      var bar = document.getElementById('raffleAnnouncement');
+      if (!bar) return;
+      var key = bar.dataset.scheduleKey || '';
+      localStorage.setItem('raffleAnnouncementLastSeen', key);
+    })();
+  </script>
+  <% } %>
 
   <!-- Mobile menu -->
   <div class="mob-menu" id="mob-menu">
