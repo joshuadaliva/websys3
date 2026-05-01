@@ -74,12 +74,7 @@
       var bar = document.getElementById('raffleAnnouncement');
       if (!bar) return;
       var key = bar.dataset.scheduleKey || '';
-      var closedFor = localStorage.getItem('raffleAnnouncementClosedFor') || '';
       var lastSeen = localStorage.getItem('raffleAnnouncementLastSeen') || '';
-      if (closedFor && closedFor === key) {
-        bar.style.display = 'none';
-        return;
-      }
       if (lastSeen && lastSeen !== key) {
         var msg = document.getElementById('raffleAnnouncementMessage');
         if (msg) msg.insertAdjacentText('afterbegin', '🔁 Raffle rescheduled · ');
