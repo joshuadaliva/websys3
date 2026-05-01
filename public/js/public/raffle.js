@@ -1,5 +1,19 @@
 const socket = io();
 let current = null;
+
+function maskDisplayName(name = '') {
+  const parts = String(name).trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '';
+  if (parts.length === 1) return parts[0];
+  const first = parts[0];
+  const rest = parts.slice(1).map((part) => {
+    const cleaned = part.replace(/[^A-Za-z]/g, '');
+    if (!cleaned) return '';
+    return part.length === 2 && part.endsWith('.') ? `${cleaned[0].toUpperCase()}.` : cleaned[0].toUpperCase();
+  }).filter(Boolean);
+  return `${first} ${rest.join(' ')}`.trim();
+}
+
 function render(state){
   current=state;
   const statusKey = (state.status || 'waiting').toLowerCase();
@@ -28,8 +42,17 @@ function render(state){
     }
   }
   document.getElementById('schedTxt').textContent = state.scheduleISO ? `Schedule: ${new Date(state.scheduleISO).toLocaleString()}` : 'Schedule: Not set';
+  const applicants = state.qualifiedApplicants || [];
+  const listEl = document.getElementById('list');
+  if (listEl && applicants.length) {
+    listEl.innerHTML = applicants
+      .map((a) => `<div class='row'><span>#${a.raffleNumber}</span><strong>${maskDisplayName(a.name || a.masked || '')}</strong></div>`)
+      .join('');
+  }
+  const totalEl = document.getElementById('total');
+  if (totalEl && applicants.length) totalEl.textContent = applicants.length;
   const canShowResult = statusKey === 'completed' && state.winner;
-  document.getElementById('winner').textContent = canShowResult ? `🏆 Winner: ${state.winner.name}` : '';
+  document.getElementById('winner').textContent = canShowResult ? `🏆 Winner: ${maskDisplayName(state.winner.name)}` : '';
   document.getElementById('drawAt').textContent = canShowResult && state.drawTimestamp ? `Draw Time: ${new Date(state.drawTimestamp).toLocaleString()}` : '';
   document.getElementById('logs').innerHTML = (state.logs||[]).map(l=>`<li>${l}</li>`).join('');
 }
