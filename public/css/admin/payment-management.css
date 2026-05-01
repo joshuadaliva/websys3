@@ -1163,15 +1163,15 @@ svg {
   gap: 4px
 }
 
-.racell-lg { gap: 10px; align-items: center }
+.racell-lg { gap: 4px; align-items: center }
 .pm-act-btn {
-  width: 56px; height: 56px; border-radius: 14px; border: 0;
+  width: 28px; height: 28px; border-radius: 7px; border: 0;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: all .15s ease;
 }
 .pm-act-btn:hover { opacity: .85; transform: scale(1.05) }
 .pm-act-btn:active { transform: scale(.95) }
-.pm-act-btn svg { width: 30px; height: 30px }
+.pm-act-btn svg { width: 14px; height: 14px }
 .pm-act-btn.b-view { background: #f59e0b }
 .pm-act-btn.b-edit { background: #3b82f6 }
 .pm-act-btn.b-status { background: #10b981 }
