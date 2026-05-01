@@ -515,7 +515,6 @@ function openStallDetail(idx) {
     "detailTableInfo"
   ).textContent = `Showing ${currentStall.applicants.length} applications`;
   ensureDetailActionButtons();
-  updateRaffleActionVisibility();
   renderDetailTable();
 
   const dateFilterInput = document.getElementById("detailDateFilter");
@@ -923,17 +922,6 @@ async function saveRaffleSchedule() {
   if (!resp.ok) {
     alert(data?.message || 'Unable to save raffle schedule');
     return;
-  }
-  if (currentStall) {
-    currentStall.raffleScheduled = true;
-    currentStall.applicants.forEach((app) => {
-      if (app.statusTxt === "Qualified" || app.statusTxt === "For Raffle") {
-        app.statusTxt = "Locked";
-        app.status = "b-locked";
-      }
-    });
-    updateRaffleActionVisibility();
-    renderDetailTable();
   }
   alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
