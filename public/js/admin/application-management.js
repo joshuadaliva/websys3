@@ -73,8 +73,8 @@ const stalls = [
         addr: "Brgy. Sur, Arkipaisi",
         date: "Mar 2 · 11:00 AM",
         pre: "Passed",
-        status: "b-locked",
-        statusTxt: "Locked",
+        status: "b-qualified",
+        statusTxt: "Qualified",
         docs: 5,
       },
       {
@@ -476,6 +476,23 @@ function openStallDetail(idx) {
     general: "purple",
   };
   const tc = typeColors[currentStall.typeClass] || "blue";
+  const hasRaffleSchedule = Boolean(currentStall.raffleScheduled && currentStall.drawDate && currentStall.drawTime);
+  const scheduleDateText = hasRaffleSchedule
+    ? `${currentStall.drawDate} • ${currentStall.drawTime}`
+    : currentStall.deadline;
+  const daysText = hasRaffleSchedule
+    ? (() => {
+        const diffMs = new Date(`${currentStall.drawDate}T${currentStall.drawTime}`) - new Date();
+        const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        return diffDays >= 0 ? `Draw in ${diffDays} day${diffDays === 1 ? "" : "s"}` : "Draw completed";
+      })()
+    : `${currentStall.daysLeft} days remaining`;
+  const deadlineLabel = hasRaffleSchedule ? "Raffle Draw Scheduled" : "Application Deadline";
+  const statusBadgeText = currentStall.raffleCompleted
+    ? "🟢 Raffle Completed"
+    : hasRaffleSchedule
+    ? "🔵 Raffle Scheduled"
+    : "🟡 Open for Applications";
   document.getElementById("detailHeader").innerHTML = `
     <div class="dh-left">
       <div class="dh-stall-icon">
@@ -488,15 +505,15 @@ function openStallDetail(idx) {
           <div class="dh-meta-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${currentStall.section}</div>
           <div class="dh-meta-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>${currentStall.size}</div>
           <div class="dh-meta-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>${currentStall.rate}/mo</div>
-          <span class="sc-open-badge" style="font-size:10.5px">Open for Applications</span>
+          <span class="sc-open-badge" style="font-size:10.5px">${statusBadgeText}</span>
         </div>
       </div>
     </div>
     <div class="dh-right">
       <div class="dh-deadline-card">
-        <div class="dh-deadline-label">Application Deadline</div>
-        <div class="dh-deadline-date">${currentStall.deadline}</div>
-        <div class="dh-deadline-days">${currentStall.daysLeft} days remaining</div>
+        <div class="dh-deadline-label">${deadlineLabel}</div>
+        <div class="dh-deadline-date">${scheduleDateText}</div>
+        <div class="dh-deadline-days">${daysText}</div>
       </div>
       <div class="dh-stats-row">
         <div class="dh-stat applied"><div class="dh-stat-val">${currentStall.applied}</div><div class="dh-stat-lbl">Applied</div></div>
@@ -585,6 +602,12 @@ function updateRaffleActionVisibility() {
   const panelActions = document.querySelector(".panel-head .panel-actions");
   if (!panelActions) return;
   panelActions.style.display = currentStall.raffleCompleted ? "none" : "flex";
+  const scheduleBtn = panelActions.querySelector("button[onclick=\"openModal('raffleScheduleModal')\"]");
+  if (scheduleBtn) {
+    scheduleBtn.innerHTML = currentStall.raffleScheduled
+      ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="6" x2="12" y2="12" /><line x1="12" y1="12" x2="16" y2="14" /></svg>Reschedule Draw'
+      : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="6" x2="12" y2="12" /><line x1="12" y1="12" x2="16" y2="14" /></svg>Schedule Raffle Draw';
+  }
 }
 
 function openReviewPage(idx) {
@@ -925,7 +948,10 @@ async function saveRaffleSchedule() {
   }
   if (currentStall) {
     currentStall.raffleScheduled = true;
+    currentStall.drawDate = drawDate;
+    currentStall.drawTime = drawTime;
     renderDetailTable();
+    openStallDetail(currentStall.id);
   }
   alert('Raffle schedule saved');
   closeModal('raffleScheduleModal');
