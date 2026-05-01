@@ -485,15 +485,20 @@ function openStallDetail(idx) {
     ? (() => {
         const diffMs = new Date(`${currentStall.drawDate}T${currentStall.drawTime}`) - new Date();
         const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        if (currentStall.raffleCompleted) return `Raffle completed ${scheduleStamp}`;
         return diffDays >= 0 ? `Draw in ${diffDays} day${diffDays === 1 ? "" : "s"}` : `Raffle ended on ${scheduleStamp}`;
       })()
     : `${currentStall.daysLeft} days remaining`;
-  const deadlineLabel = hasRaffleSchedule ? "Raffle Draw Scheduled" : "Application Deadline";
-  const statusBadgeText = currentStall.raffleCompleted
-    ? "🟢 Raffle Completed"
+  const deadlineLabel = currentStall.raffleCompleted
+    ? "Raffle Completed"
     : hasRaffleSchedule
-    ? "🔵 Raffle Scheduled"
-    : "🟡 Open for Applications";
+    ? "Raffle Draw Scheduled"
+    : "Application Deadline";
+  const statusBadgeText = currentStall.raffleCompleted
+    ? "Raffle Completed"
+    : hasRaffleSchedule
+    ? "Raffle Scheduled"
+    : "Open for Applications";
   document.getElementById("detailHeader").innerHTML = `
     <div class="dh-left">
       <div class="dh-stall-icon">
@@ -920,14 +925,16 @@ async function conductRaffle() {
       btn.style.background = "var(--green)";
       document.getElementById(
         "raffleFoot"
-      ).innerHTML = `<button class="btn ghost sm" onclick="closeModal('raffleModal')">Close</button><button class="btn success sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Award Stall to Winner</button>`;
-      if (currentStall) {
-        currentStall.raffleCompleted = true;
-        updateRaffleActionVisibility();
-        renderDetailTable();
-      }
+      ).innerHTML = `<button class="btn ghost sm" onclick="closeModal('raffleModal')">Close</button><button class="btn success sm" onclick="awardStallToWinner()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Award Stall to Winner</button>`;
     }
   }, 100);
+}
+
+function awardStallToWinner() {
+  if (!currentStall) return;
+  currentStall.raffleCompleted = true;
+  closeModal("raffleModal");
+  openStallDetail(currentStall.id);
 }
 
 async function saveRaffleSchedule() {
