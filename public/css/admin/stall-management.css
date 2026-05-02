@@ -69,7 +69,7 @@ html.dark {
 }
 
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--t1);
     display: flex;
@@ -614,6 +614,68 @@ body {
     color: var(--t2)
 }
 
+
+.map-legend-item {
+    position: relative;
+    cursor: help
+}
+
+.map-legend-item::after,
+.map-legend-item::before {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .14s ease;
+    position: absolute;
+    left: 50%;
+    z-index: 30
+}
+
+.map-legend-item::after {
+    content: attr(data-tip);
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%);
+    padding: 7px 11px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, .18)
+}
+
+.map-legend-item::before {
+    content: '';
+    bottom: calc(100% + 3px);
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    border: 1px solid transparent;
+    border-top: none;
+    border-left: none
+}
+
+.map-legend-item.lg-paid::after,
+.map-legend-item.lg-paid::before { background: var(--grl); border-color: var(--grs) }
+.map-legend-item.lg-paid::after { color: var(--gr) }
+
+.map-legend-item.lg-overdue::after,
+.map-legend-item.lg-overdue::before { background: var(--rdl); border-color: var(--rds) }
+.map-legend-item.lg-overdue::after { color: var(--rd) }
+
+.map-legend-item.lg-partial::after,
+.map-legend-item.lg-partial::before { background: var(--aml); border-color: var(--ams) }
+.map-legend-item.lg-partial::after { color: #8a6100 }
+
+.map-legend-item.lg-vacant::after,
+.map-legend-item.lg-vacant::before { background: var(--s2); border-color: var(--brd) }
+.map-legend-item.lg-vacant::after { color: var(--t2) }
+
+.map-legend-item.lg-posted::after,
+.map-legend-item.lg-posted::before { background: var(--acl); border-color: var(--acs) }
+.map-legend-item.lg-posted::after { color: var(--ac) }
+
+.map-legend-item:hover::after,
+.map-legend-item:hover::before { opacity: 1 }
 .map-legend-swatch {
     width: 11px;
     height: 11px;
@@ -819,7 +881,7 @@ body {
     opacity: 0;
     transition: opacity .14s;
     z-index: 200;
-    font-family: 'DM Sans', sans-serif
+    font-family: 'Poppins', sans-serif
 }
 
 .tt::after {
@@ -1121,7 +1183,7 @@ body {
     padding: 9px 12px;
     font-size: 13px;
     color: var(--t1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     transition: border .14s;
     width: 100%
@@ -1446,7 +1508,7 @@ textarea.finp {
     font-weight: 600;
     cursor: pointer;
     border: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -1615,3 +1677,11 @@ textarea.finp {
     background: var(--brd);
     border-radius: 10px
 }
+/* Global table action color indicators */
+table td .btn { position: relative; }
+table td .btn::before { content:""; width:6px; height:6px; border-radius:50%; position:absolute; top:4px; left:4px; background: var(--text-muted, #94a3b8); }
+table td .btn.primary::before, table td .btn.pri::before, table td .btn.pr::before { background:#1d4ed8; }
+table td .btn.success::before, table td .btn.gr::before { background:#15803d; }
+table td .btn.ro::before, table td .btn.a::before { background:#b45309; }
+table td .btn.gh::before, table td .btn.ghost::before { background:#64748b; }
+table td .btn.r::before, table td .btn.danger::before { background:#b91c1c; }
