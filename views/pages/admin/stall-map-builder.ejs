@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Stall Map Builder</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:0;background:#f5f6f8}
+    .top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#fff;border-bottom:1px solid #ddd}
+    .tabs button,.actions button{margin-right:8px;padding:8px 12px;border-radius:8px;border:1px solid #cfd3df;background:#fff;cursor:pointer}
+    .tabs button.active{background:#eef2ff;border-color:#6366f1;color:#3730a3}
+    .wrap{display:grid;grid-template-columns:260px 1fr;gap:14px;padding:14px}
+    .panel{background:#fff;border:1px solid #ddd;border-radius:10px;padding:12px}
+    .palette-item{padding:10px;border:1px dashed #aaa;border-radius:8px;margin-bottom:8px;cursor:grab;background:#fafafa}
+    .grid{display:grid;grid-template-columns:repeat(16,1fr);gap:4px}
+    .tile{aspect-ratio:1/1;background:#fff;border:1px solid #d9deea;border-radius:4px;position:relative;overflow:hidden}
+    .box{position:absolute;inset:4px;padding:4px 20px 4px 8px;border-radius:6px;background:#e0e7ff;border:1px solid #818cf8;display:flex;align-items:center;justify-content:flex-start;font-size:11px;cursor:grab;user-select:none}
+    .box-label{outline:none;white-space:nowrap}
+    .box-del{position:absolute;right:4px;top:2px;border:none;background:transparent;color:#dc2626;font-size:12px;cursor:pointer}
+    .hint{font-size:12px;color:#666;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="tabs">
+      <button class="active" onclick="switchFloor('first', this)">First Floor</button>
+      <button onclick="switchFloor('second', this)">Second Floor</button>
+    </div>
+    <div class="actions">
+      <button onclick="downloadJSON()">Download JSON</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="panel">
+      <h4>Drag & Drop Boxes</h4>
+      <div class="palette-item" draggable="true" data-type="stall" ondragstart="dragStart(event)">Stall Box</div>
+      <div class="palette-item" draggable="true" data-type="aisle" ondragstart="dragStart(event)">Aisle Box</div>
+      <div class="palette-item" draggable="true" data-type="entrance" ondragstart="dragStart(event)">Entrance Box</div>
+      <p class="hint">Drop onto a tile then click text to edit label.</p>
+    </div>
+    <div class="panel">
+      <div id="grid" class="grid"></div>
+    </div>
+  </div>
+  <script>
+    const state = { currentFloor: "first", first: {}, second: {} };
+    const grid = document.getElementById("grid");
+    let dragPayload = null;
+    function renderGrid() {
+      grid.innerHTML = "";
+      for (let i = 0; i < 16 * 12; i++) {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        tile.dataset.idx = i;
+        tile.ondragover = (e) => e.preventDefault();
+        tile.ondrop = (e) => dropOnTile(e, i);
+        const item = state[state.currentFloor][i];
+        if (item) {
+          const box = document.createElement("div");
+          box.className = "box";
+          box.draggable = true;
+          box.dataset.idx = i;
+          box.ondragstart = (e) => dragPlacedBox(e, i);
+          box.ondragover = (e) => e.preventDefault();
+          box.ondrop = (e) => { e.preventDefault(); dropOnTile(e, i); };
+          box.onmousedown = () => { box.style.cursor = "grabbing"; };
+          box.onmouseup = () => { box.style.cursor = "grab"; };
+
+          const label = document.createElement("span");
+          label.className = "box-label";
+          label.contentEditable = "true";
+          label.textContent = item.label;
+          label.oninput = () => state[state.currentFloor][i].label = label.textContent;
+
+          const del = document.createElement("button");
+          del.className = "box-del";
+          del.type = "button";
+          del.textContent = "×";
+          del.onclick = (evt) => {
+            evt.stopPropagation();
+            delete state[state.currentFloor][i];
+            renderGrid();
+          };
+
+          box.appendChild(label);
+          box.appendChild(del);
+          tile.appendChild(box);
+        }
+        grid.appendChild(tile);
+      }
+    }
+    function dragStart(e){
+      dragPayload = { mode: "new", type: e.target.dataset.type };
+      e.dataTransfer.setData("text/plain", e.target.dataset.type);
+    }
+    function dragPlacedBox(e, idx){
+      dragPayload = { mode: "move", sourceIdx: idx };
+      e.dataTransfer.setData("text/plain", "move");
+    }
+    function dropOnTile(e, idx){
+      e.preventDefault();
+      if (!dragPayload) return;
+      if (dragPayload.mode === "new") {
+        const type = dragPayload.type;
+        state[state.currentFloor][idx] = { type, label: type.toUpperCase() };
+      } else if (dragPayload.mode === "move") {
+        const sourceIdx = dragPayload.sourceIdx;
+        if (Number(sourceIdx) === Number(idx)) return;
+        const sourceItem = state[state.currentFloor][sourceIdx];
+        if (!sourceItem) return;
+        const targetItem = state[state.currentFloor][idx];
+        state[state.currentFloor][idx] = sourceItem;
+        if (targetItem) {
+          state[state.currentFloor][sourceIdx] = targetItem;
+        } else {
+          delete state[state.currentFloor][sourceIdx];
+        }
+      }
+      dragPayload = null;
+      renderGrid();
+    }
+    function switchFloor(floor, btn){
+      state.currentFloor = floor;
+      document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      renderGrid();
+    }
+    function downloadJSON(){
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type: "application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "stall-map-blueprint.json"; a.click();
+      URL.revokeObjectURL(url);
+    }
+    renderGrid();
+  </script>
+</body>
+</html>

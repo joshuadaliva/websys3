@@ -2270,4 +2270,8 @@ const showStallManagement = (req, res) => {
   });
 };
 
-module.exports = { showStallManagement };
+const showMapBuilder = (req, res) => {
+  res.render("pages/admin/stall-map-builder");
+};
+
+module.exports = { showStallManagement, showMapBuilder };
