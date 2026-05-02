@@ -59,9 +59,9 @@ const stalls = [
         email: "juan.delacruz@email.com",
         addr: "Brgy. Norte, Arkipaisi",
         date: "Mar 3 · 10:20 AM",
-        pre: "Passed",
-        status: "b-qualified",
-        statusTxt: "Qualified",
+        pre: "Failed",
+        status: "b-submitted",
+        statusTxt: "Locked",
         docs: 2,
       },
       {
@@ -73,8 +73,8 @@ const stalls = [
         addr: "Brgy. Sur, Arkipaisi",
         date: "Mar 2 · 11:00 AM",
         pre: "Passed",
-        status: "b-qualified",
-        statusTxt: "Qualified",
+        status: "b-submitted",
+        statusTxt: "Locked",
         docs: 5,
       },
       {
@@ -309,59 +309,10 @@ stalls.forEach((stall, stallIdx) => {
   });
 });
 
-applyStoredApplicantStatuses();
-window.addEventListener("storage", (event) => {
-  if (event.key !== REVIEW_STATUS_STORAGE_KEY) return;
-  applyStoredApplicantStatuses();
-  if (!currentStall) return;
-  renderDetailTable();
-  if (selectedApplicantIdx !== null) selectApplicant(selectedApplicantIdx);
-});
-
 let currentStall = null;
 let selectedApplicantIdx = null;
 let pendingSendLinkConfirm = null;
 let pendingRejectConfirm = null;
-const REVIEW_STATUS_STORAGE_KEY = "application_review_status_map";
-
-function applicantStorageKey(stallId, applicantName) {
-  return `${stallId}::${applicantName}`;
-}
-
-function readReviewStatusMap() {
-  try {
-    return JSON.parse(localStorage.getItem(REVIEW_STATUS_STORAGE_KEY) || "{}");
-  } catch (err) {
-    return {};
-  }
-}
-
-function writeReviewStatusMap(map) {
-  localStorage.setItem(REVIEW_STATUS_STORAGE_KEY, JSON.stringify(map));
-}
-
-function persistApplicantStatus(stallId, applicant) {
-  const map = readReviewStatusMap();
-  map[applicantStorageKey(stallId, applicant.name)] = {
-    pre: applicant.pre,
-    status: applicant.status,
-    statusTxt: applicant.statusTxt,
-  };
-  writeReviewStatusMap(map);
-}
-
-function applyStoredApplicantStatuses() {
-  const map = readReviewStatusMap();
-  stalls.forEach((stall) => {
-    stall.applicants.forEach((applicant) => {
-      const saved = map[applicantStorageKey(stall.id, applicant.name)];
-      if (!saved) return;
-      applicant.pre = saved.pre;
-      applicant.status = saved.status;
-      applicant.statusTxt = saved.statusTxt;
-    });
-  });
-}
 
 /* ──────────── SIDEBAR / THEME ──────────── */
 let SB_OPEN = window.innerWidth >= 900;
@@ -593,9 +544,7 @@ function renderDetailTable() {
         .trim()}</td>
       <td>
         <div class="row-acts">
-          <button class="btn primary xs" ${
-            ["Qualified", "Rejected"].includes(a.statusTxt) || currentStall?.raffleScheduled || currentStall?.raffleCompleted ? "disabled" : ""
-          } onclick="event.stopPropagation();openReviewPage(${i})">Review Application</button>
+          <div class="act-btn tt" data-tip="View" onclick="event.stopPropagation();selectApplicant(${i})"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
         </div>
       </td>
     </tr>`
@@ -668,6 +617,91 @@ function selectApplicant(idx) {
       </div>
     </div>`;
 
+  // Docs panel
+  document.getElementById("docsPanel").style.display = "block";
+  const requiresReviewStart = a.pre === "Docs Submitted" && a.statusTxt === "Locked";
+  const openStep2Directly = a.pre === "Passed" && a.statusTxt === "Locked";
+  const lockAllReview =
+    a.pre === "Failed" ||
+    (a.pre === "Passed" && ["Failed", "Passed", "Qualified", "Rejected"].includes(a.statusTxt));
+
+  document.getElementById("docsBody").innerHTML = renderApplicationReviewCard();
+  const reviewController = initApplicationReviewCard({
+    lockStep1: requiresReviewStart || openStep2Directly,
+    autoOpenStep2: openStep2Directly,
+    lockAllReview,
+    applicant: a,
+    onApplicantUpdate: () => renderDetailTable(),
+    onPendingToSubmitted: () => syncDocsReviewButton(),
+  });
+  const reviewBtn = document.getElementById("docsReviewBtn");
+  const syncDocsReviewButton = () => {
+    if (!reviewBtn) return;
+    reviewBtn.onclick = null;
+
+    const step2Unlocked = reviewController && reviewController.isStep2Unlocked
+      ? reviewController.isStep2Unlocked()
+      : false;
+
+    if (lockAllReview) {
+      reviewBtn.textContent = a.statusTxt || "Locked";
+      reviewBtn.className = "btn ghost sm";
+      reviewBtn.disabled = true;
+      return;
+    }
+
+    if (openStep2Directly) {
+      reviewBtn.textContent = a.statusTxt || "Locked";
+      reviewBtn.className = "btn ghost sm";
+      reviewBtn.disabled = true;
+      return;
+    }
+
+    if (a.pre === "Docs Submitted" && (a.statusTxt === "Locked" || a.statusTxt === "Docs Submitted")) {
+      reviewBtn.textContent = "Review Application";
+      reviewBtn.className = "btn primary sm";
+      reviewBtn.disabled = false;
+      reviewBtn.onclick = () => {
+        a.pre = "Under Review";
+        renderDetailTable();
+        syncDocsReviewButton();
+        if (reviewController && reviewController.startStep1Review) {
+          reviewController.startStep1Review();
+        }
+      };
+      return;
+    }
+
+    if (a.pre === "Passed" && a.statusTxt === "Pending") {
+      reviewBtn.textContent = "Pending Uploads";
+      reviewBtn.className = "btn ghost sm";
+      reviewBtn.disabled = true;
+      return;
+    }
+
+    if (a.pre === "Passed" && a.statusTxt === "Docs Submitted" && !step2Unlocked) {
+      reviewBtn.textContent = "Review Submitted Documents";
+      reviewBtn.className = "btn primary sm";
+      reviewBtn.disabled = false;
+      reviewBtn.onclick = () => {
+        a.statusTxt = "Under Review";
+        a.status = "b-under-review";
+        renderDetailTable();
+        if (reviewController && reviewController.startStep2Review) {
+          reviewController.startStep2Review();
+        }
+        syncDocsReviewButton();
+      };
+      return;
+    }
+
+    reviewBtn.textContent = a.statusTxt || "Under Review";
+    reviewBtn.className = "btn ghost sm";
+    reviewBtn.disabled = true;
+  };
+
+  syncDocsReviewButton();
+
   // Timeline
   document.getElementById("timelinePanel").style.display = "block";
   const tl = [
@@ -702,6 +736,500 @@ function selectApplicant(idx) {
     )
     .join("");
 }
+
+function renderApplicationReviewCard() {
+  return `
+    <div class="ar-card">
+      <div class="ar-title">Application Review</div>
+      <div id="ar-statusBanner" class="ar-banner ar-bpending">Waiting for identity verification</div>
+
+      <div class="ar-section-header">
+        <span class="ar-section-title">Step 1: Identity Verification (Pre-screening)</span>
+        <span class="ar-section-badge ar-badge-pending" id="ar-step1-badge">0/2</span>
+      </div>
+      <div class="ar-progress-wrap">
+        <div class="ar-progress-track">
+          <div class="ar-progress-fill ar-fill-orange" id="ar-step1-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="ar-item">
+        <div class="ar-row">
+          <div class="ar-left ar-clickable" id="ar-item-id" data-doc="id" data-url="https://upload.wikimedia.org/wikipedia/commons/6/62/UMID_EMV_sample.png">
+            <div class="ar-icon ar-red">📄</div>
+            <div><div class="ar-text">Valid Government ID</div><div class="ar-sub" id="ar-sub-id">Click to preview</div></div>
+          </div>
+          <div id="ar-status-id" class="ar-status ar-pending">Pending</div>
+        </div>
+      </div>
+
+      <div class="ar-item">
+        <div class="ar-row">
+          <div class="ar-left ar-clickable" id="ar-item-selfie" data-doc="selfie" data-url="https://backycheck.com.au/assets/img/others/correct-image.jpg">
+            <div class="ar-icon ar-blue">📷</div>
+            <div><div class="ar-text">Selfie with ID</div><div class="ar-sub" id="ar-sub-selfie">Click to preview</div></div>
+          </div>
+          <div id="ar-status-selfie" class="ar-status ar-pending">Pending</div>
+        </div>
+      </div>
+
+      <div class="ar-divider"></div>
+      <div id="ar-step1Actions">
+        <button id="ar-mainAction" class="ar-btn-disabled" disabled>Waiting for review</button>
+      </div>
+
+      <div class="ar-section-header">
+        <span class="ar-section-title">Step 2: Qualification Documents</span>
+        <span class="ar-section-badge ar-badge-locked" id="ar-step2-badge">Locked</span>
+      </div>
+      <div class="ar-progress-wrap">
+        <div class="ar-progress-track">
+          <div class="ar-progress-fill ar-fill-gray" id="ar-step2-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      ${[
+        ["form", "Application Form"],
+        ["permit", "Business Permit"],
+        ["clearance", "Barangay Clearance"],
+      ]
+        .map(
+          ([key, label]) => `
+      <div class="ar-item">
+        <div class="ar-row">
+          <div class="ar-left ar-disabled" id="ar-item-${key}" data-doc="${key}" data-url="https://via.placeholder.com/350x200">
+            <div class="ar-icon ar-gray">📄</div>
+            <div><div class="ar-text">${label}</div><div class="ar-sub" id="ar-sub-${key}">Locked</div></div>
+          </div>
+          <div id="ar-status-${key}" class="ar-status ar-locked">Locked</div>
+        </div>
+      </div>`
+        )
+        .join("")}
+
+      <div class="ar-divider" id="ar-step2Divider" style="display:none"></div>
+      <div id="ar-step2Actions" style="display:none">
+        <button id="ar-step2Btn" class="ar-btn-disabled" disabled>Waiting for review</button>
+      </div>
+    </div>
+
+    <div id="ar-modal" class="ar-overlay">
+      <div class="ar-modal">
+        <div class="ar-modal-header">
+          <span id="ar-modalTitle">Preview</span>
+          <span class="ar-close" id="ar-closeBtn">✕</span>
+        </div>
+        <div class="ar-modal-body"><img id="ar-previewImage" src="" alt="Document preview" /></div>
+        <div class="ar-modal-actions">
+          <button class="ar-btn-verify" id="ar-verifyBtn">Verify</button>
+          <button class="ar-btn-reject" id="ar-rejectBtn">Reject</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function initApplicationReviewCard(options = {}) {
+  const state = {
+    currentDoc: null,
+    step2Unlocked: false,
+    step2ActionShown: false,
+    step1Finalized: false,
+    step1Locked: Boolean(options.lockStep1),
+    lockAllReview: Boolean(options.lockAllReview),
+    status: {
+      id: "pending",
+      selfie: "pending",
+      form: "locked",
+      permit: "locked",
+      clearance: "locked",
+    },
+  };
+
+  const step1Docs = ["id", "selfie"];
+  const step2Docs = ["form", "permit", "clearance"];
+
+  function openPreview(doc, url) {
+    if (state.lockAllReview) return;
+    if (state.status[doc] === "verified") return;
+    if (state.step1Locked && step1Docs.includes(doc)) return;
+    if (!state.step2Unlocked && step2Docs.includes(doc)) return;
+    state.currentDoc = doc;
+    document.getElementById("ar-modal").classList.add("open");
+    document.getElementById("ar-previewImage").src = url;
+    document.getElementById("ar-modalTitle").textContent = doc.charAt(0).toUpperCase() + doc.slice(1);
+  }
+
+  function closeModal() {
+    document.getElementById("ar-modal").classList.remove("open");
+  }
+
+  function lockItem(doc) {
+    const el = document.getElementById("ar-item-" + doc);
+    el.classList.remove("ar-clickable");
+    el.classList.add("ar-disabled");
+    const sub = document.getElementById("ar-sub-" + doc);
+    if (sub) sub.textContent = "Locked";
+  }
+
+  function enableItem(doc) {
+    const el = document.getElementById("ar-item-" + doc);
+    el.classList.remove("ar-disabled");
+    el.classList.add("ar-clickable");
+    const sub = document.getElementById("ar-sub-" + doc);
+    if (sub) sub.textContent = "Click to preview";
+  }
+
+  function setStatus(doc, text, cls) {
+    const el = document.getElementById("ar-status-" + doc);
+    el.textContent = text;
+    el.className = "ar-status " + cls;
+  }
+
+  function updateStep1Progress(finalState) {
+    const verified = step1Docs.filter((d) => state.status[d] === "verified").length;
+    const rejected = step1Docs.filter((d) => state.status[d] === "rejected").length;
+    const actioned = verified + rejected;
+    const total = step1Docs.length;
+    const pct = Math.round((actioned / total) * 100);
+    const bar = document.getElementById("ar-step1-bar");
+    const badge = document.getElementById("ar-step1-badge");
+    if (state.step1Locked || state.lockAllReview) {
+      bar.style.width = "0%";
+      bar.className = "ar-progress-fill ar-fill-gray";
+      badge.className = "ar-section-badge ar-badge-locked";
+      badge.textContent = "Locked";
+      return;
+    }
+    bar.style.width = pct + "%";
+
+    if (finalState === "rejected") {
+      bar.className = "ar-progress-fill ar-fill-red";
+      badge.className = "ar-section-badge ar-badge-fail";
+      badge.textContent = actioned + "/" + total + " — failed";
+    } else if (verified === total) {
+      bar.className = "ar-progress-fill ar-fill-green";
+      badge.className = "ar-section-badge ar-badge-pass";
+      badge.textContent = verified + "/" + total + " passed";
+    } else if (rejected > 0) {
+      bar.className = "ar-progress-fill ar-fill-red";
+      badge.className = "ar-section-badge ar-badge-fail";
+      badge.textContent = actioned + "/" + total + " reviewed";
+    } else {
+      bar.className = "ar-progress-fill ar-fill-orange";
+      badge.className = "ar-section-badge ar-badge-pending";
+      badge.textContent = actioned + "/" + total + " reviewed";
+    }
+  }
+
+  function updateStep2Progress(finalState) {
+    const verified = step2Docs.filter((d) => state.status[d] === "verified").length;
+    const rejected = step2Docs.filter((d) => state.status[d] === "rejected").length;
+    const actioned = verified + rejected;
+    const total = step2Docs.length;
+    const pct = state.step2Unlocked ? Math.round((actioned / total) * 100) : 0;
+    const bar = document.getElementById("ar-step2-bar");
+    const badge = document.getElementById("ar-step2-badge");
+    bar.style.width = pct + "%";
+
+    if (!state.step2Unlocked) {
+      bar.className = "ar-progress-fill ar-fill-gray";
+      badge.className = "ar-section-badge ar-badge-locked";
+      badge.textContent = "Locked";
+      return;
+    }
+    if (finalState === "qualified") {
+      bar.className = "ar-progress-fill ar-fill-green";
+      badge.className = "ar-section-badge ar-badge-pass";
+      badge.textContent = verified + "/" + total + " qualified";
+    } else if (finalState === "rejected") {
+      bar.className = "ar-progress-fill ar-fill-red";
+      badge.className = "ar-section-badge ar-badge-fail";
+      badge.textContent = actioned + "/" + total + " — rejected";
+    } else if (rejected > 0) {
+      bar.className = "ar-progress-fill ar-fill-red";
+      badge.className = "ar-section-badge ar-badge-fail";
+      badge.textContent = actioned + "/" + total + " reviewed";
+    } else if (actioned > 0) {
+      bar.className = "ar-progress-fill ar-fill-orange";
+      badge.className = "ar-section-badge ar-badge-pending";
+      badge.textContent = actioned + "/" + total + " reviewed";
+    } else {
+      bar.className = "ar-progress-fill ar-fill-orange";
+      badge.className = "ar-section-badge ar-badge-pending";
+      badge.textContent = "0/" + total + " reviewed";
+    }
+  }
+
+  function updateStep1UI() {
+    if (state.step1Finalized) return;
+    const banner = document.getElementById("ar-statusBanner");
+    const btn = document.getElementById("ar-mainAction");
+    const hasRejected = step1Docs.some((d) => state.status[d] === "rejected");
+    const allVerified = step1Docs.every((d) => state.status[d] === "verified");
+    const anyActioned = step1Docs.some((d) => state.status[d] === "verified" || state.status[d] === "rejected");
+
+    btn.onclick = null;
+    btn.className = "ar-btn-disabled";
+    btn.disabled = true;
+    btn.textContent = "Waiting for review";
+
+    if (state.lockAllReview) {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = options.applicant?.pre === "Failed"
+        ? "Pre-screening failed."
+        : "Pre-screening completed.";
+      return;
+    }
+
+    if (state.step1Locked) {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = "Click Review Application to start pre-screening";
+      return;
+    }
+
+    if (hasRejected) {
+      banner.className = "ar-banner ar-reject";
+      banner.textContent = "One or more documents rejected";
+      btn.textContent = "Reject Application";
+      btn.className = "ar-btn-danger";
+      btn.disabled = false;
+      btn.onclick = () => {
+        const applicantName =
+          selectedApplicantIdx !== null && currentStall
+            ? currentStall.applicants[selectedApplicantIdx].name
+            : "this applicant";
+        openRejectModal(applicantName, () => {
+          state.step1Finalized = true;
+          banner.className = "ar-banner ar-reject";
+          banner.textContent = "Application rejected";
+          btn.disabled = true;
+          btn.className = "ar-btn-disabled";
+          step1Docs.forEach(lockItem);
+          if (options.applicant) {
+            options.applicant.pre = "Failed";
+            if (options.onApplicantUpdate) options.onApplicantUpdate();
+          }
+          updateStep1Progress("rejected");
+        });
+      };
+    } else if (allVerified) {
+      banner.className = "ar-banner ar-ready";
+      banner.textContent = "Pre-screening passed.";
+      if (options.applicant && options.applicant.pre !== "Passed") {
+        options.applicant.pre = "Passed";
+        if (options.onApplicantUpdate) options.onApplicantUpdate();
+      }
+      btn.textContent = "Send Upload Link";
+      btn.className = "ar-btn-primary";
+      btn.disabled = false;
+      btn.onclick = () => openSendLinkModal(selectedApplicantIdx, unlockStep2);
+    } else if (anyActioned) {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = "Waiting for remaining documents";
+    } else {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = "Waiting for identity verification";
+    }
+  }
+
+  function unlockStep2() {
+    state.step1Finalized = true;
+    lockItem("id");
+    lockItem("selfie");
+    const banner = document.getElementById("ar-statusBanner");
+    banner.className = "ar-banner ar-ready";
+    banner.textContent = "Pre-screening passed — waiting for qualification documents";
+    document.getElementById("ar-mainAction").style.display = "none";
+
+    if (options.applicant) {
+      options.applicant.statusTxt = "Pending";
+      options.applicant.status = "b-doc-pending";
+      if (options.onApplicantUpdate) options.onApplicantUpdate();
+
+      setTimeout(() => {
+        if (options.applicant.statusTxt !== "Pending") return;
+        options.applicant.statusTxt = "Docs Submitted";
+        options.applicant.status = "b-doc-submitted";
+        if (options.onApplicantUpdate) options.onApplicantUpdate();
+        if (options.onPendingToSubmitted) options.onPendingToSubmitted();
+      }, 5000);
+    }
+
+    updateStep1Progress(null);
+    updateStep2Progress(null);
+  }
+
+  function startStep2Review() {
+    if (state.lockAllReview || state.step2Unlocked) return;
+    state.step2Unlocked = true;
+    step2Docs.forEach(enableItem);
+    state.status.form = "pending";
+    state.status.permit = "missing";
+    state.status.clearance = "missing";
+    setStatus("form", "Pending", "ar-pending");
+    setStatus("permit", "Missing", "ar-missing");
+    setStatus("clearance", "Missing", "ar-missing");
+    updateStep2Progress(null);
+    updateStep2UI();
+  }
+
+  function startStep1Review() {
+    if (!state.step1Locked) return;
+    state.step1Locked = false;
+    step1Docs.forEach(enableItem);
+    setStatus("id", "Pending", "ar-pending");
+    setStatus("selfie", "Pending", "ar-pending");
+    updateStep1Progress(null);
+    updateStep1UI();
+  }
+
+  function updateStep2UI() {
+    const banner = document.getElementById("ar-statusBanner");
+    const hasRejected = step2Docs.some((d) => state.status[d] === "rejected");
+    const allVerified = step2Docs.every((d) => state.status[d] === "verified");
+    const anyActioned = step2Docs.some((d) => state.status[d] === "verified" || state.status[d] === "rejected");
+
+    if (hasRejected) {
+      banner.className = "ar-banner ar-reject";
+      banner.textContent = "One or more documents rejected";
+    } else if (allVerified) {
+      banner.className = "ar-banner ar-ready";
+      banner.textContent = "All documents verified — ready to qualify";
+    } else {
+      banner.className = "ar-banner ar-bpending";
+      banner.textContent = "Waiting for document verification";
+    }
+
+    if (anyActioned && !state.step2ActionShown) {
+      state.step2ActionShown = true;
+      document.getElementById("ar-step2Divider").style.display = "block";
+      document.getElementById("ar-step2Actions").style.display = "block";
+    }
+
+    if (!anyActioned) return;
+
+    const btn = document.getElementById("ar-step2Btn");
+    btn.onclick = null;
+
+    if (hasRejected) {
+      btn.textContent = "Reject Application";
+      btn.className = "ar-btn-danger";
+      btn.disabled = false;
+      btn.onclick = () => {
+        const applicantName =
+          selectedApplicantIdx !== null && currentStall
+            ? currentStall.applicants[selectedApplicantIdx].name
+            : "this applicant";
+        openRejectModal(applicantName, () => {
+          banner.className = "ar-banner ar-reject";
+          banner.textContent = "Application rejected";
+          btn.disabled = true;
+          btn.className = "ar-btn-disabled";
+          step2Docs.forEach(lockItem);
+          if (options.applicant) {
+            options.applicant.statusTxt = "Rejected";
+            options.applicant.status = "b-rejected";
+            if (options.onApplicantUpdate) options.onApplicantUpdate();
+          }
+          updateStep2Progress("rejected");
+        });
+      };
+    } else if (allVerified) {
+      btn.textContent = "Mark as Qualified";
+      btn.className = "ar-btn-success";
+      btn.disabled = false;
+      btn.onclick = () => {
+        banner.className = "ar-banner ar-ready";
+        banner.textContent = "Application approved — applicant is qualified";
+        btn.disabled = true;
+        btn.className = "ar-btn-disabled";
+        step2Docs.forEach(lockItem);
+        if (options.applicant) {
+          options.applicant.statusTxt = "Qualified";
+          options.applicant.status = "b-qualified";
+          if (options.onApplicantUpdate) options.onApplicantUpdate();
+        }
+        updateStep2Progress("qualified");
+      };
+    } else {
+      btn.textContent = "Waiting for review";
+      btn.className = "ar-btn-disabled";
+      btn.disabled = true;
+    }
+  }
+
+  function verifyDoc() {
+    if (!state.currentDoc) return;
+    state.status[state.currentDoc] = "verified";
+    setStatus(state.currentDoc, "Verified", "ar-verified");
+    lockItem(state.currentDoc);
+    closeModal();
+    if (!state.step2Unlocked) {
+      updateStep1Progress(null);
+      updateStep1UI();
+    } else {
+      updateStep2Progress(null);
+      updateStep2UI();
+    }
+  }
+
+  function rejectDoc() {
+    if (!state.currentDoc) return;
+    state.status[state.currentDoc] = "rejected";
+    setStatus(state.currentDoc, "Rejected", "ar-rejected");
+    closeModal();
+    if (!state.step2Unlocked) {
+      updateStep1Progress(null);
+      updateStep1UI();
+    } else {
+      updateStep2Progress(null);
+      updateStep2UI();
+    }
+  }
+
+  document.querySelectorAll(".ar-left").forEach((item) => {
+    item.addEventListener("click", () => {
+      const doc = item.dataset.doc;
+      openPreview(doc, item.dataset.url);
+    });
+  });
+  document.getElementById("ar-closeBtn").addEventListener("click", closeModal);
+  document.getElementById("ar-modal").addEventListener("click", (e) => {
+    if (e.target.id === "ar-modal") closeModal();
+  });
+  document.getElementById("ar-verifyBtn").addEventListener("click", verifyDoc);
+  document.getElementById("ar-rejectBtn").addEventListener("click", rejectDoc);
+
+  if (state.lockAllReview) {
+    step1Docs.forEach(lockItem);
+    step2Docs.forEach(lockItem);
+    setStatus("id", "Locked", "ar-locked");
+    setStatus("selfie", "Locked", "ar-locked");
+    setStatus("form", "Locked", "ar-locked");
+    setStatus("permit", "Locked", "ar-locked");
+    setStatus("clearance", "Locked", "ar-locked");
+  } else {
+    if (state.step1Locked) {
+      step1Docs.forEach(lockItem);
+      setStatus("id", "Locked", "ar-locked");
+      setStatus("selfie", "Locked", "ar-locked");
+    }
+    if (options.autoOpenStep2) {
+      startStep2Review();
+    }
+  }
+
+  updateStep1Progress(null);
+  updateStep1UI();
+  updateStep2Progress(null);
+
+  return {
+    startStep1Review,
+    startStep2Review,
+    isStep2Unlocked: () => state.step2Unlocked,
+  };
+}
+
 
 /* ──────────── BACK ──────────── */
 function goBackToStalls() {
