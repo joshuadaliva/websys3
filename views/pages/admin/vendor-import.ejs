@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import Vendor Data · ArkiPaisi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#F7F8FA; --surface:#FFF; --border:#E4E7ED; --border-light:#EFF1F5; --text-primary:#111827; --text-secondary:#6B7280; --text-tertiary:#9CA3AF; --indigo:#4F46E5; --indigo-light:#EEF2FF; --indigo-border:#C7D2FE; --green:#10B981; --green-light:#ECFDF5; --green-border:#6EE7B7; --amber:#F59E0B; --amber-light:#FFFBEB; --amber-border:#FCD34D; --red:#EF4444; --red-light:#FEF2F2; --red-border:#FCA5A5; --radius:8px; --radius-lg:12px; }
+  html, body { height:100%; width:100%; overflow:hidden; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text-primary); display:flex; flex-direction:column; }
+  .doc-card { background:var(--surface); border:1px solid var(--border); display:flex; flex-direction:column; width:100%; height:100vh; overflow:hidden; }
+  .card-header { display:flex; align-items:center; justify-content:space-between; padding:16px 24px; border-bottom:1px solid var(--border); flex-shrink:0; }
+  .card-title-group { display:flex; align-items:center; gap:10px; } .card-title { font-size:15px; font-weight:600; }
+  .status-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; border:1px solid var(--indigo-border); color:#3730A3; background:var(--indigo-light); }
+  .status-dot { width:6px; height:6px; border-radius:50%; background:var(--indigo); } .card-sub { font-size:11px; color:var(--text-tertiary); margin-top:3px; }
+  .close-btn { width:28px; height:28px; border-radius:50%; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); }
+  .close-btn:hover { background:var(--bg); color:var(--text-primary); }
+  .info-bar { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-bottom:1px solid var(--border); flex-shrink:0; }
+  .info-left { display:flex; align-items:center; gap:14px; } .info-avatar { width:40px; height:40px; border-radius:50%; background:var(--indigo-light); color:#3730A3; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; border:1px solid var(--indigo-border); }
+  .info-name { font-size:14px; font-weight:600; } .info-sub { font-size:12px; color:var(--text-secondary); margin-top:2px; }
+  .info-meta { display:flex; align-items:center; gap:16px; margin-top:5px; } .info-meta-item { display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text-secondary); } .info-meta-item svg { width:12px; height:12px; }
+  .info-badge { background:var(--indigo-light); border:1px solid var(--indigo-border); border-radius:var(--radius); padding:10px 18px; text-align:right; }
+  .info-badge-num { font-size:22px; font-weight:600; color:var(--indigo); font-family:'DM Mono',monospace; } .info-badge-label { font-size:11px; color:var(--text-secondary); margin-top:2px; } .info-badge-sub { font-size:11px; color:var(--text-tertiary); margin-top:1px; }
+  .steps-nav { display:flex; align-items:center; padding:0 24px; border-bottom:1px solid var(--border); flex-shrink:0; }
+  .snav-item { display:flex; align-items:center; gap:7px; padding:13px 0; font-size:13px; color:var(--text-tertiary); margin-right:8px; border-bottom:2px solid transparent; }
+  .snav-item.active { color:var(--indigo); border-bottom-color:var(--indigo); font-weight:600; } .snav-num { width:20px; height:20px; border-radius:50%; border:1px solid var(--border); font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center; background:var(--bg); color:var(--text-tertiary); } .snav-item.active .snav-num { background:var(--indigo); color:#fff; border-color:var(--indigo); } .snav-arrow { color:var(--text-tertiary); font-size:14px; margin:0 8px; }
+  .card-body { padding:24px; flex:1; overflow-y:auto; } .section-label { font-size:10px; font-weight:600; color:var(--text-secondary); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:12px; }
+  .tpl-banner { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--indigo-light); border:1px solid var(--indigo-border); border-radius:var(--radius); margin-bottom:20px; }
+  .tpl-left { display:flex; align-items:center; gap:10px; font-size:13px; color:#3730A3; } .tpl-left svg { width:16px; height:16px; }
+  .tpl-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:var(--radius); border:1px solid var(--indigo-border); background:var(--surface); font-size:12px; font-weight:500; color:var(--indigo); cursor:pointer; font-family:'DM Sans',sans-serif; }
+  .file-table { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:14px; } .file-table-head { display:grid; grid-template-columns:minmax(0,2fr) 90px 100px 140px 90px; padding:9px 16px; background:var(--bg); border-bottom:1px solid var(--border); } .file-table-head span { font-size:10px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; }
+  .file-row { display:grid; grid-template-columns:minmax(0,2fr) 90px 100px 140px 90px; align-items:center; padding:13px 16px; border-bottom:1px solid var(--border-light); } .empty-row { padding:32px 16px; text-align:center; font-size:13px; color:var(--text-tertiary); display:flex; align-items:center; justify-content:center; gap:8px; }
+  .file-info { display:flex; align-items:center; gap:10px; min-width:0; } .file-icon { width:32px; height:32px; border-radius:7px; display:flex; align-items:center; justify-content:center; } .file-icon.csv { background:#ECFDF5; } .file-icon.xlsx { background:var(--indigo-light); }
+  .file-name-text { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .file-name-sub { font-size:11px; color:var(--text-secondary); margin-top:2px; } .pbar-wrap { height:3px; background:var(--border); border-radius:4px; margin-top:6px; overflow:hidden; max-width:200px; } .pbar { height:100%; background:var(--indigo); border-radius:4px; transition:width .3s ease; }
+  .cell-type { font-size:12px; color:var(--text-secondary); font-family:'DM Mono',monospace; } .cell-size { font-size:12px; color:var(--text-secondary); }
+  .pill { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; } .pill-dot { width:5px; height:5px; border-radius:50%; }
+  .pill-pending { border:1px solid var(--amber-border); color:#92400E; background:var(--amber-light); } .pill-pending .pill-dot { background:var(--amber); animation:blink 1.4s infinite; }
+  .pill-ready { border:1px solid var(--green-border); color:#065F46; background:var(--green-light); } .pill-ready .pill-dot { background:var(--green); } @keyframes blink {0%,100%{opacity:1}50%{opacity:.35}}
+  .view-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--surface); font-size:12px; color:var(--text-secondary); cursor:pointer; font-family:'DM Sans',sans-serif; } .view-btn:disabled { opacity:.38; cursor:default; } .view-btn.active { border-color:var(--indigo-border); color:#3730A3; background:var(--indigo-light); }
+  .drop-zone { border:1.5px dashed var(--border); border-radius:var(--radius); padding:20px 22px; display:flex; align-items:center; gap:14px; cursor:pointer; margin-bottom:12px; } .drop-zone:hover,.drop-zone.over { border-color:var(--indigo); background:#F5F4FF; }
+  .dz-icon { width:36px; height:36px; border-radius:9px; background:var(--indigo-light); display:flex; align-items:center; justify-content:center; } .dz-icon svg { width:17px; height:17px; color:var(--indigo); }
+  .dz-text { font-size:13px; color:var(--text-secondary); flex:1; } .dz-text strong { color:var(--text-primary); } .dz-chips { display:flex; gap:6px; } .dz-chip { padding:3px 10px; border-radius:5px; font-size:11px; font-weight:600; background:var(--indigo-light); color:#3730A3; border:1px solid var(--indigo-border); }
+  .info-note { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-tertiary); }
+  .card-footer { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--border); background:var(--surface); flex-shrink:0; } .footer-hint { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-secondary); } .footer-actions { display:flex; gap:8px; }
+  .btn-cancel,.btn-next { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:var(--radius); font-size:13px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; }
+  .btn-cancel { border:1px solid var(--red-border); color:#991B1B; background:transparent; } .btn-next { border:1px solid var(--green-border); color:#065F46; background:transparent; }
+  .btn-cancel:disabled,.btn-next:disabled { opacity:.38; cursor:default; }
+</style>
+</head>
+<body>
+<div class="doc-card">
+  <div class="card-header">
+    <div>
+      <div class="card-title-group"><div class="card-title">Import Vendor Data</div><div class="status-badge"><span class="status-dot"></span>UPLOADING</div></div>
+      <div class="card-sub">ARKIPAISI › Vendor Management › Import Data</div>
+    </div>
+    <button class="close-btn" onclick="window.close();window.history.back()"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="info-bar">
+    <div class="info-left">
+      <div class="info-avatar">AD</div>
+      <div><div class="info-name">Administrator</div><div class="info-sub">Bulk importing vendor records · May 3, 2026 · 10:30 AM</div></div>
+    </div>
+    <div class="info-badge"><div class="info-badge-num" id="row-count">—</div><div class="info-badge-label">Rows detected</div><div class="info-badge-sub" id="col-count">— columns</div></div>
+  </div>
+  <div class="steps-nav"><div class="snav-item active"><div class="snav-num">1</div>Upload File</div><span class="snav-arrow">›</span><div class="snav-item"><div class="snav-num">2</div>Map Fields</div><span class="snav-arrow">›</span><div class="snav-item"><div class="snav-num">3</div>Qualification</div><span class="snav-arrow">›</span><div class="snav-item"><div class="snav-num">4</div>Final Import</div></div>
+  <div class="card-body">
+    <div class="tpl-banner"><div class="tpl-left">Not sure about the format? Download the template to get started with the correct column structure.</div><button class="tpl-btn" onclick="alert('Downloading vendor_import_template.csv')">Download template</button></div>
+    <div class="section-label">Uploaded Files</div>
+    <div class="file-table"><div class="file-table-head"><span>File / Name</span><span>Type</span><span>Size</span><span>Status</span><span></span></div><div id="file-rows"><div class="empty-row" id="empty-row">No files uploaded yet. Use the area below to add a file.</div></div></div>
+    <div class="drop-zone" id="dropzone" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)" onclick="document.getElementById('fileinput').click()">
+      <div class="dz-icon">⬆</div><div class="dz-text"><strong>Drag & drop</strong> your file here, or click to browse</div><div class="dz-chips"><span class="dz-chip">CSV</span><span class="dz-chip">XLSX</span><span class="dz-chip">XLS</span></div>
+      <input type="file" id="fileinput" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFile(this)">
+    </div>
+    <div class="info-note">Open each file to review its contents before proceeding.</div>
+  </div>
+  <div class="card-footer"><div class="footer-hint"><span id="footer-hint-text">Upload a file to proceed to field mapping.</span></div><div class="footer-actions"><button class="btn-cancel" id="btn-cancel" disabled onclick="handleCancel()">× Cancel Import</button><button class="btn-next" id="btn-next" disabled onclick="alert('Proceeding to Map Fields…')">✓ Next: Map Fields</button></div></div>
+</div>
+<script>
+function handleDrop(e){e.preventDefault();document.getElementById('dropzone').classList.remove('over');const f=e.dataTransfer.files[0];if(f)simulateUpload(f)}
+function handleFile(inp){if(inp.files[0])simulateUpload(inp.files[0])}
+function simulateUpload(f){const ext=(f.name||'').split('.').pop().toUpperCase()||'CSV';const sz=f.size?(f.size>1024*1024?(f.size/(1024*1024)).toFixed(1)+' MB':Math.round(f.size/1024)+' KB'):(Math.round(Math.random()*60+20)+' KB');const name=f.name||'vendors_import.csv';const ep=document.getElementById('empty-row');if(ep)ep.remove();const rowId='row-'+Date.now();const iconClass=ext==='CSV'?'csv':'xlsx';const iconStroke=ext==='CSV'?'#059669':'#4F46E5';const row=document.createElement('div');row.className='file-row';row.id=rowId;row.innerHTML=`<div class="file-info"><div class="file-icon ${iconClass}"><svg fill="none" viewBox="0 0 24 24" stroke="${iconStroke}" stroke-width="1.8" style="width:15px;height:15px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div style="min-width:0;flex:1"><div class="file-name-text">${name}</div><div class="file-name-sub">${ext} · ${sz}</div><div class="pbar-wrap"><div class="pbar" id="pb-${rowId}" style="width:0%"></div></div></div></div><div class="cell-type">${ext}</div><div class="cell-size">${sz}</div><div id="status-${rowId}"><span class="pill pill-pending"><span class="pill-dot"></span>UPLOADING</span></div><div><button class="view-btn" disabled id="vbtn-${rowId}">View</button></div>`;document.getElementById('file-rows').appendChild(row);let p=0;const bar=document.getElementById('pb-'+rowId);const iv=setInterval(()=>{p+=Math.random()*22+10;if(p>=100){p=100;clearInterval(iv);document.getElementById('status-'+rowId).innerHTML='<span class="pill pill-ready"><span class="pill-dot"></span>READY</span>';const vb=document.getElementById('vbtn-'+rowId);vb.disabled=false;vb.classList.add('active');vb.onclick=()=>alert('Opening file preview for: '+name);const pb=document.getElementById('pb-'+rowId);if(pb&&pb.parentElement)pb.parentElement.style.display='none';document.getElementById('row-count').textContent='24';document.getElementById('col-count').textContent='8 columns';document.getElementById('btn-next').disabled=false;document.getElementById('btn-cancel').disabled=false;document.getElementById('footer-hint-text').textContent='24 rows detected. Click \"Next: Map Fields\" to continue.'}bar.style.width=Math.min(Math.round(p),100)+'%'},260)}
+function handleCancel(){if(confirm('Cancel this import? All uploaded files will be removed.')){document.getElementById('file-rows').innerHTML='<div class=\"empty-row\" id=\"empty-row\">No files uploaded yet. Use the area below to add a file.</div>';document.getElementById('row-count').textContent='—';document.getElementById('col-count').textContent='— columns';document.getElementById('btn-next').disabled=true;document.getElementById('btn-cancel').disabled=true;document.getElementById('footer-hint-text').textContent='Upload a file to proceed to field mapping.';document.getElementById('fileinput').value=''}}
+</script>
+</body>
+</html>

@@ -38,6 +38,7 @@ router.get("/stall-management", stallManagementController.showStallManagement)
 router.get("/payment-management", paymentManagementController.showPaymentManagement)
 router.get("/application-management", applicationManagementController.showApplicationManagement)
 router.get("/vendor-management", vendorManagementController.showVendorManagement)
+router.get("/vendor-management/import", vendorManagementController.showVendorImport)
 
 // Settings route
 router.get("/settings", settingsController.showSettings)
