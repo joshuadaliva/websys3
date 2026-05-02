@@ -498,8 +498,8 @@ function setView(mode) {
   applyViewMode();
 }
 function applyViewMode() {
-  // Apply to ALL three data tabs at once so it's truly global
-  ["vendors", "payments", "documents"].forEach(function (tabId) {
+  // Apply to active data tabs
+  ["vendors", "documents"].forEach(function (tabId) {
     const tblWrap = document.querySelector("#tab-" + tabId + " .tbl-wrap");
     const cardList = document.querySelector("#tab-" + tabId + " .card-list");
     if (!tblWrap || !cardList) return;
@@ -519,15 +519,13 @@ function setTab(id, btn) {
   ACTIVE_TAB = id;
   document.querySelectorAll(".tab").forEach((t) => t.classList.remove("on"));
   btn.classList.add("on");
-  ["vendors", "payments", "documents", "log"].forEach(
+  ["vendors", "documents"].forEach(
     (t) =>
       (document.getElementById("tab-" + t).style.display =
         t === id ? "block" : "none")
   );
   if (id === "vendors") renderVendors();
-  else if (id === "payments") renderPayments();
   else if (id === "documents") renderDocs();
-  else if (id === "log") renderLog();
   applyViewMode(id);
 }
 
@@ -603,10 +601,6 @@ function renderVendors() {
       <td style="white-space:nowrap"></td>`;
     const act = tr.querySelector("td:last-child");
     act.appendChild(makeViewBtn(() => openVendor(v.id)));
-    act.appendChild(
-      Object.assign(document.createElement("span"), { innerHTML: " " })
-    );
-    act.appendChild(makeRestoreBtn("vendor", v.id, v.name, tr));
     tbody.appendChild(tr);
   });
 
@@ -640,7 +634,6 @@ function renderVendors() {
       <div class="rc-actions"></div>`;
     const act = div.querySelector(".rc-actions");
     act.appendChild(makeViewBtn(() => openVendor(v.id)));
-    act.appendChild(makeRestoreBtn("vendor", v.id, v.name, div));
     cards.appendChild(div);
   });
 
@@ -763,10 +756,6 @@ function renderDocs() {
       <td style="white-space:nowrap"></td>`;
     const act = tr.querySelector("td:last-child");
     act.appendChild(makeViewBtn(() => openDoc(d.id)));
-    act.appendChild(
-      Object.assign(document.createElement("span"), { innerHTML: " " })
-    );
-    act.appendChild(makeRestoreBtn("document", d.id, d.name, tr));
     tbody.appendChild(tr);
   });
 
@@ -806,7 +795,6 @@ function renderDocs() {
       <div class="rc-actions"></div>`;
     const act = div.querySelector(".rc-actions");
     act.appendChild(makeViewBtn(() => openDoc(d.id)));
-    act.appendChild(makeRestoreBtn("document", d.id, d.name, div));
     cards.appendChild(div);
   });
 
@@ -1052,6 +1040,5 @@ function showToast(msg, type = "g") {
 
 /* ══ INIT ══ */
 renderVendors();
-renderPayments();
 renderDocs();
 applyViewMode();

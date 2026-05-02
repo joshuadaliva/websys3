@@ -49,7 +49,7 @@ html.dark {
 }
 
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--t1);
     display: flex;
@@ -522,7 +522,7 @@ body {
     color: var(--t2);
     cursor: pointer;
     transition: all .14s;
-    font-family: 'DM Sans', sans-serif
+    font-family: 'Poppins', sans-serif
 }
 
 .profile-edit-btn:hover {
@@ -617,7 +617,7 @@ body {
     padding: 9px 12px;
     font-size: 13px;
     color: var(--t1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     transition: border .14s;
     width: 100%
@@ -826,7 +826,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     border: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -946,3 +946,11 @@ body {
     background: var(--brd);
     border-radius: 10px
 }
+/* Global table action color indicators */
+table td .btn { position: relative; }
+table td .btn::before { content:""; width:6px; height:6px; border-radius:50%; position:absolute; top:4px; left:4px; background: var(--text-muted, #94a3b8); }
+table td .btn.primary::before, table td .btn.pri::before, table td .btn.pr::before { background:#1d4ed8; }
+table td .btn.success::before, table td .btn.gr::before { background:#15803d; }
+table td .btn.ro::before, table td .btn.a::before { background:#b45309; }
+table td .btn.gh::before, table td .btn.ghost::before { background:#64748b; }
+table td .btn.r::before, table td .btn.danger::before { background:#b91c1c; }

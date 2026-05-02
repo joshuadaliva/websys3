@@ -67,8 +67,6 @@ function currentNextOR() {
   return "OR-2026-" + String(OR_BASE + 1).padStart(4, "0");
 }
 function refreshORDisplay() {
-  const el = document.getElementById("f-or");
-  if (el) el.value = currentNextOR();
   const bi = document.getElementById("orBaseInput");
   if (bi) bi.value = OR_BASE + 1;
 }
@@ -172,70 +170,108 @@ function renderConfirmedOnline() {
 }
 
 /* ═══ CASH FORM ═══ */
-function updateAmountHint() {
+function filterVendors(query) {
+  const sel = document.getElementById("f-vendor");
+  const q = query.trim().toLowerCase();
+  Array.from(sel.options).forEach((opt, idx) => {
+    if (idx === 0) return;
+    const isMatch = !q || opt.text.toLowerCase().includes(q);
+    opt.hidden = !isMatch;
+  });
+}
+
+function selectVendor() {
   const sel = document.getElementById("f-vendor");
   const opt = sel.options[sel.selectedIndex];
-  const hint = document.getElementById("amtHint");
-  document.getElementById("amtPreview").style.display = "none";
+  const summary = document.getElementById("cashSummary");
   if (!opt.value) {
-    hint.textContent = "";
+    summary.style.display = "none";
     return;
   }
   const rate = parseInt(opt.getAttribute("data-rate"));
   const bal = parseInt(opt.getAttribute("data-bal"));
-  if (bal > 0) {
-    hint.textContent = `Balance due: PHP ${bal.toLocaleString()} - Monthly rate: PHP ${rate.toLocaleString()}`;
-    document.getElementById("f-amount").value = bal;
-  } else {
-    hint.textContent = `Monthly rate: PHP ${rate.toLocaleString()}`;
-    document.getElementById("f-amount").value = rate;
-  }
-  updatePreview();
-}
-
-function updatePreview() {
-  const amt = parseFloat(document.getElementById("f-amount").value);
-  const sel = document.getElementById("f-vendor");
-  const opt = sel.options[sel.selectedIndex];
-  const prev = document.getElementById("amtPreview");
-  if (isNaN(amt) || amt <= 0 || !opt.value) {
-    prev.style.display = "none";
-    return;
-  }
-  prev.style.display = "flex";
-  const name = (opt.text.split("--")[1] || opt.text).split(" (")[0].trim();
-  document.getElementById("previewVendor").textContent = name;
-  document.getElementById("previewAmt").innerHTML =
-    "&#8369;" + amt.toLocaleString();
+  const collect = bal > 0 ? bal : rate;
+  summary.style.display = "grid";
+  document.getElementById("infoVendor").textContent =
+    opt.getAttribute("data-vendor");
+  document.getElementById("infoStall").textContent =
+    opt.getAttribute("data-stall");
+  document.getElementById("infoPeriod").textContent =
+    opt.getAttribute("data-period");
+  document.getElementById("infoRate").innerHTML =
+    "&#8369;" + rate.toLocaleString();
+  document.getElementById("infoBalance").innerHTML =
+    "&#8369;" + bal.toLocaleString();
+  document.getElementById("infoCollect").innerHTML =
+    "&#8369;" + collect.toLocaleString();
 }
 
 function clearForm() {
+  document.getElementById("vendorSearch").value = "";
   document.getElementById("f-vendor").value = "";
-  document.getElementById("f-amount").value = "";
-  document.getElementById("f-remarks").value = "";
-  document.getElementById("amtHint").textContent = "";
-  document.getElementById("amtPreview").style.display = "none";
-  uploadedFiles = [];
-  renderPreviews();
+  Array.from(document.getElementById("f-vendor").options).forEach(
+    (opt) => (opt.hidden = false)
+  );
+  document.getElementById("f-or-manual").value = "";
+  const supportDocInput = document.getElementById("f-support-doc");
+  if (supportDocInput) supportDocInput.value = "";
+  updateSupportDocName();
+  document.getElementById("cashSummary").style.display = "none";
   refreshORDisplay();
 }
 
+function updateSupportDocName() {
+  const supportDocInput = document.getElementById("f-support-doc");
+  const supportDocName = document.getElementById("supportDocName");
+  if (!supportDocInput || !supportDocName) return;
+  const selectedFile = supportDocInput.files && supportDocInput.files[0];
+  supportDocName.textContent = selectedFile ? selectedFile.name : "No file selected";
+}
+
+function initSupportDocDropzone() {
+  const supportDocInput = document.getElementById("f-support-doc");
+  const supportDocDropzone = document.getElementById("supportDocDropzone");
+  if (!supportDocInput || !supportDocDropzone) return;
+
+  supportDocInput.addEventListener("change", updateSupportDocName);
+  supportDocDropzone.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    supportDocDropzone.classList.add("drag-over");
+  });
+  ["dragleave", "dragend"].forEach((eventName) => {
+    supportDocDropzone.addEventListener(eventName, () => {
+      supportDocDropzone.classList.remove("drag-over");
+    });
+  });
+  supportDocDropzone.addEventListener("drop", (event) => {
+    event.preventDefault();
+    supportDocDropzone.classList.remove("drag-over");
+    if (!event.dataTransfer || !event.dataTransfer.files.length) return;
+    supportDocInput.files = event.dataTransfer.files;
+    updateSupportDocName();
+  });
+  supportDocDropzone.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    supportDocInput.click();
+  });
+}
+
 function submitCash() {
-  const vendor = document.getElementById("f-vendor").value;
-  const amount = parseFloat(document.getElementById("f-amount").value);
-  if (!vendor) {
+  const sel = document.getElementById("f-vendor");
+  const opt = sel.options[sel.selectedIndex];
+  if (!opt.value) {
     showToast("Please select a vendor");
     return;
   }
-  if (!amount || amount <= 0) {
-    showToast("Please enter a valid amount");
-    return;
-  }
-  const orNum = nextOR();
-  const sel = document.getElementById("f-vendor");
-  const name = (sel.options[sel.selectedIndex].text.split("--")[1] || "")
-    .split(" (")[0]
-    .trim();
+  const rate = parseInt(opt.getAttribute("data-rate"));
+  const bal = parseInt(opt.getAttribute("data-bal"));
+  const amount = bal > 0 ? bal : rate;
+  const name = opt.getAttribute("data-vendor");
+  const stall = opt.getAttribute("data-stall");
+  const period = opt.getAttribute("data-period");
+  const manualOR = document.getElementById("f-or-manual").value.trim();
+  const orNum = manualOR || nextOR();
   const now = new Date();
   let hh = now.getHours(),
     mm = now.getMinutes();
@@ -245,8 +281,8 @@ function submitCash() {
   CASH_RECEIPTS.push({
     or: orNum,
     vendor: name,
-    stall: "--",
-    period: document.getElementById("f-period").value,
+    stall,
+    period,
     amount,
     time: timeStr,
   });
@@ -359,69 +395,6 @@ function renderHistory(list) {
     .join("");
 }
 
-/* ═══ UPLOAD ═══ */
-let uploadedFiles = [];
-function onDragOver(e) {
-  e.preventDefault();
-  document.getElementById("uploadZone").classList.add("drag");
-}
-function onDragLeave() {
-  document.getElementById("uploadZone").classList.remove("drag");
-}
-function onDrop(e) {
-  e.preventDefault();
-  document.getElementById("uploadZone").classList.remove("drag");
-  addFiles(
-    Array.from(e.dataTransfer.files).filter(
-      (f) => f.type.startsWith("image/") || f.type === "application/pdf"
-    )
-  );
-}
-function onFileChange(e) {
-  addFiles(Array.from(e.target.files));
-  e.target.value = "";
-}
-function addFiles(files) {
-  files.forEach((f) => {
-    if (uploadedFiles.length >= 5) {
-      showToast("Max 5 files allowed");
-      return;
-    }
-    uploadedFiles.push(f);
-  });
-  renderPreviews();
-}
-function removeFile(i) {
-  uploadedFiles.splice(i, 1);
-  renderPreviews();
-}
-function renderPreviews() {
-  const strip = document.getElementById("previewStrip");
-  const zone = document.getElementById("uploadZone");
-  if (!strip || !zone) return;
-  if (!uploadedFiles.length) {
-    strip.style.display = "none";
-    zone.style.display = "";
-    return;
-  }
-  strip.style.display = "flex";
-  zone.style.display = uploadedFiles.length >= 5 ? "none" : "";
-  strip.innerHTML = uploadedFiles
-    .map((f, i) => {
-      const isImg = f.type.startsWith("image/");
-      const inner = isImg
-        ? `<img src="${URL.createObjectURL(
-            f
-          )}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/>`
-        : `<div class="prev-file"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="prev-ext">${f.name
-            .split(".")
-            .pop()
-            .toUpperCase()}</span></div>`;
-      return `<div class="prev-item">${inner}<button class="prev-del" onclick="removeFile(${i})" title="Remove">x</button></div>`;
-    })
-    .join("");
-}
-
 /* ═══ TOAST ═══ */
 let toastTimer = null;
 function showToast(msg) {
@@ -443,6 +416,8 @@ function showToast(msg) {
     String(today.getDate()).padStart(2, "0");
   const fd = document.getElementById("f-date");
   if (fd) fd.value = d;
+  initSupportDocDropzone();
+  updateSupportDocName();
   refreshORDisplay();
   renderOnlineQueue();
   renderConfirmedOnline();

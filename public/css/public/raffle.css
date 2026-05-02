@@ -1,0 +1,8 @@
+body{margin:0;background:#f4f6fb;font-family:Poppins,sans-serif;color:#111827}.top{height:56px;background:#0f172a;color:#fff;display:flex;align-items:center;gap:12px;padding:0 16px}.brand{color:#60a5fa;text-decoration:none;font-weight:700}.wrap{max-width:980px;margin:16px auto;padding:0 12px}.card{background:#fff;border:1px solid #dbe2f0;border-radius:12px;padding:14px;margin-bottom:12px}.hero h1{margin:0 0 4px}.hero p{margin:0;color:#64748b}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.label{font-size:11px;font-weight:700;text-transform:uppercase;color:#64748b;margin-bottom:8px}.stall{font-size:20px;font-weight:700}.row{display:flex;justify-content:space-between;border-bottom:1px solid #eef2ff;padding:8px 0}.total{margin-top:8px;font-weight:600}#status{font-weight:700;text-transform:uppercase}.waiting{color:#475569}.live{color:#d97706}.completed{color:#16a34a}#winner{font-size:20px;font-weight:700;color:#2563eb;margin-top:8px}@media(max-width:768px){.grid{grid-template-columns:1fr}}
+.draw-visual{margin-top:12px;border-radius:10px;padding:18px;background:linear-gradient(135deg,#6d28d9,#1d4ed8);display:flex;align-items:center;gap:16px;color:#fff}
+.draw-ring{width:100px;height:100px;border:14px solid rgba(255,255,255,.95);border-top-color:transparent;border-radius:50%;animation:spin 1.1s linear infinite}
+.draw-center{width:18px;height:18px;border-radius:50%;background:#fff;opacity:.9;margin-left:-70px}
+.draw-copy{font-weight:700;font-size:20px;line-height:1.2}
+.draw-visual.is-waiting{min-height:90px;justify-content:center}
+.draw-visual.is-waiting .draw-copy{font-size:28px}
+@keyframes spin{to{transform:rotate(360deg)}}
