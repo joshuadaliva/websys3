@@ -12,6 +12,8 @@ const paymentManagementController = require("../controllers/admin/paymentManagem
 const vendorManagementController = require("../controllers/admin/vendorManagementController")
 const applicationManagementController = require("../controllers/admin/applicationManagementController")
 const settingsController = require("../controllers/admin/settingsController")
+const documentManagementController = require("../controllers/admin/documentManagementController")
+const raffleController = require("../controllers/admin/raffleController")
 
 // Global logging middleware
 router.use((req, res, next) => {
@@ -33,10 +35,12 @@ router.get("/archiving", archivingController.showArchivingPage)
 router.get("/reports", reportsController.showReports)
 
 // Management routes
+router.get("/document-management", documentManagementController.showDocumentManagement)
 router.get("/notification-management", notificationController.showNotificationManagement)
 router.get("/stall-management", stallManagementController.showStallManagement)
 router.get("/payment-management", paymentManagementController.showPaymentManagement)
 router.get("/application-management", applicationManagementController.showApplicationManagement)
+router.get("/application-validation", applicationManagementController.showApplicationValidation)
 router.get("/vendor-management", vendorManagementController.showVendorManagement)
 router.get("/vendor-management/import", vendorManagementController.showVendorImport)
 

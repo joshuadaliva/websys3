@@ -75,7 +75,7 @@ html.dark {
 }
 
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--t1);
     min-height: 100vh;
@@ -193,6 +193,7 @@ svg {
     cursor: pointer;
     font-size: 13px;
     font-weight: 500;
+    text-decoration: none;
     transition: all .14s;
     margin-bottom: 1px
 }
@@ -471,7 +472,7 @@ svg {
     cursor: pointer;
     border: none;
     transition: all .14s;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -670,7 +671,7 @@ svg {
     background: transparent;
     color: var(--t2);
     transition: all .14s;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     align-items: center;
     gap: 7px;
@@ -763,7 +764,7 @@ svg {
     background: transparent;
     outline: none;
     color: var(--t1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 12.5px;
     flex: 1;
     width: 0
@@ -786,7 +787,7 @@ svg {
     padding: 7px 10px;
     font-size: 12.5px;
     color: var(--t2);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     cursor: pointer
 }
@@ -964,7 +965,7 @@ svg {
     background: var(--t1);
     color: var(--surf);
     font-size: 10.5px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     padding: 3px 8px;
     border-radius: 5px;
     white-space: nowrap;
@@ -1295,7 +1296,7 @@ svg {
     padding: 8px 11px;
     font-size: 13px;
     color: var(--t1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     transition: border .14s;
     width: 100%
@@ -1675,3 +1676,11 @@ select.fc {
         font-size: 15px
     }
 }
+/* Global table action color indicators */
+table td .btn { position: relative; }
+table td .btn::before { content:""; width:6px; height:6px; border-radius:50%; position:absolute; top:4px; left:4px; background: var(--text-muted, #94a3b8); }
+table td .btn.primary::before, table td .btn.pri::before, table td .btn.pr::before { background:#1d4ed8; }
+table td .btn.success::before, table td .btn.gr::before { background:#15803d; }
+table td .btn.ro::before, table td .btn.a::before { background:#b45309; }
+table td .btn.gh::before, table td .btn.ghost::before { background:#64748b; }
+table td .btn.r::before, table td .btn.danger::before { background:#b91c1c; }

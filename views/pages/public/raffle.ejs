@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>ARKIPAISI — Live Raffle Draw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel='stylesheet' href='/css/public/raffle.css'></head>
+<body>
+<%
+function maskName(name) {
+  const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '';
+  if (parts.length === 1) return parts[0];
+  const first = parts[0];
+  const rest = parts.slice(1).map((part) => {
+    const cleaned = part.replace(/[^A-Za-z]/g, '');
+    if (!cleaned) return '';
+    return part.length === 2 && part.endsWith('.') ? `${cleaned[0].toUpperCase()}.` : cleaned[0].toUpperCase();
+  }).filter(Boolean);
+  return `${first} ${rest.join(' ')}`.trim();
+}
+%>
+<nav class='top'><a href='/' class='brand'>ARKIPAISI</a><span>Live Raffle Draw</span></nav>
+<div class='wrap'>
+  <div class='hero card'><h1>AMRC Live Raffle Draw</h1><p>Transparent and publicly viewable draw for qualified applicants.</p></div>
+  <div class='grid'>
+    <div class='card'>
+      <div class='label'>Event Info</div>
+      <div class='stall' id='stallTxt'><%= raffleState.stallId %> · <%= raffleState.stallName %></div>
+      <div id='schedTxt'></div><div id='countdown'></div>
+    </div>
+    <div class='card'>
+      <div class='label'>Live Draw</div>
+      <div>Status: <span id='status'><%= raffleState.status %></span></div>
+      <div class="draw-visual" id="liveDrawViz" style="display:none">
+        <div class="draw-ring"></div>
+        <div class="draw-center"></div>
+        <div class="draw-copy">Drawing winner...</div>
+      </div>
+      <div id='winner'></div><div id='drawAt'></div>
+    </div>
+  </div>
+  <div class='card'>
+    <div class='label'>Qualified Applicants</div>
+    <div id='list'><% qualifiedApplicants.forEach(function(a){ %><div class='row'><span>#<%= a.raffleNumber %></span><strong><%= maskName(a.name || a.masked) %></strong></div><% }) %></div>
+    <div class='total'>Total Participants: <span id='total'><%= qualifiedApplicants.length %></span></div>
+  </div>
+  <div class='card'><div class='label'>Result Log</div><ul id='logs'></ul></div>
+</div>
+<script src='/socket.io/socket.io.js'></script><script src='/js/public/raffle.js'></script>
+</body></html>

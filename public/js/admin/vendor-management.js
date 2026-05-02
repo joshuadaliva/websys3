@@ -63,9 +63,9 @@ function statusBadge(status) {
 function getActionButtons(vendor, stopProp = true) {
   const sp = stopProp ? "event.stopPropagation();" : "";
   return `
-    <div class="action-btn tooltip" data-tip="Edit" onclick="${sp}openEditModal('${vendor.id}')">${ICONS.edit}</div>
-    <div class="action-btn action-btn-warn tooltip" data-tip="Status" onclick="${sp}openStatusModal('${vendor.id}')">${ICONS.clock}</div>
-    <div class="action-btn tooltip" data-tip="Credentials" onclick="${sp}openCredModal('${vendor.id}')">${ICONS.lock}</div>
+    <div class="action-btn action-btn-edit tooltip" data-tip="Edit" onclick="${sp}openEditModal('${vendor.id}')">${ICONS.edit}</div>
+    <div class="action-btn action-btn-status tooltip" data-tip="Status" onclick="${sp}openStatusModal('${vendor.id}')">${ICONS.clock}</div>
+    <div class="action-btn action-btn-cred tooltip" data-tip="Credentials" onclick="${sp}openCredModal('${vendor.id}')">${ICONS.lock}</div>
   `;
 }
 
@@ -195,9 +195,9 @@ function renderCards() {
             <div class="contract-track"><div class="contract-fill contract-fill-${v.progressClass}" style="width:${v.contractProgress}%"></div></div>
           </div>
           <div class="action-btns">
-            <div class="action-btn tooltip" data-tip="Edit" onclick="event.stopPropagation();openEditModal('${v.id}')">${ICONS.edit}</div>
-            <div class="action-btn action-btn-warn tooltip" data-tip="Status" onclick="event.stopPropagation();openStatusModal('${v.id}')">${ICONS.clock}</div>
-            <div class="action-btn tooltip" data-tip="Credentials" onclick="event.stopPropagation();openCredModal('${v.id}')">${ICONS.lock}</div>
+            <div class="action-btn action-btn-edit tooltip" data-tip="Edit" onclick="event.stopPropagation();openEditModal('${v.id}')">${ICONS.edit}</div>
+            <div class="action-btn action-btn-status tooltip" data-tip="Status" onclick="event.stopPropagation();openStatusModal('${v.id}')">${ICONS.clock}</div>
+            <div class="action-btn action-btn-cred tooltip" data-tip="Credentials" onclick="event.stopPropagation();openCredModal('${v.id}')">${ICONS.lock}</div>
           </div>
         </div>
       </div>
@@ -241,10 +241,10 @@ function renderTable(page = 1) {
         <td>${statusBadge(v.status)}</td>
         <td>
           <div class="action-btns">
-            <div class="action-btn tooltip" data-tip="View" onclick="event.stopPropagation();selectVendorByIndex(${i})">${ICONS.eye}</div>
-            <div class="action-btn tooltip" data-tip="Edit" onclick="event.stopPropagation();editByIndex(${i})">${ICONS.edit}</div>
-            <div class="action-btn action-btn-warn tooltip" data-tip="Status" onclick="event.stopPropagation();statusByIndex(${i})">${ICONS.clock}</div>
-            <div class="action-btn tooltip" data-tip="Creds" onclick="event.stopPropagation();credByIndex(${i})">${ICONS.lock}</div>
+            <div class="action-btn action-btn-view tooltip" data-tip="View" onclick="event.stopPropagation();selectVendorByIndex(${i})">${ICONS.eye}</div>
+            <div class="action-btn action-btn-edit tooltip" data-tip="Edit" onclick="event.stopPropagation();editByIndex(${i})">${ICONS.edit}</div>
+            <div class="action-btn action-btn-status tooltip" data-tip="Status" onclick="event.stopPropagation();statusByIndex(${i})">${ICONS.clock}</div>
+            <div class="action-btn action-btn-cred tooltip" data-tip="Creds" onclick="event.stopPropagation();credByIndex(${i})">${ICONS.lock}</div>
           </div>
         </td>
       </tr>

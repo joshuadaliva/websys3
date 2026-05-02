@@ -98,7 +98,7 @@ html.dark {
    BASE
    ══════════════════════════════════════════ */
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--t1);
     min-height: 100vh;
@@ -526,7 +526,7 @@ body.sb-closed .main {
     font-size: 12.5px; font-weight: 600;
     cursor: pointer; border: none;
     transition: all .14s;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: inline-flex; align-items: center; gap: 6px;
     line-height: 1; white-space: nowrap
 }
@@ -674,7 +674,7 @@ body.sb-closed .main {
 .filter-search input {
     border: none; background: transparent; outline: none;
     color: var(--t1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 12.5px; flex: 1; width: 0
 }
 .filter-search input::placeholder { color: var(--t3) }
@@ -686,7 +686,7 @@ body.sb-closed .main {
     border-radius: var(--rs);
     padding: 7px 10px;
     font-size: 12.5px; color: var(--t2);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none; cursor: pointer
 }
 .filter-select:focus { border-color: var(--ac) }
@@ -704,7 +704,7 @@ body.sb-closed .main {
     display: flex; align-items: center; gap: 4px;
     white-space: nowrap;
     transition: all .14s;
-    font-family: 'DM Sans', sans-serif
+    font-family: 'Poppins', sans-serif
 }
 .pill::before {
     content: '';
@@ -742,7 +742,7 @@ body.sb-closed .main {
     background: transparent; color: var(--t2);
     transition: all .14s;
     display: flex; align-items: center; gap: 5px;
-    font-family: 'DM Sans', sans-serif
+    font-family: 'Poppins', sans-serif
 }
 .view-btn svg { width: 12px; height: 12px; flex-shrink: 0 }
 .view-btn.active { background: var(--surf); color: var(--t1); box-shadow: var(--sh) }
@@ -823,19 +823,24 @@ body.sb-closed .main {
 /* ══════════════════════════════════════════
    ACTION BUTTONS
    ══════════════════════════════════════════ */
-.action-btns { display: flex; gap: 4px }
+.action-btns { display: flex; gap: 5px }
 .action-btn {
-    width: 26px; height: 26px;
-    border-radius: 6px;
-    border: 1px solid var(--brd);
-    background: var(--surf);
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 0;
     display: grid; place-items: center;
-    cursor: pointer; color: var(--t3);
-    transition: all .14s; flex-shrink: 0
+    cursor: pointer; color: #fff;
+    transition: transform .14s, opacity .14s;
+    flex-shrink: 0
 }
-.action-btn:hover { border-color: var(--ac); color: var(--ac); background: var(--acl) }
-.action-btn.action-btn-warn:hover { border-color: var(--status-suspended-border); color: var(--status-suspended); background: var(--status-suspended-bg) }
-.action-btn svg { width: 11.5px; height: 11.5px }
+.action-btn.action-btn-view { background: #f59e0b }
+.action-btn.action-btn-edit { background: #3b82f6 }
+.action-btn.action-btn-status { background: #8b5cf6 }
+.action-btn.action-btn-cred { background: #0ea5a4 }
+
+.action-btn:hover { opacity: .86; transform: scale(1.05) }
+.action-btn:active { transform: scale(.95) }
+.action-btn svg { width: 14px; height: 14px }
 
 /* ══════════════════════════════════════════
    STATUS BADGES
@@ -1147,7 +1152,7 @@ body.sb-closed .main {
     border: 1px solid var(--brd);
     border-radius: var(--rs);
     background: var(--surf);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 12.5px; color: var(--t1);
     outline: none; transition: border .14s; width: 100%
 }
@@ -1363,6 +1368,11 @@ textarea.form-control { resize: vertical; min-height: 70px }
     .modal-footer { padding: 12px 16px }
     .form-row { grid-template-columns: 1fr }
     .vendor-grid { padding: 10px }
+
+    #vtbl-container { width: 100%; overflow-x: auto }
+    .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch }
+    .vendor-table { min-width: 760px }
+    .vendor-table th, .vendor-table td { white-space: nowrap }
     .vendor-table .hide-sm { display: none }
     .status-grid { grid-template-columns: 1fr 1fr }
     .nav { padding: 0 10px; gap: 7px }
@@ -1386,3 +1396,12 @@ textarea.form-control { resize: vertical; min-height: 70px }
     .cred-label { min-width: auto }
     .stat-card { padding: 10px 11px }
 }
+
+/* Global table action color indicators */
+table td .btn { position: relative; }
+table td .btn::before { content:""; width:6px; height:6px; border-radius:50%; position:absolute; top:4px; left:4px; background: var(--text-muted, #94a3b8); }
+table td .btn.primary::before, table td .btn.pri::before, table td .btn.pr::before { background:#1d4ed8; }
+table td .btn.success::before, table td .btn.gr::before { background:#15803d; }
+table td .btn.ro::before, table td .btn.a::before { background:#b45309; }
+table td .btn.gh::before, table td .btn.ghost::before { background:#64748b; }
+table td .btn.r::before, table td .btn.danger::before { background:#b91c1c; }
