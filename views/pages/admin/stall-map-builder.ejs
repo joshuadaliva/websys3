@@ -14,7 +14,7 @@
     .palette-item{padding:10px;border:1px dashed #aaa;border-radius:8px;margin-bottom:8px;cursor:grab;background:#fafafa}
     .grid{display:grid;grid-template-columns:repeat(16,1fr);gap:4px}
     .tile{aspect-ratio:1/1;background:#fff;border:1px solid #d9deea;border-radius:4px;position:relative}
-    .box{position:absolute;inset:4px;border-radius:6px;background:#e0e7ff;border:1px solid #818cf8;display:flex;align-items:center;justify-content:center;font-size:11px}
+    .box{position:absolute;left:4px;top:4px;min-width:48px;min-height:32px;padding:4px 6px;border-radius:6px;background:#e0e7ff;border:1px solid #818cf8;display:flex;align-items:center;justify-content:center;font-size:11px;resize:both;overflow:auto;cursor:grab}
     .hint{font-size:12px;color:#666;margin-top:8px}
   </style>
 </head>
@@ -43,6 +43,7 @@
   <script>
     const state = { currentFloor: "first", first: {}, second: {} };
     const grid = document.getElementById("grid");
+    let dragPayload = null;
     function renderGrid() {
       grid.innerHTML = "";
       for (let i = 0; i < 16 * 12; i++) {
@@ -55,19 +56,47 @@
         if (item) {
           const box = document.createElement("div");
           box.className = "box";
+          box.draggable = true;
+          box.dataset.idx = i;
           box.contentEditable = "true";
           box.textContent = item.label;
           box.oninput = () => state[state.currentFloor][i].label = box.textContent;
+          box.ondragstart = (e) => dragPlacedBox(e, i);
+          box.onmousedown = () => { box.style.cursor = "grabbing"; };
+          box.onmouseup = () => { box.style.cursor = "grab"; };
           tile.appendChild(box);
         }
         grid.appendChild(tile);
       }
     }
-    function dragStart(e){ e.dataTransfer.setData("type", e.target.dataset.type); }
+    function dragStart(e){
+      dragPayload = { mode: "new", type: e.target.dataset.type };
+      e.dataTransfer.setData("text/plain", e.target.dataset.type);
+    }
+    function dragPlacedBox(e, idx){
+      dragPayload = { mode: "move", sourceIdx: idx };
+      e.dataTransfer.setData("text/plain", "move");
+    }
     function dropOnTile(e, idx){
       e.preventDefault();
-      const type = e.dataTransfer.getData("type");
-      state[state.currentFloor][idx] = { type, label: type.toUpperCase() };
+      if (!dragPayload) return;
+      if (dragPayload.mode === "new") {
+        const type = dragPayload.type;
+        state[state.currentFloor][idx] = { type, label: type.toUpperCase() };
+      } else if (dragPayload.mode === "move") {
+        const sourceIdx = dragPayload.sourceIdx;
+        if (Number(sourceIdx) === Number(idx)) return;
+        const sourceItem = state[state.currentFloor][sourceIdx];
+        if (!sourceItem) return;
+        const targetItem = state[state.currentFloor][idx];
+        state[state.currentFloor][idx] = sourceItem;
+        if (targetItem) {
+          state[state.currentFloor][sourceIdx] = targetItem;
+        } else {
+          delete state[state.currentFloor][sourceIdx];
+        }
+      }
+      dragPayload = null;
       renderGrid();
     }
     function switchFloor(floor, btn){
