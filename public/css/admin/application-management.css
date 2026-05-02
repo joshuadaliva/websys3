@@ -73,7 +73,7 @@ html.dark {
 }
 
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--text-primary);
     min-height: 100vh;
@@ -519,7 +519,7 @@ body {
     cursor: pointer;
     border: none;
     transition: all .15s;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: inline-flex;
     align-items: center;
     gap: 6px
@@ -721,7 +721,7 @@ body {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-family: 'DM Sans', sans-serif
+    font-family: 'Poppins', sans-serif
 }
 
 .vt-btn svg {
@@ -746,7 +746,7 @@ body {
     padding: 6px 10px;
     font-size: 12px;
     color: var(--text-secondary);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     cursor: pointer
 }
@@ -775,7 +775,7 @@ body {
     background: transparent;
     outline: none;
     color: var(--text-primary);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 12.5px;
     width: 100%
 }
@@ -906,6 +906,10 @@ body {
     border-radius: 50%;
     background: var(--green);
     animation: pulse-green 1.5s ease-in-out infinite
+}
+
+.sc-open-badge.no-pulse::before {
+    animation: none;
 }
 
 @keyframes pulse-green {
@@ -1442,7 +1446,7 @@ body {
     padding: 6px 10px;
     font-size: 12px;
     color: var(--text-secondary);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     cursor: pointer;
     transition: border .15s
@@ -1530,7 +1534,7 @@ body {
     background: transparent;
     outline: none;
     color: var(--text-primary);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 12px;
     flex: 1
 }
@@ -1753,11 +1757,57 @@ body {
     height: 11.5px
 }
 
+.act-btn::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    position: absolute;
+    right: -2px;
+    top: -2px;
+    border: 1px solid var(--surface);
+    background: var(--text-muted)
+}
+
+.act-btn {
+    position: relative
+}
+
+.act-btn.act-view::after {
+    background: var(--accent)
+}
+
+.act-btn.act-review::after {
+    background: var(--amber)
+}
+
 /* ── PROFILE PANEL ── */
 .profile-panel {
     display: flex;
     flex-direction: column;
     gap: 14px
+}
+
+.review-tabs {
+    display: flex;
+    gap: 8px
+}
+
+.review-tab {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 600
+}
+
+.review-tab.on {
+    border-color: var(--accent-soft);
+    background: var(--accent-light);
+    color: var(--accent)
 }
 
 .profile-card {
@@ -2266,7 +2316,7 @@ body {
     padding: 8px 11px;
     font-size: 12.5px;
     color: var(--text-primary);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     transition: border .15s
 }
@@ -2612,7 +2662,7 @@ textarea.form-control {
     font-size: 13.5px;
     font-weight: 800;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;

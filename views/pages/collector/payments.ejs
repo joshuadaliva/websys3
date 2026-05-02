@@ -7,7 +7,7 @@
   <title>ARKIPAISI &mdash; Payments</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="/css/collector/payments.css">
 </head>
@@ -204,47 +204,40 @@
                     <line x1="12" y1="8" x2="12" y2="12" />
                     <line x1="12" y1="16" x2="12.01" y2="16" />
                   </svg>
-                  <div>Cash payments must be recorded manually. Select the vendor, enter the amount, and an OR will be
-                    auto-assigned in sequence.</div>
+                  <div>Search and select a vendor, review the account details, then mark the payment as paid. You may
+                    also enter an Official Receipt number if available.</div>
                 </div>
-                <!-- OR Sequence -->
-                <div class="or-seq">
-                  <div class="or-seq-info">
-                    <div class="or-seq-lbl">OR Sequence</div>
-                    <div class="or-seq-sub">Next OR to be issued. Edit if your physical booklet is on a different
-                      number.</div>
-                  </div>
-                  <div class="or-seq-ctrl">
-                    <span class="or-prefix">OR-2026-</span>
-                    <input class="or-num-inp" id="orBaseInput" type="number" min="1" />
-                    <button class="btn gh xs" onclick="updateORBase()">Set</button>
-                  </div>
-                </div>
-                <div class="fgrid" style="margin-bottom:14px">
-                  <div class="fg">
-                    <label>Vendor / Stall</label>
-                    <select class="finp" id="f-vendor" onchange="updateAmountHint()">
+                <div class="fgrid" style="margin-bottom:12px">
+                  <div class="fg fgrid full">
+                    <label>Search Vendor</label>
+                    <input class="finp" id="vendorSearch" placeholder="Type vendor name or stall number"
+                      oninput="filterVendors(this.value)" />
+                    <select class="finp" id="f-vendor" onchange="selectVendor()">
                       <option value="">-- Select Vendor --</option>
                       <%- vendorOptions.map(v=>
-                        `<option value="${v.value}" data-rate="${v.rate}" data-bal="${v.bal}">${v.label}</option>`
+                        `<option value="${v.value}" data-rate="${v.rate}" data-bal="${v.bal}" data-vendor="${v.vendor}" data-stall="${v.stall}" data-period="${v.period}">${v.label}</option>`
                         ).join('') %>
                     </select>
                   </div>
-                  <div class="fg">
-                    <label>Payment Period</label>
-                    <select class="finp" id="f-period">
-                      <option selected>March 2026</option>
-                      <option>February 2026</option>
-                      <option>January 2026</option>
-                    </select>
+                </div>
+                <div class="cash-summary" id="cashSummary" style="display:none">
+                  <div class="cash-card">
+                    <div class="cash-card-title">Vendor Information</div>
+                    <div class="cash-row"><span>Vendor</span><strong id="infoVendor">--</strong></div>
+                    <div class="cash-row"><span>Stall</span><strong id="infoStall">--</strong></div>
+                    <div class="cash-row"><span>Payment Period</span><strong id="infoPeriod">--</strong></div>
+                  </div>
+                  <div class="cash-card">
+                    <div class="cash-card-title">Payment Information</div>
+                    <div class="cash-row"><span>Monthly Rate</span><strong id="infoRate">--</strong></div>
+                    <div class="cash-row"><span>Current Balance</span><strong id="infoBalance">--</strong></div>
+                    <div class="cash-row"><span>Amount to Collect</span><strong id="infoCollect">--</strong></div>
                   </div>
                 </div>
                 <div class="fgrid" style="margin-bottom:14px">
                   <div class="fg">
-                    <label>Amount (PHP)</label>
-                    <div class="pfx"><span class="pfx-lbl">&#8369;</span><input class="finp" id="f-amount" type="number"
-                        min="1" step="50" placeholder="0.00" oninput="updatePreview()" /></div>
-                    <span class="hint" id="amtHint"></span>
+                    <label>Official Receipt Number</label>
+                    <input class="finp" id="f-or-manual" placeholder="e.g. OR-2026-0849" />
                   </div>
                   <div class="fg">
                     <label>Date Collected</label>
@@ -252,47 +245,15 @@
                   </div>
                 </div>
                 <div class="fgrid" style="margin-bottom:14px">
-                  <div class="fg">
-                    <label>OR Number</label>
-                    <input class="finp" id="f-or" readonly
-                      style="font-family:'DM Mono',monospace;background:var(--s3);color:var(--t3)" />
+                  <div class="fg full">
+                    <label>OR Image <span class="hint">(optional)</span></label>
+                    <input id="f-support-doc" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" hidden />
+                    <label for="f-support-doc" class="file-dropzone" id="supportDocDropzone" tabindex="0">
+                      <strong>Drag file here</strong>
+                      <span>or tap to browse</span>
+                      <small id="supportDocName">No file selected</small>
+                    </label>
                   </div>
-                  <div class="fg">
-                    <label>Remarks</label>
-                    <input class="finp" id="f-remarks" placeholder="Optional e.g. Partial payment" />
-                  </div>
-                </div>
-                <div class="amt-preview" id="amtPreview" style="display:none">
-                  <div>
-                    <div
-                      style="font-size:10.5px;font-weight:700;color:var(--gr);text-transform:uppercase;letter-spacing:.3px">
-                      Receipt Preview</div>
-                    <div id="previewVendor" style="font-size:12.5px;color:var(--t2);margin-top:2px"></div>
-                  </div>
-                  <div class="amt-preview-val" id="previewAmt">&#8369;0</div>
-                </div>
-                <!-- Upload -->
-                <div style="margin-bottom:14px">
-                  <div
-                    style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px">
-                    Proof of Payment <span
-                      style="font-weight:400;font-size:11px;text-transform:none;color:var(--t3)">(optional)</span>
-                  </div>
-                  <div class="upload-zone" id="uploadZone" ondragover="onDragOver(event)"
-                    ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-                    <input type="file" id="fileInput" accept="image/*,.pdf" multiple onchange="onFileChange(event)" />
-                    <div class="upload-zone-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="17 8 12 3 7 8" />
-                        <line x1="12" y1="3" x2="12" y2="15" />
-                      </svg></div>
-                    <div class="upload-zone-lbl">Drag &amp; drop receipt photo here</div>
-                    <div class="upload-zone-sub">or <span
-                        onclick="document.getElementById('fileInput').click();event.stopPropagation()">browse
-                        files</span> &mdash; JPG, PNG, PDF &mdash; max 5 files</div>
-                  </div>
-                  <div class="preview-strip" id="previewStrip" style="display:none"></div>
                 </div>
                 <div style="display:flex;gap:8px;justify-content:flex-end">
                   <button class="btn gh" onclick="clearForm()">Clear</button>
@@ -301,7 +262,7 @@
                       stroke-width="2">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    Save &amp; Issue OR
+                    Mark as Paid
                   </button>
                 </div>
               </div>
