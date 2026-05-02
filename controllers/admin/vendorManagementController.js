@@ -210,9 +210,13 @@ const vendors = [
     };
   }
   
-  const showVendorManagement = (req, res) => {
-    const stats = getStats(vendors);
-    res.render("pages/admin/vendor-management", { vendors, stats });
-  };
-  
-  module.exports = { showVendorManagement };
+const showVendorManagement = (req, res) => {
+  const stats = getStats(vendors);
+  res.render("pages/admin/vendor-management", { vendors, stats });
+};
+
+const showVendorImport = (req, res) => {
+  res.render("pages/admin/vendor-import");
+};
+
+module.exports = { showVendorManagement, showVendorImport };
