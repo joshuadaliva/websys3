@@ -42,6 +42,7 @@ router.get("/stall-management/create-map", stallManagementController.showCreateM
 router.get("/payment-management", paymentManagementController.showPaymentManagement)
 router.get("/application-management", applicationManagementController.showApplicationManagement)
 router.get("/application-validation", applicationManagementController.showApplicationValidation)
+router.get("/application-management/document-submission", applicationManagementController.showDocumentSubmission)
 router.get("/vendor-management", vendorManagementController.showVendorManagement)
 router.get("/vendor-management/import-data", vendorManagementController.showImportVendorData)
 router.post("/raffle/schedule", raffleController.scheduleRaffle)
