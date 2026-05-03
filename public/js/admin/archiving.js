@@ -874,8 +874,6 @@ function openDoc(id) {
       ["Archived On", d.archivedOn],
       ["File Size", d.size],
     ])}</div>`;
-  document.getElementById("restore-doc-btn").onclick = () =>
-    doRestore("document", d.id, d.name, null, true);
   openM("viewDocModal");
 }
 
