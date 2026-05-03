@@ -467,6 +467,10 @@ function nextStep() {
 
 function openConvertModal() { openModal("convertModal"); }
 
+function openImportVendorPage() {
+  window.open("/admin/vendor-management/import-data", "_blank", "noopener,noreferrer");
+}
+
 function openEditModal(id) {
   const vendor = VENDORS.find((v) => v.id === id);
   if (vendor) {
