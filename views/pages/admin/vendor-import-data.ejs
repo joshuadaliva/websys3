@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import Vendor Data · ArkiPaisi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg: #F7F8FA; --surface: #FFFFFF; --border: #E4E7ED; --border-light: #EFF1F5; --text-primary: #111827; --text-secondary: #6B7280; --text-tertiary: #9CA3AF; --indigo: #4F46E5; --indigo-light: #EEF2FF; --indigo-border: #C7D2FE; --green: #10B981; --green-light: #ECFDF5; --green-border: #6EE7B7; --amber: #F59E0B; --amber-light: #FFFBEB; --amber-border: #FCD34D; --red: #EF4444; --red-light: #FEF2F2; --red-border: #FCA5A5; --radius: 8px; }
+  html, body { height: 100%; width: 100%; overflow: hidden; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); display: flex; flex-direction: column; }
+  .doc-card { background: var(--surface); border: 1px solid var(--border); display: flex; flex-direction: column; width: 100%; height: 100vh; overflow: hidden; }
+  .card-header,.info-bar,.card-footer { display:flex;align-items:center;justify-content:space-between }
+  .card-header { padding: 16px 24px; border-bottom: 1px solid var(--border); }
+  .card-title-group { display:flex;align-items:center;gap:10px } .card-title{font-size:15px;font-weight:600}
+  .status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--indigo-border);color:#3730A3;background:var(--indigo-light)}
+  .status-dot{width:6px;height:6px;border-radius:50%;background:var(--indigo)} .card-sub{font-size:11px;color:var(--text-tertiary);margin-top:3px}
+  .close-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)}
+  .info-bar { padding: 14px 24px; border-bottom: 1px solid var(--border); }
+  .info-left{display:flex;align-items:center;gap:14px}.info-avatar{width:40px;height:40px;border-radius:50%;background:var(--indigo-light);color:#3730A3;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;border:1px solid var(--indigo-border)}
+  .info-name{font-size:14px;font-weight:600}.info-sub{font-size:12px;color:var(--text-secondary);margin-top:2px}.info-meta{display:flex;gap:16px;margin-top:5px}.info-meta-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-secondary)}
+  .info-badge{background:var(--indigo-light);border:1px solid var(--indigo-border);border-radius:var(--radius);padding:10px 18px;text-align:right}.info-badge-num{font-size:22px;font-weight:600;color:var(--indigo);font-family:'DM Mono',monospace}.info-badge-label,.info-badge-sub{font-size:11px;color:var(--text-secondary)}
+  .steps-nav{display:flex;align-items:center;padding:0 24px;border-bottom:1px solid var(--border)}.snav-item{display:flex;align-items:center;gap:7px;padding:13px 0;font-size:13px;color:var(--text-tertiary);margin-right:8px;border-bottom:2px solid transparent}.snav-item.active{color:var(--indigo);border-bottom-color:var(--indigo);font-weight:600}
+  .snav-num{width:20px;height:20px;border-radius:50%;border:1px solid var(--border);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text-tertiary)}.snav-item.active .snav-num{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+  .card-body{padding:24px;flex:1;overflow-y:auto}.section-label{font-size:10px;font-weight:600;color:var(--text-secondary);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+  .tpl-banner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--indigo-light);border:1px solid var(--indigo-border);border-radius:var(--radius);margin-bottom:20px}.tpl-btn{padding:6px 12px;border-radius:var(--radius);border:1px solid var(--indigo-border);background:var(--surface);font-size:12px;color:var(--indigo);cursor:pointer}
+  .file-table{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px}.file-table-head,.file-row{display:grid;grid-template-columns:minmax(0,2fr) 90px 100px 140px 90px;padding:10px 16px}.file-table-head{background:var(--bg);border-bottom:1px solid var(--border)}.empty-row{padding:24px;text-align:center;color:var(--text-tertiary)}
+  .drop-zone{border:1.5px dashed var(--border);border-radius:var(--radius);padding:20px 22px;display:flex;align-items:center;gap:14px;cursor:pointer;margin-bottom:12px}.drop-zone.over{border-color:var(--indigo);background:#F5F4FF}
+  .dz-chip{padding:3px 10px;border-radius:5px;font-size:11px;font-weight:600;background:var(--indigo-light);color:#3730A3;border:1px solid var(--indigo-border)}
+  .card-footer{padding:14px 24px;border-top:1px solid var(--border)} .footer-actions{display:flex;gap:8px}
+  .btn-cancel,.btn-next{padding:8px 16px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;background:transparent}
+  .btn-cancel{border:1px solid var(--red-border);color:#991B1B}.btn-next{border:1px solid var(--green-border);color:#065F46}
+</style>
+</head>
+<body>
+<div class="doc-card">
+  <div class="card-header"><div><div class="card-title-group"><div class="card-title">Import Vendor Data</div><div class="status-badge"><span class="status-dot"></span>UPLOADING</div></div><div class="card-sub">ARKIPAISI › Vendor Management › Import Data</div></div><button class="close-btn" onclick="window.close()">✕</button></div>
+  <div class="info-bar"><div class="info-left"><div class="info-avatar">AD</div><div><div class="info-name">Administrator</div><div class="info-sub">Bulk importing vendor records</div><div class="info-meta"><div class="info-meta-item">Accepts CSV, XLSX, XLS</div><div class="info-meta-item">Max 10 MB per file</div></div></div></div><div class="info-badge"><div class="info-badge-num" id="row-count">—</div><div class="info-badge-label">Rows detected</div><div class="info-badge-sub" id="col-count">— columns</div></div></div>
+  <div class="steps-nav"><div class="snav-item active"><div class="snav-num">1</div>Upload File</div><span>›</span><div class="snav-item"><div class="snav-num">2</div>Map Fields</div></div>
+  <div class="card-body">
+    <div class="tpl-banner"><div>Not sure about the format? Download the template to get started.</div><button class="tpl-btn" onclick="alert('Downloading vendor_import_template.csv')">Download template</button></div>
+    <div class="section-label">Uploaded Files</div>
+    <div class="file-table"><div class="file-table-head"><span>File / Name</span><span>Type</span><span>Size</span><span>Status</span><span></span></div><div id="file-rows"><div class="empty-row" id="empty-row">No files uploaded yet. Use the area below to add a file.</div></div></div>
+    <div class="drop-zone" id="dropzone" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)" onclick="document.getElementById('fileinput').click()">
+      <div><strong>Drag & drop</strong> your file here, or click to browse</div><div><span class="dz-chip">CSV</span><span class="dz-chip">XLSX</span><span class="dz-chip">XLS</span></div><input type="file" id="fileinput" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFile(this)">
+    </div>
+  </div>
+  <div class="card-footer"><div id="footer-hint-text">Upload a file to proceed to field mapping.</div><div class="footer-actions"><button class="btn-cancel" id="btn-cancel" disabled onclick="handleCancel()">× Cancel Import</button><button class="btn-next" id="btn-next" disabled onclick="alert('Proceeding to Map Fields…')">✓ Next: Map Fields</button></div></div>
+</div>
+<script>
+function handleDrop(e){e.preventDefault();document.getElementById('dropzone').classList.remove('over');const f=e.dataTransfer.files[0];if(f)simulateUpload(f)}
+function handleFile(inp){if(inp.files[0])simulateUpload(inp.files[0])}
+function simulateUpload(f){const ext=(f.name||'').split('.').pop().toUpperCase()||'CSV';const sz=f.size?Math.round(f.size/1024)+' KB':'25 KB';const name=f.name||'vendors_import.csv';const ep=document.getElementById('empty-row');if(ep)ep.remove();const rowId='row-'+Date.now();const row=document.createElement('div');row.className='file-row';row.id=rowId;row.innerHTML=`<div>${name}</div><div>${ext}</div><div>${sz}</div><div>READY</div><div></div>`;document.getElementById('file-rows').appendChild(row);document.getElementById('row-count').textContent='24';document.getElementById('col-count').textContent='8 columns';document.getElementById('btn-next').disabled=false;document.getElementById('btn-cancel').disabled=false;document.getElementById('footer-hint-text').textContent='24 rows detected. Click "Next: Map Fields" to continue.'}
+function handleCancel(){document.getElementById('file-rows').innerHTML='<div class="empty-row" id="empty-row">No files uploaded yet. Use the area below to add a file.</div>';document.getElementById('row-count').textContent='—';document.getElementById('col-count').textContent='— columns';document.getElementById('btn-next').disabled=true;document.getElementById('btn-cancel').disabled=true;document.getElementById('footer-hint-text').textContent='Upload a file to proceed to field mapping.';document.getElementById('fileinput').value=''}
+</script>
+</body>
+</html>
