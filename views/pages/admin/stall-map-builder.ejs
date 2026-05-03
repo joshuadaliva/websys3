@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Stall Map · ArkiPaisi</title>
+  <link rel="stylesheet" href="/css/admin/stall-map-builder.css"/>
+</head>
+<body>
+  <div class="builder-wrap">
+    <header class="builder-head">
+      <div><h1>Create Stall Map</h1><p>Build a dynamic grid-based blueprint and download as JSON.</p></div>
+      <div class="head-actions">
+        <button class="btn" onclick="clearFloor()">Clear Floor</button>
+        <button class="btn primary" onclick="downloadMapJson()">Download JSON</button>
+      </div>
+    </header>
+
+    <div class="floor-switch">
+      <button class="floor-btn active" data-floor="first" onclick="setBuilderFloor('first', this)">First Floor</button>
+      <button class="floor-btn" data-floor="second" onclick="setBuilderFloor('second', this)">Second Floor</button>
+    </div>
+
+    <main class="builder-main">
+      <aside class="palette">
+        <h3>Drag Boxes</h3>
+        <div class="palette-item" draggable="true" data-type="stall">Stall A</div>
+        <div class="palette-item" draggable="true" data-type="hallway">Hallway</div>
+        <div class="palette-item" draggable="true" data-type="room">Room</div>
+        <p>Drop to a tile, click text to edit label.</p>
+      </aside>
+      <section class="canvas-wrap">
+        <div id="grid-canvas" class="grid-canvas"></div>
+      </section>
+    </main>
+  </div>
+<script src="/js/admin/stall-map-builder.js"></script>
+</body>
+</html>
