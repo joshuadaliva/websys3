@@ -455,6 +455,12 @@ body {
     letter-spacing: -.5px
 }
 
+
+.pghdr-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.hdr-btn { border:1px solid var(--brd); background:var(--surf); color:var(--t2); padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; }
+.hdr-btn:hover { background:var(--s2); color:var(--t1); }
+.hdr-btn-primary { background:var(--ac); color:#fff; border-color:var(--ac); }
+.hdr-btn-primary:hover { filter:brightness(.95); color:#fff; }
 .pghdr p {
     font-size: 13px;
     color: var(--t3);
