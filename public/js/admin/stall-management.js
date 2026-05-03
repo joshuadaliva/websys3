@@ -72,6 +72,11 @@ function setFloor(id, el) {
   closeDetail();
 }
 
+
+function openCreateMapBuilder() {
+  window.open('/admin/stall-management/create-map', '_blank', 'noopener,noreferrer');
+}
+
 /* ══ STALL CELL BUILDER ══ */
 function sc(id) {
   var s = STALLS[id];

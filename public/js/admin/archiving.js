@@ -827,9 +827,9 @@ function openVendor(id) {
       ["Email", v.email],
       ["Total Paid", `<strong style="color:var(--gr)">${v.totalPaid}</strong>`],
     ])}</div>
-    <div class="chip g" style="margin-top:13px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div>Restoring will move this vendor back to the active Vendor Management list.</div></div>`;
-  document.getElementById("restore-vendor-btn").onclick = () =>
-    doRestore("vendor", v.id, v.name, null, true);
+    `;
+  document.getElementById("download-vendor-btn").onclick = () =>
+    showToast(`Vendor record "${v.name}" downloaded`, "g");
   openM("viewVendorModal");
 }
 
@@ -874,8 +874,6 @@ function openDoc(id) {
       ["Archived On", d.archivedOn],
       ["File Size", d.size],
     ])}</div>`;
-  document.getElementById("restore-doc-btn").onclick = () =>
-    doRestore("document", d.id, d.name, null, true);
   openM("viewDocModal");
 }
 
