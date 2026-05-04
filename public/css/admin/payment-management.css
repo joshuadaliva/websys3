@@ -934,11 +934,6 @@ svg {
   color: var(--gr)
 }
 
-.ps.pending {
-  background: var(--ams);
-  color: var(--am)
-}
-
 .ps.due {
   background: var(--ors);
   color: var(--or)
@@ -1322,10 +1317,6 @@ svg {
 
 .mr-card.due::before {
   background: var(--or)
-}
-
-.mr-card.pending::before {
-  background: var(--am)
 }
 
 .mr-top {

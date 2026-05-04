@@ -94,17 +94,6 @@
             <div class="sl">Paid This Month</div>
           </div>
         </div>
-        <div class="sc ca">
-          <div class="si a"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg></div>
-          <div>
-            <div class="sv">4</div>
-            <div class="sl">Pending</div>
-          </div>
-        </div>
         <div class="sc cr">
           <div class="si r"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2">
@@ -205,7 +194,6 @@
             <div style="display:flex;gap:5px;flex-wrap:wrap" id="status-pills">
               <div class="sp s-all on" onclick="setSF2('all',this)">All</div>
               <div class="sp" style="color:var(--gr)" onclick="setSF2('paid',this)">Paid</div>
-              <div class="sp" style="color:var(--am)" onclick="setSF2('pending',this)">Pending</div>
               <div class="sp" style="color:var(--or)" onclick="setSF2('due',this)">Due Today</div>
               <div class="sp" style="color:var(--rd)" onclick="setSF2('overdue',this)">Overdue</div>
               <div class="sp" style="color:var(--cy)" onclick="setSF2('review',this)">Under Review</div>
@@ -267,10 +255,6 @@
             <div style="flex:1;padding:10px 16px;text-align:center;border-right:1px solid var(--brd)">
               <div style="font-size:18px;font-weight:800;font-family:'DM Mono',monospace;color:var(--gr)">35</div>
               <div style="font-size:10.5px;color:var(--t3);font-weight:600;margin-top:2px">Paid</div>
-            </div>
-            <div style="flex:1;padding:10px 16px;text-align:center;border-right:1px solid var(--brd)">
-              <div style="font-size:18px;font-weight:800;font-family:'DM Mono',monospace;color:var(--am)">4</div>
-              <div style="font-size:10.5px;color:var(--t3);font-weight:600;margin-top:2px">Pending</div>
             </div>
             <div style="flex:1;padding:10px 16px;text-align:center;border-right:1px solid var(--brd)">
               <div style="font-size:18px;font-weight:800;font-family:'DM Mono',monospace;color:var(--or)">2</div>
@@ -704,11 +688,6 @@
             <div style="font-size:18px;margin-bottom:4px">✅</div>
             <div style="font-size:12px;font-weight:700;color:var(--gr)">Paid</div>
           </div>
-          <div class="vsopt" onclick="pickPS(this,'pending')"
-            style="padding:10px;border-radius:8px;border:1.5px solid var(--brd);background:var(--s2);cursor:pointer;text-align:center">
-            <div style="font-size:18px;margin-bottom:4px">⏳</div>
-            <div style="font-size:12px;font-weight:700;color:var(--am)">Pending</div>
-          </div>
           <div class="vsopt" onclick="pickPS(this,'due')"
             style="padding:10px;border-radius:8px;border:1.5px solid var(--brd);background:var(--s2);cursor:pointer;text-align:center">
             <div style="font-size:18px;margin-bottom:4px">📅</div>
@@ -781,7 +760,6 @@
         <div class="fg"><label class="fl">Payment Status</label><select class="fc">
             <option>All</option>
             <option>Paid</option>
-            <option>Pending</option>
             <option>Overdue</option>
           </select></div>
         <div class="fg"><label class="fl">File Format</label>

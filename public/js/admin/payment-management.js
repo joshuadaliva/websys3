@@ -243,7 +243,7 @@ const PAYMENTS = [
     period: "February 2026",
     method: null,
     collector: null,
-    status: "pending",
+    status: "due",
   },
   {
     id: "PAY-014",
@@ -277,14 +277,12 @@ const MT = {
 const MC = { portal: "portal", collector: "collector", office: "office" };
 const SC2 = {
   paid: "paid",
-  pending: "pending",
   due: "due",
   overdue: "overdue",
   review: "review",
 };
 const SL = {
   paid: "Paid",
-  pending: "Pending",
   due: "Due Today",
   overdue: "Overdue",
   review: "Under Review",
@@ -585,7 +583,7 @@ function renderLedgerSearch() {
             pays.length
           } payments${
         pending > 0
-          ? ` · <span style="color:var(--rd)">${pending} pending</span>`
+          ? ` · <span style="color:var(--rd)">${pending} unpaid</span>`
           : ""
       }</div>
         </div>
@@ -838,14 +836,12 @@ function pickPS(el, s) {
   });
   const cols = {
     paid: "var(--grs)",
-    pending: "var(--ams)",
     due: "var(--ors)",
     overdue: "var(--rds)",
     review: "var(--cys)",
   };
   const bgs = {
     paid: "var(--grl)",
-    pending: "var(--aml)",
     due: "var(--orl)",
     overdue: "var(--rdl)",
     review: "var(--cyl)",
@@ -1134,7 +1130,7 @@ function openBulkReminder() {
         ? "overdue"
         : statuses.includes("due")
         ? "due"
-        : "pending";
+        : "due";
       return `<div style="display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--s2);border:1px solid var(--brd);border-radius:8px">
         <div class="vav-sm" style="width:30px;height:30px;font-size:10px;flex-shrink:0;background:linear-gradient(${
           v.grad
