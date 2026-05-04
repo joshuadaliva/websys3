@@ -434,6 +434,22 @@ function getPays() {
   });
 }
 
+function getDueDateLabel(payment, fallback = `<span style="color:var(--t3)">not paid yet</span>`) {
+  if (payment.date) return payment.date;
+  if (!payment.period) return fallback;
+
+  const [monthName, yearText] = payment.period.split(" ");
+  const monthMap = {
+    January: "Jan", February: "Feb", March: "Mar", April: "Apr", May: "May", June: "Jun",
+    July: "Jul", August: "Aug", September: "Sep", October: "Oct", November: "Nov", December: "Dec",
+  };
+  const year = Number(yearText);
+  const month = monthMap[monthName];
+
+  if (!month || !Number.isFinite(year)) return fallback;
+  return `${month} 10, ${year}`;
+}
+
 /* ═══ RENDER RECORDS TABLE ═══ */
 function renderRecords() {
   const list = getPays();
@@ -443,8 +459,8 @@ function renderRecords() {
   const tbl = document.getElementById("prec-tbl");
   tbl.innerHTML = `
       <thead><tr>
-        <th>OR #</th><th>Vendor</th><th>Stall</th><th>Amount Paid</th>
-        <th>Payment Date</th><th>Method</th><th>Status</th><th>Actions</th>
+        <th>OR #</th><th>Vendor</th><th>Stall</th><th>Amount Due</th>
+        <th>Due Date</th><th>Method</th><th>Status</th><th>Actions</th>
       </tr></thead>
       <tbody>${list
         .map((p) => {
@@ -461,7 +477,7 @@ function renderRecords() {
           const mHtml = p.method
             ? `<span class="pm ${p.method}">${MT[p.method]}</span>`
             : `<span style="font-size:11px;color:var(--t3)">not paid yet</span>`;
-          const dateHtml = p.date || `<span style="color:var(--t3)">not paid yet</span>`;
+          const dateHtml = getDueDateLabel(p);
           return `<tr onclick="viewPayment('${p.id}')">
           <td>${orHtml}</td>
           <td><div class="vcell"><div class="vav-sm" style="background:linear-gradient(${
@@ -749,9 +765,7 @@ function viewPayment(pid) {
         <div style="display:flex;justify-content:space-between;padding:9px 13px;border-bottom:1px solid var(--brd2);font-size:12.5px"><span style="color:var(--t3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">Period</span><span style="font-weight:600">${
           p.period
         }</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 13px;border-bottom:1px solid var(--brd2);font-size:12.5px"><span style="color:var(--t3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">Payment Date</span><span style="font-weight:600">${
-          p.date || "—"
-        }</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 13px;border-bottom:1px solid var(--brd2);font-size:12.5px"><span style="color:var(--t3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">Due Date</span><span style="font-weight:600">${getDueDateLabel(p, "—")}</span></div>
         <div style="display:flex;justify-content:space-between;padding:9px 13px;border-bottom:1px solid var(--brd2);font-size:12.5px"><span style="color:var(--t3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">Method</span><span>${
           p.method ? `<span class="pm ${p.method}">${MT[p.method]}</span>` : "—"
         }</span></div>
@@ -982,7 +996,7 @@ function savePayment() {
     return;
   }
   if (!date) {
-    alert("Please enter the payment date.");
+    alert("Please enter the due date.");
     return;
   }
   if (!collector) {
