@@ -445,7 +445,7 @@ function openDetail(id) {
   var statusLbl = {
     paid: "Paid",
     overdue: "Overdue",
-    partial: "Partial Payment",
+    partial: "Due Today",
   };
   var bdgCls = { paid: "gr", overdue: "rd", partial: "am" };
   var histHtml =
