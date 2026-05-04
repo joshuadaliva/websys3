@@ -32,12 +32,12 @@
   --vi: #6d28d9;
   --vil: #f5f3ff;
   --vis: #ddd6fe;
-  --or: #c2410c;
-  --orl: #fff7ed;
-  --ors: #fed7aa;
-  --cy: #0e7490;
-  --cyl: #ecfeff;
-  --cys: #a5f3fc;
+  --or: #a16207;
+  --orl: #fefce8;
+  --ors: #fef08a;
+  --cy: #1d4ed8;
+  --cyl: #eff6ff;
+  --cys: #bfdbfe;
   --sidebar-w: 240px;
   --r: 12px;
   --rs: 7px;
@@ -67,10 +67,10 @@ html.dark {
   --rds: #380412;
   --vil: #140a30;
   --vis: #2a1460;
-  --orl: #1a0800;
-  --ors: #5c1a00;
-  --cyl: #021a20;
-  --cys: #0a4050;
+  --orl: #1a1400;
+  --ors: #4a3a00;
+  --cyl: #0b1535;
+  --cys: #1e3a8a;
   --sh: 0 1px 3px rgba(0, 0, 0, .4);
   --shm: 0 4px 16px rgba(0, 0, 0, .5);
 }
