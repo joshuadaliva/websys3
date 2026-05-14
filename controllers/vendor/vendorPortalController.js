@@ -1,306 +1,243 @@
-/* ─── VENDOR / STALL ─────────────────────────────────────── */
-const vendor = {
-  initials: "CB",
-  firstName: "Carla",
-  lastName: "Bautista",
-  middleName: "Mendoza",
-  fullName: "Carla M. Bautista",
-  phone: "+63 912 345 6789",
-  email: "carla.bautista@email.com",
-  address: "Brgy. Doon, Pili, Camarines Sur",
-  vendorId: "VND-009",
+const { pool } = require('../../config/database');
+const bcrypt = require('bcryptjs');
+
+const showDashboard = async (req, res) => {
+  try {
+    const vendorId = req.session.user.vendorId;
+    const [vendors] = await pool.query(
+      `SELECT v.*, s.stall_number, s.section, s.stall_type FROM vendors v
+       LEFT JOIN stalls s ON v.stall_id = s.id WHERE v.id = ?`,
+      [vendorId]
+    );
+    const vendor = vendors[0] || {};
+
+    const [recentPayments] = await pool.query(
+      "SELECT * FROM payments WHERE vendor_id = ? ORDER BY payment_date DESC LIMIT 5",
+      [vendorId]
+    );
+
+    const [openInquiries] = await pool.query(
+      "SELECT COUNT(*) as count FROM inquiry_tickets WHERE vendor_id = ? AND status IN ('open','in_progress')",
+      [vendorId]
+    );
+
+    const [notifications] = await pool.query(
+      "SELECT * FROM notifications WHERE recipient_id = ? AND is_read = 0 ORDER BY created_at DESC LIMIT 5",
+      [req.session.user.id]
+    );
+
+    res.render("pages/vendor/dashboard", {
+      vendor, recentPayments, openInquiries: openInquiries[0].count, notifications
+    });
+  } catch (error) {
+    console.error('Vendor dashboard error:', error);
+    res.render("pages/vendor/dashboard", {
+      vendor: {}, recentPayments: [], openInquiries: 0, notifications: []
+    });
+  }
 };
 
-const stall = {
-  number: "#06",
-  location: "Ground Floor — Misc/Pasalubong",
-  locationShort: "Ground Floor — Misc",
-  type: "Dry Goods",
-  size: "3 × 3 m²",
-  monthlyRate: 1200,
-  contractStart: "March 15, 2024",
-  contractExpires: "December 31, 2026",
-  referenceCode: "PIL-#06-MAR26",
-  collector: "Juan R. Reyes",
-  status: "active",
+const showPayments = async (req, res) => {
+  try {
+    const vendorId = req.session.user.vendorId;
+    const [payments] = await pool.query(
+      `SELECT p.*, s.stall_number FROM payments p
+       LEFT JOIN stalls s ON p.stall_id = s.id
+       WHERE p.vendor_id = ? ORDER BY p.payment_date DESC`,
+      [vendorId]
+    );
+
+    const [paymentMethods] = await pool.query(
+      "SELECT * FROM payment_methods WHERE is_active = 1"
+    );
+
+    const [vendor] = await pool.query("SELECT * FROM vendors WHERE id = ?", [vendorId]);
+
+    res.render("pages/vendor/payments", { payments, paymentMethods, vendor: vendor[0] || {} });
+  } catch (error) {
+    res.render("pages/vendor/payments", { payments: [], paymentMethods: [], vendor: {} });
+  }
 };
 
-/* ─── PAYMENTS ───────────────────────────────────────────── */
-const payments = [
-  {
-    id: 0,
-    period: "March 2026",
-    or: "",
-    amount: 1200,
-    method: "",
-    issuedBy: "",
-    date: "",
-    status: "unpaid",
-  },
-  {
-    id: 1,
-    period: "February 2026",
-    or: "OR-2026-0801",
-    amount: 1200,
-    method: "Cash",
-    issuedBy: "Juan R. Reyes",
-    date: "Feb 5, 2026",
-    status: "paid",
-  },
-  {
-    id: 2,
-    period: "January 2026",
-    or: "OR-2026-0732",
-    amount: 1200,
-    method: "GCash",
-    issuedBy: "Auto-posted",
-    date: "Jan 8, 2026",
-    status: "paid",
-  },
-  {
-    id: 3,
-    period: "Dec 2025",
-    or: "OR-2025-1198",
-    amount: 1200,
-    method: "Cash",
-    issuedBy: "Juan R. Reyes",
-    date: "Dec 6, 2025",
-    status: "paid",
-  },
-  {
-    id: 4,
-    period: "Nov 2025",
-    or: "OR-2025-1098",
-    amount: 1200,
-    method: "Maya",
-    issuedBy: "Auto-posted",
-    date: "Nov 4, 2025",
-    status: "paid",
-  },
-  {
-    id: 5,
-    period: "Oct 2025",
-    or: "OR-2025-1002",
-    amount: 1200,
-    method: "Cash",
-    issuedBy: "Juan R. Reyes",
-    date: "Oct 7, 2025",
-    status: "paid",
-  },
-  {
-    id: 6,
-    period: "Sep 2025",
-    or: "OR-2025-0901",
-    amount: 1200,
-    method: "GCash",
-    issuedBy: "Auto-posted",
-    date: "Sep 5, 2025",
-    status: "paid",
-  },
-  {
-    id: 7,
-    period: "Aug 2025",
-    or: "OR-2025-0812",
-    amount: 1200,
-    method: "Cash",
-    issuedBy: "Juan R. Reyes",
-    date: "Aug 8, 2025",
-    status: "paid",
-  },
-];
+const makePayment = async (req, res) => {
+  try {
+    const vendorId = req.session.user.vendorId;
+    const { amount, paymentMethod, periodFrom, periodTo, notes } = req.body;
 
-/* ─── INQUIRIES / TICKETS ────────────────────────────────── */
-const tickets = [
-  {
-    id: 0,
-    subject: "March 2026 payment not reflected",
-    category: "Payment Concern",
-    status: "open",
-    unread: true,
-    createdAt: "Today, 10:42 AM",
-    messages: [
-      {
-        from: "vendor",
-        name: "Carla Bautista",
-        text: "Good morning. I sent my March 2026 payment via GCash using reference code PIL-#06-MAR26 yesterday at around 3PM. The amount was PHP 1,200. But it is still not showing as paid. Please check. Thank you.",
-        time: "Yesterday, 3:48 PM",
-      },
-      {
-        from: "office",
-        name: "Market Office",
-        text: "Good afternoon po, Carla. We received your message. Can you please send us the GCash reference number or a screenshot of the transaction for faster processing?",
-        time: "Yesterday, 4:20 PM",
-      },
-      {
-        from: "vendor",
-        name: "Carla Bautista",
-        text: "Here is my GCash ref: 241218123456789. I also sent a screenshot via the market Facebook page.",
-        time: "Yesterday, 4:35 PM",
-      },
-      {
-        from: "office",
-        name: "Market Office",
-        text: "Thank you po. We found the transaction. Your payment has been posted and OR-2026-0902 has been issued. You can now see it in your payment history. Sorry for the inconvenience!",
-        time: "Today, 8:30 AM",
-      },
-    ],
-  },
-  {
-    id: 1,
-    subject: "Request: fix broken stall shelf",
-    category: "Stall Condition",
-    status: "waiting",
-    unread: true,
-    createdAt: "Mar 15, 9:10 AM",
-    messages: [
-      {
-        from: "vendor",
-        name: "Carla Bautista",
-        text: "Good day! I would like to report that one of the shelves inside my stall (#06, Ground Floor) is broken. The left bracket broke last week. Please send someone to fix it.",
-        time: "Mar 15, 9:10 AM",
-      },
-      {
-        from: "office",
-        name: "Market Office",
-        text: "Thank you for reporting this, Carla. We have logged a maintenance request. Our team will visit Stall #06 within 3 to 5 working days.",
-        time: "Mar 15, 11:00 AM",
-      },
-    ],
-  },
-  {
-    id: 2,
-    subject: "Contract renewal inquiry",
-    category: "Contract Renewal",
-    status: "resolved",
-    unread: false,
-    createdAt: "Feb 20, 2:00 PM",
-    messages: [
-      {
-        from: "vendor",
-        name: "Carla Bautista",
-        text: "Good afternoon. My stall contract expires on December 31, 2026. What is the process for renewal? I would like to renew early.",
-        time: "Feb 20, 2:00 PM",
-      },
-      {
-        from: "office",
-        name: "Market Office",
-        text: "Good afternoon po! The renewal process starts 60 days before expiry. We will send a formal notice in October 2026. Just keep your payments up to date and there are no pending violations.",
-        time: "Feb 20, 3:15 PM",
-      },
-      {
-        from: "vendor",
-        name: "Carla Bautista",
-        text: "Okay understood. Thank you!",
-        time: "Feb 20, 3:22 PM",
-      },
-      {
-        from: "office",
-        name: "Market Office",
-        text: "You are welcome po! This ticket will now be marked as resolved.",
-        time: "Feb 20, 3:25 PM",
-      },
-      {
-        from: "system",
-        text: "Ticket marked as resolved by Market Office.",
-        time: "Feb 20, 3:25 PM",
-      },
-    ],
-  },
-];
+    const [vendors] = await pool.query("SELECT stall_id FROM vendors WHERE id = ?", [vendorId]);
+    const stallId = vendors[0] ? vendors[0].stall_id : null;
 
-/* ─── NOTICES ────────────────────────────────────────────── */
-const notices = [
-  { title: "March 2026 payment now due", date: "Mar 1, 2026" },
-  {
-    title: "Market hours update: Now open until 6PM on weekdays",
-    date: "Feb 28, 2026",
-  },
-  { title: "Annual contract renewal reminder", date: "Feb 15, 2026" },
-];
+    await pool.query(
+      `INSERT INTO payments (vendor_id, stall_id, amount, payment_date, payment_method, status,
+       period_from, period_to, notes)
+       VALUES (?, ?, ?, CURDATE(), ?, 'under_review', ?, ?, ?)`,
+      [vendorId, stallId, amount, paymentMethod, periodFrom || null, periodTo || null, notes || null]
+    );
 
-/* ─── SETTINGS ───────────────────────────────────────────── */
-const settings = {
-  appearance: {
-    theme: "light", // 'light' | 'dark' | 'auto'
-    language: "English",
-  },
-  notifications: {
-    paymentReminders: true,
-    inquiryReplies: true,
-    marketAnnouncements: true,
-    contractExpiryAlerts: true,
-  },
-  privacy: {
-    showHistoryToCollector: true,
-    twoFactorAuth: false,
-  },
-  about: {
-    appName: "ARKIPAISI Market Management System",
-    version: "v1.0.0-beta",
-    market: "Pili Public Market (PPMB-23)",
-  },
+    res.json({ ok: true, message: 'Payment submitted for review' });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Failed to submit payment' });
+  }
 };
 
-/* ─── HELPERS ────────────────────────────────────────────── */
-function getPaymentStats(paymentList) {
-  const unpaid = paymentList.filter((p) => p.status === "unpaid");
-  const paid = paymentList.filter((p) => p.status === "paid");
-  return {
-    balanceDue: unpaid.reduce((s, p) => s + p.amount, 0),
-    duePeriod: unpaid[0]?.period || null,
-    totalPaid: paid.reduce((s, p) => s + p.amount, 0),
-    paidCount: paid.length,
-    unpaidCount: unpaid.length,
-  };
-}
-
-function getInquiryStats(ticketList) {
-  const open = ticketList.filter(
-    (t) => t.status === "open" || t.status === "waiting"
-  ).length;
-  return { openCount: open, totalCount: ticketList.length };
-}
-
-/* ─── CONTROLLERS ────────────────────────────────────────── */
-const showDashboard = (req, res) => {
-  const pStats = getPaymentStats(payments);
-  const iStats = getInquiryStats(tickets);
-  // Recent 4 payments for dashboard table
-  const recentPayments = payments.slice(0, 4);
-  res.render("pages/vendor/dashboard", {
-    vendor,
-    stall,
-    pStats,
-    iStats,
-    recentPayments,
-    notices,
-  });
+const showInquiries = async (req, res) => {
+  try {
+    const vendorId = req.session.user.vendorId;
+    const [tickets] = await pool.query(
+      "SELECT * FROM inquiry_tickets WHERE vendor_id = ? ORDER BY created_at DESC",
+      [vendorId]
+    );
+    res.render("pages/vendor/inquries", { tickets });
+  } catch (error) {
+    res.render("pages/vendor/inquries", { tickets: [] });
+  }
 };
 
-const showPayments = (req, res) => {
-  const pStats = getPaymentStats(payments);
-  res.render("pages/vendor/payments", { vendor, stall, payments, pStats });
+const createInquiry = async (req, res) => {
+  try {
+    const vendorId = req.session.user.vendorId;
+    const { subject, category, message } = req.body;
+
+    const [countResult] = await pool.query("SELECT COUNT(*) as count FROM inquiry_tickets");
+    const ticketNumber = `TKT-${String(countResult[0].count + 1).padStart(4, '0')}`;
+
+    const [result] = await pool.query(
+      `INSERT INTO inquiry_tickets (ticket_number, vendor_id, user_id, subject, category, status)
+       VALUES (?, ?, ?, ?, ?, 'open')`,
+      [ticketNumber, vendorId, req.session.user.id, subject, category || 'general']
+    );
+
+    if (message) {
+      await pool.query(
+        "INSERT INTO inquiry_messages (ticket_id, sender_id, sender_role, message) VALUES (?, ?, 'vendor', ?)",
+        [result.insertId, req.session.user.id, message]
+      );
+    }
+
+    // Notify admin
+    const [admins] = await pool.query("SELECT id FROM users WHERE role = 'admin' AND is_active = 1 LIMIT 1");
+    if (admins[0]) {
+      await pool.query(
+        `INSERT INTO notifications (title, message, type, recipient_id, recipient_role, related_type, related_id)
+         VALUES ('New Inquiry', ?, 'inquiry', ?, 'admin', 'inquiry', ?)`,
+        [`New inquiry ${ticketNumber}: ${subject}`, admins[0].id, result.insertId]
+      );
+    }
+
+    res.json({ ok: true, message: 'Inquiry submitted', ticketNumber });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Failed to create inquiry' });
+  }
 };
 
-const showInquiry = (req, res) => {
-  const iStats = getInquiryStats(tickets);
-  res.render("pages/vendor/inquries", { vendor, stall, tickets, iStats });
+const getInquiryMessages = async (req, res) => {
+  try {
+    const { ticketId } = req.params;
+    const [messages] = await pool.query(
+      `SELECT im.*, u.first_name, u.last_name FROM inquiry_messages im
+       LEFT JOIN users u ON im.sender_id = u.id
+       WHERE im.ticket_id = ? ORDER BY im.sent_at ASC`,
+      [ticketId]
+    );
+    res.json({ ok: true, messages });
+  } catch (error) {
+    res.status(500).json({ ok: false, messages: [] });
+  }
 };
 
-const showProfile = (req, res) => {
-  const pStats = getPaymentStats(payments);
-  const iStats = getInquiryStats(tickets);
-  res.render("pages/vendor/profile", { vendor, stall, pStats, iStats });
+const replyToInquiry = async (req, res) => {
+  try {
+    const { ticketId } = req.params;
+    const { message } = req.body;
+    await pool.query(
+      "INSERT INTO inquiry_messages (ticket_id, sender_id, sender_role, message) VALUES (?, ?, 'vendor', ?)",
+      [ticketId, req.session.user.id, message]
+    );
+    res.json({ ok: true, message: 'Reply sent' });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Failed to reply' });
+  }
 };
 
-const showSettings = (req, res) => {
-  res.render("pages/vendor/settings", { vendor, stall, settings });
+const showProfile = async (req, res) => {
+  try {
+    const vendorId = req.session.user.vendorId;
+    const [vendors] = await pool.query(
+      `SELECT v.*, s.stall_number, s.section, s.stall_type, s.size FROM vendors v
+       LEFT JOIN stalls s ON v.stall_id = s.id WHERE v.id = ?`,
+      [vendorId]
+    );
+
+    const [paymentStats] = await pool.query(
+      `SELECT COUNT(*) as total_payments, COALESCE(SUM(amount), 0) as total_paid
+       FROM payments WHERE vendor_id = ? AND status = 'paid'`,
+      [vendorId]
+    );
+
+    const [inquiryStats] = await pool.query(
+      `SELECT COUNT(*) as total, COUNT(CASE WHEN status = 'open' THEN 1 END) as open_count,
+       COUNT(CASE WHEN status = 'resolved' THEN 1 END) as resolved_count
+       FROM inquiry_tickets WHERE vendor_id = ?`,
+      [vendorId]
+    );
+
+    res.render("pages/vendor/profile", {
+      vendor: vendors[0] || {}, paymentStats: paymentStats[0], inquiryStats: inquiryStats[0]
+    });
+  } catch (error) {
+    res.render("pages/vendor/profile", { vendor: {}, paymentStats: {}, inquiryStats: {} });
+  }
+};
+
+const showSettings = async (req, res) => {
+  try {
+    const [preferences] = await pool.query(
+      "SELECT * FROM user_preferences WHERE user_id = ?",
+      [req.session.user.id]
+    );
+    res.render("pages/vendor/settings", { preferences: preferences[0] || {} });
+  } catch (error) {
+    res.render("pages/vendor/settings", { preferences: {} });
+  }
+};
+
+const updateSettings = async (req, res) => {
+  try {
+    const { theme, notificationsEnabled, emailNotifications, smsNotifications, showProfile: sp, showActivity } = req.body;
+    await pool.query(
+      `INSERT INTO user_preferences (user_id, theme, notifications_enabled, email_notifications, sms_notifications, show_profile, show_activity)
+       VALUES (?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE theme = VALUES(theme), notifications_enabled = VALUES(notifications_enabled),
+       email_notifications = VALUES(email_notifications), sms_notifications = VALUES(sms_notifications),
+       show_profile = VALUES(show_profile), show_activity = VALUES(show_activity)`,
+      [req.session.user.id, theme || 'light', notificationsEnabled ? 1 : 0,
+       emailNotifications ? 1 : 0, smsNotifications ? 1 : 0, sp ? 1 : 0, showActivity ? 1 : 0]
+    );
+    res.json({ ok: true, message: 'Settings updated' });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Failed to update settings' });
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const [users] = await pool.query("SELECT password FROM users WHERE id = ?", [req.session.user.id]);
+    if (users.length === 0) return res.status(404).json({ ok: false, message: 'User not found' });
+
+    const isMatch = await bcrypt.compare(currentPassword, users[0].password);
+    if (!isMatch) return res.status(400).json({ ok: false, message: 'Current password is incorrect' });
+
+    const hashed = await bcrypt.hash(newPassword, 12);
+    await pool.query("UPDATE users SET password = ? WHERE id = ?", [hashed, req.session.user.id]);
+    res.json({ ok: true, message: 'Password changed' });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Failed to change password' });
+  }
 };
 
 module.exports = {
-  showDashboard,
-  showPayments,
-  showInquiry,
-  showProfile,
-  showSettings,
+  showDashboard, showPayments, makePayment, showInquiries,
+  createInquiry, getInquiryMessages, replyToInquiry,
+  showProfile, showSettings, updateSettings, changePassword
 };

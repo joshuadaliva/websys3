@@ -1,222 +1,131 @@
-const vendors = [
-    {
-      id: "VND-001",
-      firstName: "Juan",
-      lastName: "Dela Cruz",
-      initials: "JD",
-      stall: "#01",
-      type: "Wet Market",
-      typeCode: "wet",
-      phone: "+63 912 345 6789",
-      email: "juan.delacruz@email.com",
-      address: "Brgy. Norte, Arkipaisi",
-      since: "Mar 9, 2025",
-      status: "active",
-      contractStart: "Mar 9, 2025",
-      contractEnd: "Mar 9, 2026",
-      contractProgress: 75,
-      progressClass: "warn",
-      monthlyRate: "₱1,500",
-      balance: "₱0.00",
-      lastPayment: "Mar 1, 2026",
-      isOnline: true,
-    },
-    {
-      id: "VND-002",
-      firstName: "Pedro",
-      lastName: "Reyes",
-      initials: "PR",
-      stall: "#03",
-      type: "Meat Section",
-      typeCode: "meat",
-      phone: "+63 917 111 2222",
-      email: "pedro.reyes@email.com",
-      address: "Brgy. Silangan, Arkipaisi",
-      since: "Jan 5, 2025",
-      status: "active",
-      contractStart: "Jan 5, 2025",
-      contractEnd: "Jan 5, 2026",
-      contractProgress: 91,
-      progressClass: "crit",
-      monthlyRate: "₱1,800",
-      balance: "₱500.00",
-      lastPayment: "Feb 28, 2026",
-      isOnline: false,
-    },
-    {
-      id: "VND-003",
-      firstName: "Maria",
-      lastName: "Santos",
-      initials: "MS",
-      stall: "#07",
-      type: "Dry Goods",
-      typeCode: "dry",
-      phone: "+63 920 333 4444",
-      email: "maria.santos@email.com",
-      address: "Brgy. Doon, Arkipaisi",
-      since: "Jun 12, 2024",
-      status: "active",
-      contractStart: "Jun 12, 2024",
-      contractEnd: "Jun 12, 2025",
-      contractProgress: 48,
-      progressClass: "ok",
-      monthlyRate: "₱1,200",
-      balance: "₱0.00",
-      lastPayment: "Mar 3, 2026",
-      isOnline: true,
-    },
-    {
-      id: "VND-004",
-      firstName: "Ana",
-      lastName: "Lim",
-      initials: "AL",
-      stall: "#19",
-      type: "Vegetables",
-      typeCode: "veg",
-      phone: "+63 918 555 6666",
-      email: "ana.lim@email.com",
-      address: "Brgy. Centro, Arkipaisi",
-      since: "Sep 20, 2024",
-      status: "suspended",
-      contractStart: "Sep 20, 2024",
-      contractEnd: "Sep 20, 2025",
-      contractProgress: 62,
-      progressClass: "warn",
-      monthlyRate: "₱1,000",
-      balance: "₱3,000.00",
-      lastPayment: "Jan 15, 2026",
-      isOnline: false,
-    },
-    {
-      id: "VND-005",
-      firstName: "Roberto",
-      lastName: "Go",
-      initials: "RG",
-      stall: "#24",
-      type: "Fish Section",
-      typeCode: "fish",
-      phone: "+63 915 777 8888",
-      email: "roberto.go@email.com",
-      address: "Brgy. Likha, Arkipaisi",
-      since: "Dec 1, 2023",
-      status: "expired",
-      contractStart: "Dec 1, 2023",
-      contractEnd: "Dec 1, 2024",
-      contractProgress: 100,
-      progressClass: "ex",
-      monthlyRate: "₱2,000",
-      balance: "₱1,500.00",
-      lastPayment: "Nov 30, 2024",
-      isOnline: false,
-    },
-    {
-      id: "VND-006",
-      firstName: "Carla",
-      lastName: "Bautista",
-      initials: "CB",
-      stall: "#06",
-      type: "Dry Goods",
-      typeCode: "dry",
-      phone: "+63 912 987 6543",
-      email: "carla.bautista@email.com",
-      address: "Brgy. Bagong, Arkipaisi",
-      since: "Mar 9, 2026",
-      status: "active",
-      contractStart: "Mar 9, 2026",
-      contractEnd: "Mar 9, 2027",
-      contractProgress: 2,
-      progressClass: "ok",
-      monthlyRate: "₱1,200",
-      balance: "₱0.00",
-      lastPayment: "—",
-      isOnline: true,
-    },
-    {
-      id: "VND-007",
-      firstName: "Luis",
-      lastName: "Villanueva",
-      initials: "LV",
-      stall: "#11",
-      type: "Vegetables",
-      typeCode: "veg",
-      phone: "+63 917 234 5678",
-      email: "luis.v@email.com",
-      address: "Brgy. Ibayo, Arkipaisi",
-      since: "Feb 1, 2025",
-      status: "active",
-      contractStart: "Feb 1, 2025",
-      contractEnd: "Feb 1, 2026",
-      contractProgress: 82,
-      progressClass: "warn",
-      monthlyRate: "₱1,000",
-      balance: "₱0.00",
-      lastPayment: "Mar 5, 2026",
-      isOnline: false,
-    },
-    {
-      id: "VND-008",
-      firstName: "Grace",
-      lastName: "Cruz",
-      initials: "GC",
-      stall: "#09",
-      type: "Vegetables",
-      typeCode: "veg",
-      phone: "+63 918 333 4444",
-      email: "grace.c@email.com",
-      address: "Brgy. Tulay, Arkipaisi",
-      since: "Jul 12, 2024",
-      status: "active",
-      contractStart: "Jul 12, 2024",
-      contractEnd: "Jul 12, 2025",
-      contractProgress: 55,
-      progressClass: "warn",
-      monthlyRate: "₱1,000",
-      balance: "₱0.00",
-      lastPayment: "Mar 4, 2026",
-      isOnline: true,
-    },
-    {
-      id: "VND-009",
-      firstName: "Diego",
-      lastName: "Cruz",
-      initials: "DC",
-      stall: "#15",
-      type: "General",
-      typeCode: "gen",
-      phone: "+63 916 444 5555",
-      email: "diego.c@email.com",
-      address: "Brgy. Luma, Arkipaisi",
-      since: "May 15, 2022",
-      status: "terminated",
-      contractStart: "May 15, 2022",
-      contractEnd: "May 15, 2023",
-      contractProgress: 100,
-      progressClass: "ex",
-      monthlyRate: "₱1,200",
-      balance: "₱8,500.00",
-      lastPayment: "Apr 10, 2023",
-      isOnline: false,
-    },
-  ];
-  
-  // Derive summary stats from data
-  function getStats(vendorList) {
-    return {
-      total: vendorList.length,
-      active: vendorList.filter((v) => v.status === "active").length,
-      suspended: vendorList.filter((v) => v.status === "suspended").length,
-      expired: vendorList.filter((v) => v.status === "expired").length,
-      terminated: vendorList.filter((v) => v.status === "terminated").length,
-    };
-  }
-  
-  const showVendorManagement = (req, res) => {
-    const stats = getStats(vendors);
-    res.render("pages/admin/vendor-management", { vendors, stats });
-  };
-  
-  const showImportVendorData = (req, res) => {
-    res.render("pages/admin/vendor-import-data");
-  };
+const { pool } = require('../../config/database');
+const bcrypt = require('bcryptjs');
 
-  module.exports = { showVendorManagement, showImportVendorData };
+const showVendorManagement = async (req, res) => {
+  try {
+    const [vendors] = await pool.query(
+      `SELECT v.*, s.stall_number, s.section, u.username, u.last_login
+       FROM vendors v
+       LEFT JOIN stalls s ON v.stall_id = s.id
+       LEFT JOIN users u ON v.user_id = u.id
+       WHERE v.is_archived = 0
+       ORDER BY v.created_at DESC`
+    );
+
+    const [statusCounts] = await pool.query(
+      `SELECT status, COUNT(*) as count FROM vendors WHERE is_archived = 0 GROUP BY status`
+    );
+
+    res.render("pages/admin/vendor-management", { vendors, statusCounts });
+  } catch (error) {
+    console.error('Vendor management error:', error);
+    res.render("pages/admin/vendor-management", { vendors: [], statusCounts: [] });
+  }
+};
+
+const showImportVendorData = async (req, res) => {
+  res.render("pages/admin/vendor-import-data");
+};
+
+const convertToVendor = async (req, res) => {
+  try {
+    const {
+      applicationId, stallId, contractStart, contractEnd,
+      monthlyRate, username, password
+    } = req.body;
+
+    // Get the application
+    const [apps] = await pool.query("SELECT * FROM applications WHERE id = ?", [applicationId]);
+    if (apps.length === 0) {
+      return res.status(404).json({ ok: false, message: 'Application not found' });
+    }
+    const app = apps[0];
+
+    // Create user account
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const [userResult] = await pool.query(
+      `INSERT INTO users (username, password, role, email, first_name, last_name, mobile, is_active)
+       VALUES (?, ?, 'vendor', ?, ?, ?, ?, 1)`,
+      [username, hashedPassword, app.email, app.first_name, app.last_name, app.mobile]
+    );
+
+    // Create vendor record
+    const [vendorResult] = await pool.query(
+      `INSERT INTO vendors (user_id, application_id, first_name, last_name, mobile, email, address,
+       business_name, business_type, stall_id, contract_start, contract_end, monthly_rate, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')`,
+      [userResult.insertId, applicationId, app.first_name, app.last_name, app.mobile, app.email,
+       app.address, app.intended_business, app.intended_business, stallId, contractStart, contractEnd, monthlyRate]
+    );
+
+    // Update stall status
+    await pool.query(
+      "UPDATE stalls SET status = 'occupied', vendor_id = ? WHERE id = ?",
+      [vendorResult.insertId, stallId]
+    );
+
+    // Update application status
+    await pool.query(
+      "UPDATE applications SET selection_status = 'selected' WHERE id = ?",
+      [applicationId]
+    );
+
+    // Log credentials in message_logs
+    await pool.query(
+      `INSERT INTO message_logs (type, recipient, recipient_name, subject, message, status, related_type, related_id, sent_by)
+       VALUES ('email', ?, ?, 'Portal Login Credentials', ?, 'sent', 'vendor', ?, ?)`,
+      [app.email, `${app.first_name} ${app.last_name}`,
+       `Your vendor portal credentials - Username: ${username}, Password: ${password}`,
+       vendorResult.insertId, req.session.user.id]
+    );
+
+    // Create notification
+    await pool.query(
+      `INSERT INTO notifications (title, message, type, recipient_id, recipient_role)
+       VALUES ('Account Created', 'Your vendor account has been created. You can now log in.', 'system', ?, 'vendor')`,
+      [userResult.insertId]
+    );
+
+    res.json({ ok: true, message: 'Vendor created successfully', vendorId: vendorResult.insertId });
+  } catch (error) {
+    console.error('Convert to vendor error:', error);
+    res.status(500).json({ ok: false, message: error.code === 'ER_DUP_ENTRY' ? 'Username already exists' : 'Failed to create vendor' });
+  }
+};
+
+const updateVendor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { firstName, lastName, mobile, email, businessName, status, monthlyRate, contractEnd } = req.body;
+    await pool.query(
+      `UPDATE vendors SET first_name = COALESCE(?, first_name), last_name = COALESCE(?, last_name),
+       mobile = COALESCE(?, mobile), email = COALESCE(?, email), business_name = COALESCE(?, business_name),
+       status = COALESCE(?, status), monthly_rate = COALESCE(?, monthly_rate),
+       contract_end = COALESCE(?, contract_end) WHERE id = ?`,
+      [firstName, lastName, mobile, email, businessName, status, monthlyRate, contractEnd, id]
+    );
+    res.json({ ok: true, message: 'Vendor updated successfully' });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Failed to update vendor' });
+  }
+};
+
+const archiveVendor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("UPDATE vendors SET is_archived = 1 WHERE id = ?", [id]);
+    // Free up the stall
+    await pool.query(
+      "UPDATE stalls SET status = 'vacant', vendor_id = NULL WHERE vendor_id = ?",
+      [id]
+    );
+    res.json({ ok: true, message: 'Vendor archived successfully' });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Failed to archive vendor' });
+  }
+};
+
+module.exports = {
+  showVendorManagement, showImportVendorData,
+  convertToVendor, updateVendor, archiveVendor
+};

@@ -57,3 +57,12 @@ mongodb-data/
 # Windows system files
 Desktop.ini
 ehthumbs.db
+# Uploaded files (keep directory structure via .gitkeep)
+public/uploads/ids/*
+public/uploads/selfies/*
+public/uploads/documents/*
+public/uploads/contracts/*
+public/uploads/payments/*
+public/uploads/stalls/*
+public/uploads/avatars/*
+!public/uploads/**/.gitkeep

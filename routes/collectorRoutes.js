@@ -1,40 +1,40 @@
 const express = require("express");
 const router = express.Router();
+const { isCollector } = require("../middlewares/auth");
 
-// Import collector controllers
-const authController = require("../controllers/collector/authController")
-const dashboardController = require("../controllers/collector/dashboardController")
-const myStallsController = require("../controllers/collector/myStallsController")
-const notificationsController = require("../controllers/collector/notificationsController")
-const paymentsController = require("../controllers/collector/paymentsController")
-const profileController = require("../controllers/collector/profileController")
-const settingsController = require("../controllers/collector/settingsController")
-const monthlySummaryController = require("../controllers/collector/monthlySummaryController")
+const authController = require("../controllers/collector/authController");
+const dashboardController = require("../controllers/collector/dashboardController");
+const myStallsController = require("../controllers/collector/myStallsController");
+const paymentsController = require("../controllers/collector/paymentsController");
+const monthlySummaryController = require("../controllers/collector/monthlySummaryController");
+const notificationsController = require("../controllers/collector/notificationsController");
+const profileController = require("../controllers/collector/profileController");
+const settingsController = require("../controllers/collector/settingsController");
 
-// Global logging middleware
-router.use((req, res, next) => {
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${req.method} ${req.path}`);
-  
-  // Log response when sent
-  console.log(`[${timestamp}] ${req.method} ${req.path} - Status: ${res.statusCode}`);
+// Auth
+router.get("/login", authController.showLoginPage);
+router.post("/login", authController.login);
+router.get("/logout", authController.logout);
 
-  
-  next();
-});
+// Protected routes
+router.get("/dashboard", isCollector, dashboardController.showDashboard);
+router.get("/my-stalls", isCollector, myStallsController.showMyStalls);
 
-// Authentication routes
-router.get("/login", authController.showLoginPage)
+// Payments
+router.get("/payments", isCollector, paymentsController.showPayments);
+router.post("/payments/record-cash", isCollector, paymentsController.recordCashPayment);
+router.post("/payments/assign-or", isCollector, paymentsController.assignOR);
 
-// Dashboard and main routes
-router.get("/dashboard", dashboardController.showDashboard)
-router.get("/my-stalls", myStallsController.showMyStalls)
-router.get("/notifications", notificationsController.showNotifications)
-router.get("/payments", paymentsController.showPayments)
+// Monthly summary
+router.get("/monthly-summary", isCollector, monthlySummaryController.showMonthlySummary);
 
-// Profile and settings routes
-router.get("/profile", profileController.showProfile)
-router.get("/settings", settingsController.showSettings)
-router.get("/monthly-summary", monthlySummaryController.showMonthlySummary)
+// Notifications
+router.get("/notifications", isCollector, notificationsController.showNotifications);
+router.put("/notification/:id/read", isCollector, notificationsController.markAsRead);
+
+// Profile & Settings
+router.get("/profile", isCollector, profileController.showProfile);
+router.get("/settings", isCollector, settingsController.showSettings);
+router.put("/settings", isCollector, settingsController.updateSettings);
 
 module.exports = router;
